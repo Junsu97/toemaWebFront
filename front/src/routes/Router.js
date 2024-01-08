@@ -38,7 +38,7 @@ const ThemeRoutes = [
       { path: "/table", exact: true, element: <Tables /> },
       { path: "/forms", exact: true, element: <Forms /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
-      {path : "/myaccount", exact: true, element: <MyAccount/>}
+      {path : "/userService/myaccount", exact: true, element: <MyAccount/>}
     ],
   },
 ];

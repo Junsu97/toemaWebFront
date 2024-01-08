@@ -96,7 +96,7 @@ const Header = () => {
           </DropdownToggle>
           <DropdownMenu>
             <DropdownItem header>Info</DropdownItem>
-            <DropdownItem  tag={Link} to="/myaccount">My Account</DropdownItem>
+            <DropdownItem  tag={Link} to="/userService/myAccount">My Account</DropdownItem>
             <DropdownItem>Edit Profile</DropdownItem>
             <DropdownItem divider />
             <DropdownItem>My Balance</DropdownItem>
