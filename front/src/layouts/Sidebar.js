@@ -98,7 +98,7 @@ const Sidebar = () => {
               </Link>
             </NavItem>
           ))}
-          <Button
+          {/* <Button
             color="danger"
             tag="a"
             target="_blank"
@@ -106,7 +106,7 @@ const Sidebar = () => {
             href="https://wrappixel.com/templates/materialpro-react-admin/?ref=33"
           >
             Upgrade To Pro
-          </Button>
+          </Button> */}
         </Nav>
       </div>
     </div>
