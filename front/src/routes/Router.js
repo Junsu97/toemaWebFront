@@ -16,7 +16,7 @@ const Grid = lazy(() => import("../views/ui/Grid"));
 const Tables = lazy(() => import("../views/ui/Tables"));
 const Forms = lazy(() => import("../views/ui/Forms"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
-const Login = lazy( () => import("../views/login"));
+const Login = lazy( () => import("../views/Login"));
 const MyAccount = lazy( () => import("../views/myaccount"));
 
 /*****Routes******/
