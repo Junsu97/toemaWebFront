@@ -1,4 +1,6 @@
+import { ResponseCode } from "types";
+
 export default interface ResponseDto{
-    code: string;
-    message: string;
+    code: ResponseCode;
+    message: ResponseCode;
 }
