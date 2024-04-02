@@ -1,6 +1,6 @@
-import { ResponseCode } from "../../types/enum";
+import { ResponseCode } from '../../types/enum';
 
 export default interface ResponseDto{
     code: ResponseCode;
-    message: ResponseCode;
+    message: string;
 }
