@@ -7,35 +7,39 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Container } from "reactstrap";
 
 
+
 export default function FullLayOout() {
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
 
   return (
-    <main>
+    <main >
       {/********header**********/}
       <Header />
-      <div className="pageWrapper d-lg-flex" >
-     
+      <div className="pageWrapper d-lg-flex" style={{width:'100%'}} >
+
         {/********Sidebar**********/}
-        <aside className="sidebarArea shadow" id="sidebarArea">
-          <Sidebar />
-        </aside>
+        {pathname !== AUTH_PATH() &&
+          <aside className="sidebarArea shadow" id="sidebarArea">
+            <Sidebar />
+
+          </aside>
+        }
         <Outlet />
-  
+
         {/********Content Area**********/}
         <div className="contentArea">
-          
-        
+
+
           {/********Middle Content**********/}
           <Container className="p-4" fluid>
-          
+
           </Container>
-          
+
         </div>
-        
+
       </div>
-      {pathname !== AUTH_PATH() && <Footer/>}
-     
+      {pathname !== AUTH_PATH() && <Footer />}
+
     </main>
   )
 }

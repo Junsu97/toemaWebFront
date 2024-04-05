@@ -1,8 +1,10 @@
-import BoardListDTO from "./board-list-dto.interface";
-import FavoriteListDTO from "./favorite-list-dto.interface";
-import CommentListDTO from "./comment-list-dto.interface";
+import User from './user.interface';
+import BoardListDTO from './board-list-item.interface';
+import FavoriteListDTO from './favorite-list-item.interface';
+import CommentListDTO from './comment-list-item.interface';
 
 export type {
+    User,
     BoardListDTO,
     FavoriteListDTO,
     CommentListDTO

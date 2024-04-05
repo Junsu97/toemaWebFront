@@ -3,6 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import user1 from "assets/image/users/user4.jpg";
 import probg from "assets/image/bg/download.jpg";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useLoginUserStore } from 'stores';
+import defautltProfileImage from 'assets/image/default-profile-image.png'
+
+
 const navigation = [
   {
     title: "Dashboard",
@@ -49,28 +53,33 @@ const navigation = [
     href: "/breadcrumbs",
     icon: "bi bi-link",
   },
-  {
-    title: "About",
-    href: "/about",
-    icon: "bi bi-people",
-  },
 ];
 
 const Sidebar = () => {
+  // state : 유저 로그인 상태
+  const { loginUser,resetLoginUser } = useLoginUserStore();
   const showMobilemenu = () => {
+    let { userId } = null;
+    if (!loginUser) { userId = ''; }
+    else {
+      userId = loginUser.userId;
+    }
+
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   let location = useLocation();
-
   return (
-    <div style={{width:'250px'}}>
+    <div style={{ width: '250px' }}>
       <div className="d-flex align-items-center"></div>
       <div
         className="profilebg"
         style={{ background: `url(${probg}) no-repeat` }}
       >
         <div className="p-3 d-flex">
-          <img src={user1} alt="user" width="50" className="rounded-circle" />
+
+          <img src={loginUser && loginUser.profileImage ? loginUser.profileImage : defautltProfileImage} alt="user" width="50" className="rounded-circle" />
+
+
           <Button
             color="white"
             className="ms-auto text-white d-lg-none"
@@ -79,7 +88,11 @@ const Sidebar = () => {
             <i className="bi bi-x"></i>
           </Button>
         </div>
-        <div className="bg-dark text-white p-2 opacity-75">Steave Rojer</div>
+        <div className="bg-dark text-white p-2 opacity-75" style={{ textAlign: 'center' }}>
+          {loginUser ? (loginUser.userId ? loginUser.userId : "로그인") : "로그인 후 이용해주세요."}
+        </div>
+
+
       </div>
       <div className="p-3 mt-2">
         <Nav vertical className="sidebarNav">
