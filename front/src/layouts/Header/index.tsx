@@ -1,8 +1,10 @@
 import React, { ChangeEvent, useRef, useState, KeyboardEvent, useEffect } from 'react'
 import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+// import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+
 import { useBoardStore, useLoginUserStore } from 'stores';
 import BoardDetail from 'views/Board/Detail';
 
@@ -108,7 +110,7 @@ export default function Header() {
     // event handler : 로그인 버튼 클릭 이벤트 처리 함수
     const onSignOutButtonClickHandler = () => {
       resetLoginUser();
-      navigate(INDEX_PATH());
+      // navigate(INDEX_PATH());
     }
     // event handler : 로그인 버튼 클릭 이벤트 처리 함수
     const onSigninButtonClickHandler = () => {
@@ -158,7 +160,14 @@ export default function Header() {
           <div className='header-logo'>{'과외해듀오'}</div>
         </div>
         <div className='header-right-box'>
-          {pathname !== INDEX_PATH() && (
+          {/* {pathname !== INDEX_PATH() && (
+            <>
+              {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && <SearchButton />}
+              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage) && <LoginMyPageButton />} 
+              {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
+            </>
+          )} */}
+            {(
             <>
               {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && <SearchButton />}
               {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage) && <LoginMyPageButton />} 

@@ -9,8 +9,10 @@ import BoardWrite from 'views/Board/Write';
 import BoardUpdate from 'views/Board/Update';
 import Container from 'layouts/FullLayout';
 import { Mobile, PC } from 'utils/responsive';
-import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
-import IndexPage from 'views/INDEX';
+// import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH,  MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+import NotFoundPage from 'views/404';
+// import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
 
@@ -33,7 +35,7 @@ function App() {
     <>
 <Routes>
   {/* INDEX_PATH에 대한 경로 설정. 이 경로일 때는 Container 컴포넌트를 사용하지 않음 */}
-  <Route path={INDEX_PATH()} element={<IndexPage/>}></Route>
+  {/* <Route path={INDEX_PATH()} element={<IndexPage/>}></Route> */}
 
   {/* 나머지 경로들에 대해서는 Container 컴포넌트를 사용 */}
   <Route element={<Container/>}>
@@ -46,7 +48,7 @@ function App() {
       <Route path={BOARD_UPDATE_PATH(':boardNumber')} element={<BoardUpdate />}/>
       <Route path={BOARD_DETAIL_PATH(':boardNumber')} element={<BoardDetail />}/>
     </Route>
-    <Route path='*' element={<h1>404 Not Found</h1>}></Route>
+    <Route path='*' element={<NotFoundPage/>}></Route>
   </Route>
 </Routes>
     {pathname !== AUTH_PATH() &&

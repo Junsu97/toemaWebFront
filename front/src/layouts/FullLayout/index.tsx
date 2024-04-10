@@ -1,4 +1,4 @@
-import { AUTH_PATH } from 'constant';
+import { AUTH_PATH, NOT_FOUND_PATH } from 'constant';
 import Footer from 'layouts/Footer'
 import Header from 'layouts/Header'
 import Sidebar from 'layouts/Sidebar/Sidebar'
@@ -12,13 +12,13 @@ export default function FullLayOout() {
   const { pathname } = useLocation();
 
   return (
-    <main >
+    <>
       {/********header**********/}
       <Header />
-      <div className="pageWrapper d-lg-flex" style={{width:'100%'}} >
+      <div className="pageWrapper d-lg-flex" style={{ width: '100%' }} >
 
         {/********Sidebar**********/}
-        {pathname !== AUTH_PATH() &&
+        {pathname !== AUTH_PATH() && pathname !== NOT_FOUND_PATH() &&
           <aside className="sidebarArea shadow" id="sidebarArea">
             <Sidebar />
 
@@ -26,20 +26,29 @@ export default function FullLayOout() {
         }
         <Outlet />
 
-        {/********Content Area**********/}
-        <div className="contentArea">
+        {/* *******Content Area********* */}
+        {pathname !== AUTH_PATH() && pathname !== NOT_FOUND_PATH() &&(
+          <div className="contentArea">
+            {/********Middle Content**********/}
+            <Container className="p-4" fluid>
+              {/* 내용을 추가하세요 */}
+            </Container>
+          </div>
+        )}
+
+       {/*<div className="contentArea">*/}
 
 
           {/********Middle Content**********/}
-          <Container className="p-4" fluid>
+         {/*<Container className="p-4" fluid>*/ } 
 
-          </Container>
+          {/*</Container>*/ }
 
-        </div>
+        {/*</div>*/}
 
       </div>
       {pathname !== AUTH_PATH() && <Footer />}
 
-    </main>
+    </>
   )
 }
