@@ -3,7 +3,7 @@ import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 // import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
-import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
 
 import { useBoardStore, useLoginUserStore } from 'stores';
 import BoardDetail from 'views/Board/Detail';
@@ -18,14 +18,22 @@ export default function Header() {
   const [isLogin, setLogin] = useState<boolean>(false);
   const { pathname } = useLocation();
 
-  /*****************나중에 경로 추가했을 때 수정 필요함************************* */
-  const isAuthPage = pathname.startsWith(AUTH_PATH());
-  const isUserPage = pathname.startsWith(USER_PATH(''));
-  const isMainPage = pathname.startsWith(MAIN_PATH());
-  const isSearchPage = pathname.startsWith(SEARCH_PATH(''));
-  const isBoardDetailPage = pathname.startsWith(BOARD_DETAIL_PATH(''));
-  const isBoardWritePage = pathname.startsWith(BOARD_WRITE_PATH());
-  const isBoardUpdatePage = pathname.startsWith(BOARD_UPDATE_PATH(''));
+  // state : 인증 페이지 상태
+  const [isAuthPage, setAuthPage] = useState<boolean>(false);
+  // state : 메인 페이지 상태
+  const [isMainPage, setMainPage] = useState<boolean>(false);
+  // state : 검색 페이지 상태
+  const [isSearchPage, setSearchPage] = useState<boolean>(false);
+  // state : 게시물 상세 페이지 상태
+  const [isBoardDetailPage, setBoardDetailPage] = useState<boolean>(false);
+  // state : 게시물 작성 페이지 상태
+  const [isBoardWritePage, setBoardWritePage] = useState<boolean>(false);
+  // state : 게시물 수정 페이지 상태
+  const [isBoardUpdatePage, setBoardUpdatePage] = useState<boolean>(false);
+  // state : 유저 페이지 상태
+  const [isUserPage, setUserPage] = useState<boolean>(false);
+
+
 
 
   // function : 네비게이트 함수
@@ -110,7 +118,8 @@ export default function Header() {
     // event handler : 로그인 버튼 클릭 이벤트 처리 함수
     const onSignOutButtonClickHandler = () => {
       resetLoginUser();
-      // navigate(INDEX_PATH());
+      setCookie('accessToken','', {path: MAIN_PATH(), expires: new Date() });
+      navigate(MAIN_PATH());
     }
     // event handler : 로그인 버튼 클릭 이벤트 처리 함수
     const onSigninButtonClickHandler = () => {
@@ -147,7 +156,29 @@ export default function Header() {
     else
       // render : 업로드 불가 버튼 컴포넌트 렌더링
       return <div className='disable-button' > {'업로드'} </div>;
-  }
+  };
+  // effect : path가 변경될 때마다 실행 될 함수
+  useEffect(() => {
+    /*****************나중에 경로 추가했을 때 수정 필요함************************* */
+    const isAuthPage = pathname.startsWith(AUTH_PATH());
+    setAuthPage(isAuthPage);
+    const isUserPage = pathname.startsWith(USER_PATH(''));
+    setUserPage(isUserPage);
+    const isMainPage = pathname.startsWith(MAIN_PATH());
+    setMainPage(isMainPage);
+    const isSearchPage = pathname.startsWith(SEARCH_PATH(''));
+    setSearchPage(isSearchPage);
+    const isBoardDetailPage = pathname.startsWith(BOARD_PATH + '/' + BOARD_DETAIL_PATH(''));
+    setBoardDetailPage(isBoardDetailPage);
+    const isBoardWritePage = pathname.startsWith(BOARD_PATH + '/' + BOARD_WRITE_PATH());
+    setBoardWritePage(isBoardWritePage);
+    const isBoardUpdatePage = pathname.startsWith(BOARD_PATH + '/' + BOARD_UPDATE_PATH(''));
+    setBoardUpdatePage(isBoardUpdatePage);
+  }, [pathname]);
+  // effect : login user가 변경될 때 마다 실행 될 함수
+  useEffect(() => {
+    setLogin(loginUser !== null);
+  },[loginUser])
   /********************************************************************************************************************************************** */
   // render : Header 헤더 레이아웃 렌더링
   return (
@@ -167,10 +198,10 @@ export default function Header() {
               {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
             </>
           )} */}
-            {(
+          {(
             <>
               {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && <SearchButton />}
-              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage) && <LoginMyPageButton />} 
+              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage) && <LoginMyPageButton />}
               {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
             </>
           )}
