@@ -7,6 +7,7 @@ enum ResponseCode {
       DUPLICATE_ID = "DI" ,
       DUPLICATE_NICKNAME = "DN" ,
       DUPLICATE_EMAIL = "DE" ,
+      DUPLICATE_TEL_NUMBER = "DT",
   
       NOT_EXISTED_USER = "NU" ,
       NOT_EXISTED_BOARD = "NB" ,
