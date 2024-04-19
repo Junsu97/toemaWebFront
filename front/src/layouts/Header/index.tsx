@@ -2,11 +2,17 @@ import React, { ChangeEvent, useRef, useState, KeyboardEvent, useEffect } from '
 import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 // import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
-import { useCookies } from 'react-cookie';
-import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+import { Cookies, useCookies } from 'react-cookie';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_LIST, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
 
 import { useBoardStore, useLoginUserStore } from 'stores';
 import BoardDetail from 'views/Board/Detail';
+import { User } from 'types/interface';
+import { GetSignInUserResponseDTO } from 'apis/response/user';
+import { ResponseDto } from 'apis/response';
+import { fileUploadRequest, getSignInUserRequest, postBoardRequest } from 'apis';
+import { PostBoardRequestDTO } from 'apis/reqeust/board';
+import { PostboardResponseDTO } from 'apis/response/board';
 
 export default function Header() {
 
@@ -34,7 +40,7 @@ export default function Header() {
   const [isUserPage, setUserPage] = useState<boolean>(false);
 
 
-
+  let isTeacher = false;
 
   // function : 네비게이트 함수
   const navigate = useNavigate();
@@ -118,7 +124,7 @@ export default function Header() {
     // event handler : 로그인 버튼 클릭 이벤트 처리 함수
     const onSignOutButtonClickHandler = () => {
       resetLoginUser();
-      setCookie('accessToken','', {path: MAIN_PATH(), expires: new Date() });
+      setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
       navigate(MAIN_PATH());
     }
     // event handler : 로그인 버튼 클릭 이벤트 처리 함수
@@ -143,11 +149,48 @@ export default function Header() {
   const UploadButton = () => {
 
     // state : 게시물 상태
-    const { title, content, boardImagesFileList, resetBoard } = useBoardStore();
+    const { title, content, boardImageFileList, resetBoard } = useBoardStore();
+    // function : post board response 처리 함수
+    const postBoardResponse = (responseBody : PostboardResponseDTO | ResponseDto | null) => {
+      if(!responseBody) return;
+
+      const {code} = responseBody;
+      if(code === 'DBE') alert('데이터베이스 에러입니다.');
+      if(code === 'AF' || code === 'NU')navigate(AUTH_PATH());
+      if(code === 'VF') alert('제목과 내용은 비어있을 수 없습니다.');
+      if(code !== 'SU')  return;
+
+      resetBoard();
+      if (!loginUser) return;
+      const {userId} = loginUser;
+      navigate(USER_PATH(userId));
+    }
+
 
     // event handler : 업로드 버튼 클릭 이벤트 처리 함수
-    const onUploadButtonClickHandler = () => {
+    const onUploadButtonClickHandler = async() => {
+      console.log("이수민");
+      const accessToken = cookies.accessToken;
+      console.log("이수민토큰 : " , cookies);
+      if(!accessToken) {
+        alert('쿠키없음');
+        return;
+      } 
 
+      const boardImageList: string[] = [];
+
+      for(const file of boardImageFileList){
+        const data = new FormData();
+        data.append('file', file);
+        console.log('Image data :' + data) ;
+        const url = await fileUploadRequest(data);
+        if(url) boardImageList.push(url);
+      }
+
+      const requestBody: PostBoardRequestDTO = {
+        title, content, boardImageList
+      }
+      postBoardRequest(requestBody, accessToken).then(postBoardResponse);
     }
 
     // render : 업로드 버튼 컴포넌트 렌더링
@@ -170,7 +213,7 @@ export default function Header() {
     setSearchPage(isSearchPage);
     const isBoardDetailPage = pathname.startsWith(BOARD_PATH + '/' + BOARD_DETAIL_PATH(''));
     setBoardDetailPage(isBoardDetailPage);
-    const isBoardWritePage = pathname.startsWith(BOARD_PATH + '/' + BOARD_WRITE_PATH());
+    const isBoardWritePage = pathname.startsWith(BOARD_WRITE_PATH());
     setBoardWritePage(isBoardWritePage);
     const isBoardUpdatePage = pathname.startsWith(BOARD_PATH + '/' + BOARD_UPDATE_PATH(''));
     setBoardUpdatePage(isBoardUpdatePage);
@@ -178,7 +221,7 @@ export default function Header() {
   // effect : login user가 변경될 때 마다 실행 될 함수
   useEffect(() => {
     setLogin(loginUser !== null);
-  },[loginUser])
+  }, [loginUser])
   /********************************************************************************************************************************************** */
   // render : Header 헤더 레이아웃 렌더링
   return (

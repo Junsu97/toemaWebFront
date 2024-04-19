@@ -3,7 +3,7 @@ import { create } from 'zustand';
 interface BoardStore{
     title: string;
     content: string;
-    boardImagesFileList : File[];
+    boardImageFileList : File[];
     setTitle: (title:string) => void;
     setContent: (content: string) => void;
     setBoardImageFileList: (boardImageFileList : File[]) => void;
@@ -13,7 +13,7 @@ interface BoardStore{
 const useBoardStore = create<BoardStore>(set => ({
     title: '',
     content: '',
-    boardImagesFileList: [],
+    boardImageFileList: [],
     setTitle: (title) => set(state => ({...state, title})),
     setContent: (content) => set(state => ({...state, content})),
     setBoardImageFileList: (boardImageFileList) => set(state => ({...state, boardImageFileList})),

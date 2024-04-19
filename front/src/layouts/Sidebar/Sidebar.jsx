@@ -5,12 +5,13 @@ import probg from "assets/image/bg/download.jpg";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useLoginUserStore } from 'stores';
 import defautltProfileImage from 'assets/image/default-profile-image.png'
+import { BOARD_LIST } from "constant";
 
 
 const navigation = [
   {
-    title: "Dashboard",
-    href: "/",
+    title: "공부인증 게시판",
+    href: BOARD_LIST(),
     icon: "bi bi-speedometer2",
   },
   {

@@ -3,6 +3,8 @@ import { SignInRequestDto, SignUpRequestDTO } from './reqeust/auth';
 import { SignInResponseDto, SignUpResponseDTO } from './response/auth';
 import { ResponseDto } from './response';
 import { GetSignInUserResponseDTO } from './response/user';
+import { PostBoardRequestDTO } from './reqeust/board';
+import { PostboardResponseDTO } from './response/board';
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -48,6 +50,22 @@ export const signUpRequest = async (reqeustBody: SignUpRequestDTO) => {
     return result
 }
 
+const POST_BOARD_URL = () => `${API_DOMAIN}/board/write`;
+export const postBoardRequest = async (reqeustBody: PostBoardRequestDTO, accessToken : string) => {
+    const result = await axios.post(POST_BOARD_URL(), reqeustBody, authorization(accessToken))
+    .then(response => {
+        console.log(reqeustBody);
+        const responseBody: PostboardResponseDTO = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}
+
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
 export const getSignInUserRequest = async (accessToken : string) => {
     const result = await axios.get(GET_SIGN_IN_USER(), authorization(accessToken))
@@ -61,5 +79,21 @@ export const getSignInUserRequest = async (accessToken : string) => {
         return responseBody;
     });
 
+    return result;
+}
+
+const FILE_DOMAIN = `${DOMAIN}/file`;
+const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
+const multipartFormData = {headers: {'Content-Type':'multipart/form-data'}}
+export const fileUploadRequest = async (data : FormData) => {
+    console.log("이미지 파일 : " + data);
+    const result = await axios.post(FILE_UPLOAD_URL(), data, multipartFormData)
+    .then(response => {
+        const responseBody: string = response.data;
+        return responseBody;
+    })
+    .catch(error =>{
+        return null;
+    })
     return result;
 }

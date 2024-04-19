@@ -1,4 +1,4 @@
-import { AUTH_PATH, NOT_FOUND_PATH } from 'constant';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, NOT_FOUND_PATH } from 'constant';
 import Footer from 'layouts/Footer'
 import Header from 'layouts/Header'
 import Sidebar from 'layouts/Sidebar/Sidebar'
@@ -18,16 +18,16 @@ export default function FullLayOout() {
       <div className="pageWrapper d-lg-flex" style={{ width: '100%' }} >
 
         {/********Sidebar**********/}
-        {pathname !== AUTH_PATH() && pathname !== NOT_FOUND_PATH() &&
+        {pathname !== AUTH_PATH() && pathname !== NOT_FOUND_PATH() && pathname !== BOARD_WRITE_PATH() &&pathname !== BOARD_UPDATE_PATH(':boardNumber') && pathname !== BOARD_DETAIL_PATH(':boardNumber') &&(
           <aside className="sidebarArea shadow" id="sidebarArea">
             <Sidebar />
 
           </aside>
-        }
+        )}
         <Outlet />
 
         {/* *******Content Area********* */}
-        {pathname !== AUTH_PATH() && pathname !== NOT_FOUND_PATH() &&(
+        {pathname !== AUTH_PATH() && pathname !== NOT_FOUND_PATH() && pathname !== BOARD_WRITE_PATH() && pathname !== BOARD_UPDATE_PATH(':boardNumber') && pathname !== BOARD_DETAIL_PATH(':boardNumber') && (
           <div className="contentArea">
             {/********Middle Content**********/}
             <Container className="p-4" fluid>

@@ -7,7 +7,7 @@ import { SignInResponseDto, SignUpResponseDTO } from 'apis/response/auth';
 import { ResponseDto } from 'apis/response';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { MAIN_PATH, NOT_FOUND_PATH } from 'constant';
+import { AUTH_PATH, MAIN_PATH, NOT_FOUND_PATH } from 'constant';
 import { Input } from 'reactstrap';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 //  component : 인증화면 컴포넌트
@@ -61,7 +61,7 @@ export default function Authentication() {
       const now = new Date().getTime();
       const expires = new Date(now + expirationTime * 1000);
 
-      setCookie('accessToken', token, { expires, path: MAIN_PATH() });
+      setCookie('accessToken', token, { expires, path: AUTH_PATH() });
       console.log(cookies);
       navigate(MAIN_PATH());
     }

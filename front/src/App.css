@@ -24,6 +24,14 @@ span{
     outline-offset: max(2px, 0.1em);
 }
 
+.divider{
+    width: 100%;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+.emphasis{
+    font-weight: bolder;
+}
+
 .black-button{
     border-radius: 46px;
     width: 95px;
@@ -189,4 +197,32 @@ span{
 
 .check-ring-light-icon{
     background-image: url(assets//image/check-ring-light.png);
+}
+.image-box-light-icon{
+    background-image: url(assets/image/image-box-light.png);
+}
+.close-icon{
+    background-image: url(assets//image/close.png);
+}
+
+.more-icon{
+    background-image: url(assets/image/more.png);
+}
+
+.favorite-fill-icon{
+    background-image: url(assets/image/favorite-fill.png);
+}
+.favorite-light-icon{
+    background-image: url(assets/image/favorite-light.png);
+}
+
+.up-light-icon{
+    background-image: url(assets/image/expand-up-light.png);
+}
+.down-light-icon{
+    background-image: url(assets/image/expand-down-light.png);
+}
+
+.comment-icon{
+    background-image: url(assets//image/chat-light.png);
 }
