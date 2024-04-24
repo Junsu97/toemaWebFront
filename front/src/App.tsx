@@ -27,19 +27,19 @@ import BoardList from 'views/Board/List';
 function App() {
   const { pathname } = useLocation();
   // state : 로그인 유저 전역 상태
-  const { setLoginUser, resetLoginUser } = useLoginUserStore();
+  const { loginUser,setLoginUser, resetLoginUser } = useLoginUserStore();
   // state : cookie 상태
   const [cookies, setCookies] = useCookies();
   let isTeacher = false;
   // function : getSignInUser response 처리함수
-  const getSignInUserResponse = async (responseBody: GetSignInUserResponseDTO | ResponseDto | null) => {
+  const getSignInUserResponse = (responseBody: GetSignInUserResponseDTO | ResponseDto | null) => {
     if (!responseBody) return;
     const { code } = responseBody;
     if (code === 'AF' || code === 'NU' || code === 'DBE') {
       resetLoginUser();
       return;
     }
-    const loginUser: User = { ...responseBody as GetSignInUserResponseDTO }
+    const loginUser: User = { ...(responseBody as GetSignInUserResponseDTO) }
     console.log("app : " + loginUser.userType);
     console.log(loginUser.userType === 'TEACHER');
     if (loginUser.userType === 'TEAHCER') {
@@ -52,13 +52,18 @@ function App() {
 
   // effect : cookies에 accessToken cookie 값이 변경될 때 마다 실행할 함수
   useEffect(() => {
+    console.log("쿠키값 바뀜");
+    console.log("로그인 유저 : " + loginUser);
     if (!cookies.accessToken) {
+      console.log("앱 - 액세스토큰없음");
       resetLoginUser();
       return;
     }
-
-    getSignInUserRequest(cookies.accessToken).then(getSignInUserResponse);
-  }, [cookies.accessToken]);
+    if(!loginUser){
+      getSignInUserRequest(cookies.accessToken).then(getSignInUserResponse);
+    }
+    
+  }, [cookies.accessToken, loginUser]);
 
 
   // render: Application 컴포넌트 렌더링

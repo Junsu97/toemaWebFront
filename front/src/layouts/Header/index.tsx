@@ -10,9 +10,9 @@ import BoardDetail from 'views/Board/Detail';
 import { User } from 'types/interface';
 import { GetSignInUserResponseDTO } from 'apis/response/user';
 import { ResponseDto } from 'apis/response';
-import { fileUploadRequest, getSignInUserRequest, postBoardRequest } from 'apis';
-import { PostBoardRequestDTO } from 'apis/reqeust/board';
-import { PostboardResponseDTO } from 'apis/response/board';
+import { fileUploadRequest, getSignInUserRequest, patchBoardRequest, postBoardRequest } from 'apis';
+import { PatchBoardRequestDTO, PostBoardRequestDTO } from 'apis/reqeust/board';
+import { PatchBoardResponseDTO, PostboardResponseDTO } from 'apis/response/board';
 
 export default function Header() {
 
@@ -149,50 +149,74 @@ export default function Header() {
   /********************************************************************************************************************************************** */
   // component : 업로드 버튼 컴포넌트
   const UploadButton = () => {
-
+    // state : 게시물 번호 path variable 상태
+    const { boardNumber } = useParams();
     // state : 게시물 상태
     const { title, content, boardImageFileList, resetBoard } = useBoardStore();
     // function : post board response 처리 함수
-    const postBoardResponse = (responseBody : PostboardResponseDTO | ResponseDto | null) => {
-      if(!responseBody) return;
+    const postBoardResponse = (responseBody: PostboardResponseDTO | ResponseDto | null) => {
+      if (!responseBody) return;
 
-      const {code} = responseBody;
-      if(code === 'DBE') alert('데이터베이스 에러입니다.');
-      if(code === 'AF' || code === 'NU')navigate(AUTH_PATH());
-      if(code === 'VF') alert('제목과 내용은 비어있을 수 없습니다.');
-      if(code !== 'SU')  return;
+      const { code } = responseBody;
+      if (code === 'DBE') alert('데이터베이스 에러입니다.');
+      if (code === 'AF' || code === 'NU') navigate(AUTH_PATH());
+      if (code === 'VF') alert('제목과 내용은 비어있을 수 없습니다.');
+      if (code !== 'SU') return;
 
       resetBoard();
       if (!loginUser) return;
-      const {userId} = loginUser;
+      const { userId } = loginUser;
       navigate(USER_PATH(userId));
+    }
+
+    // function : patch board response 처리 함수
+    const patchBoardResponse = (responseBody: PatchBoardResponseDTO | ResponseDto | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+      if (code === 'DBE') alert('데이터베이스 에러입니다.');
+      if (code === 'AF' || code === 'NU' || code === 'NB' || code === 'NP') navigate(AUTH_PATH());
+      if (code === 'VF') alert('제목과 내용은 비어있을 수 없습니다.');
+      if (code !== 'SU') return;
+
+      if(!boardNumber) return;
+      navigate(BOARD_DETAIL_PATH(boardNumber));
     }
 
 
     // event handler : 업로드 버튼 클릭 이벤트 처리 함수
-    const onUploadButtonClickHandler = async() => {
-      console.log("이수민");
+    const onUploadButtonClickHandler = async () => {
       const accessToken = cookies.accessToken;
-      console.log("이수민토큰 : " , cookies);
-      if(!accessToken) {
+      if (!accessToken) {
         alert('쿠키없음');
         return;
-      } 
+      }
 
       const boardImageList: string[] = [];
 
-      for(const file of boardImageFileList){
+      for (const file of boardImageFileList) {
         const data = new FormData();
         data.append('file', file);
-        console.log('Image data :' + data) ;
+        console.log('Image data :' + data);
         const url = await fileUploadRequest(data);
-        if(url) boardImageList.push(url);
+        if (url) boardImageList.push(url);
       }
 
-      const requestBody: PostBoardRequestDTO = {
-        title, content, boardImageList
+      if (pathname === BOARD_WRITE_PATH()) {
+        const requestBody: PostBoardRequestDTO = {
+          title, content, boardImageList
+        }
+        postBoardRequest(requestBody, accessToken).then(postBoardResponse);
       }
-      postBoardRequest(requestBody, accessToken).then(postBoardResponse);
+      else {
+        if(!boardNumber) return;
+        const requestBody: PatchBoardRequestDTO = {
+          title, content, boardImageList
+        }
+        patchBoardRequest(boardNumber, requestBody, accessToken).then(patchBoardResponse);
+      }
+
+
     }
 
     // render : 업로드 버튼 컴포넌트 렌더링

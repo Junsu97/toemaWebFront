@@ -6,12 +6,14 @@ import GetCommentListResponseDTO from './get-comment-list.reponse.dto';
 import PutFavoriteResponseDTO from './put-favorite.response.dto';
 import PostCommentResponseDTO from './post-comment.response.dto';
 import DeleteBoardResponseDTO from './delete-board.response.dto';
+import PatchBoardResponseDTO from './patch-board-response.dto';
 export type{
     GetBoardResponseDTO,
     GetFavoriteListResponseDTO,
     GetCommentListResponseDTO,
     PostboardResponseDTO,
     PostCommentResponseDTO,
+    PatchBoardResponseDTO,
     IncreaseViewCountResponseDTO,
     PutFavoriteResponseDTO,
     DeleteBoardResponseDTO
