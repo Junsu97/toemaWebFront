@@ -27,14 +27,14 @@ export default function FullLayOout() {
         <Outlet />
 
         {/* *******Content Area********* */}
-        {pathname !== AUTH_PATH() && pathname !== NOT_FOUND_PATH() && pathname !== BOARD_WRITE_PATH() && pathname !== BOARD_UPDATE_PATH(':boardNumber') && pathname !== BOARD_DETAIL_PATH(':boardNumber') && (
-          <div className="contentArea">
+        {/* {pathname !== AUTH_PATH() && pathname !== NOT_FOUND_PATH() && pathname !== BOARD_WRITE_PATH() && pathname !== BOARD_UPDATE_PATH(':boardNumber') && pathname !== BOARD_DETAIL_PATH(':boardNumber') && ( */}
+          {/* <div className="contentArea"> */}
             {/********Middle Content**********/}
-            <Container className="p-4" fluid>
+            {/* <Container className="p-4" fluid> */}
               {/* 내용을 추가하세요 */}
-            </Container>
-          </div>
-        )}
+            {/* </Container> */}
+          {/* </div> */}
+        {/* )} */}
 
        {/*<div className="contentArea">*/}
 

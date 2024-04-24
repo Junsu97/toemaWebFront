@@ -36,6 +36,8 @@ export default function Header() {
   const [isBoardWritePage, setBoardWritePage] = useState<boolean>(false);
   // state : 게시물 수정 페이지 상태
   const [isBoardUpdatePage, setBoardUpdatePage] = useState<boolean>(false);
+  // state : 게시물 리스트 페이지 상태
+  const [isBoardListPage, setBoardListPage] = useState<boolean>(false);
   // state : 유저 페이지 상태
   const [isUserPage, setUserPage] = useState<boolean>(false);
 
@@ -211,12 +213,14 @@ export default function Header() {
     setMainPage(isMainPage);
     const isSearchPage = pathname.startsWith(SEARCH_PATH(''));
     setSearchPage(isSearchPage);
-    const isBoardDetailPage = pathname.startsWith(BOARD_PATH + '/' + BOARD_DETAIL_PATH(''));
+    const isBoardDetailPage = pathname.startsWith(BOARD_DETAIL_PATH(''));
     setBoardDetailPage(isBoardDetailPage);
     const isBoardWritePage = pathname.startsWith(BOARD_WRITE_PATH());
     setBoardWritePage(isBoardWritePage);
-    const isBoardUpdatePage = pathname.startsWith(BOARD_PATH + '/' + BOARD_UPDATE_PATH(''));
+    const isBoardUpdatePage = pathname.startsWith(BOARD_UPDATE_PATH(''));
     setBoardUpdatePage(isBoardUpdatePage);
+    const isBoardListPage = pathname.startsWith(BOARD_LIST());
+    setBoardListPage(isBoardListPage);
   }, [pathname]);
   // effect : login user가 변경될 때 마다 실행 될 함수
   useEffect(() => {
@@ -244,7 +248,7 @@ export default function Header() {
           {(
             <>
               {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && <SearchButton />}
-              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage) && <LoginMyPageButton />}
+              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardListPage) && <LoginMyPageButton />}
               {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
             </>
           )}
