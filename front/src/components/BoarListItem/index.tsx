@@ -3,6 +3,7 @@ import './style.css';
 import DefaultProfileImage from 'assets/image/default-profile-image.png'
 import { BoardListDTO } from 'types/interface';
 import { useNavigate } from 'react-router-dom';
+import { BOARD_DETAIL_PATH } from 'constant';
 
 
 
@@ -17,13 +18,13 @@ export default function BoardListItem({boardListItem} : Props) {
     const{favoriteCount, commentCount, viewCount} = boardListItem 
     const{writeDatetime, writerNickname, writerProfileImage} = boardListItem
 
-    // function : 네비게이트 함수
-    // const navigator = useNavigate();
+     //  function : 네비게이트 함수
+     const navigator = useNavigate();
 
-    // event handler : 게시물 아이템 클릭 이벤트 함수
-    const onClickHandler = () => {
-        // navigator(boardNumber);
-    }
+     // event Handler : 아이템 클릭 이벤트 처리
+     const onClickHandler = () => {
+         navigator(BOARD_DETAIL_PATH(boardNumber));
+     }
 
 
 //  render: Board List Item 컴포넌트 렌더링

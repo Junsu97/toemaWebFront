@@ -4,7 +4,8 @@ import { SignInResponseDto, SignUpResponseDTO } from './response/auth';
 import { ResponseDto } from './response';
 import { GetSignInUserResponseDTO } from './response/user';
 import { PatchBoardRequestDTO, PostBoardRequestDTO, PostCommentRequestDTO } from './reqeust/board';
-import { PostboardResponseDTO, GetBoardResponseDTO, IncreaseViewCountResponseDTO, GetFavoriteListResponseDTO, GetCommentListResponseDTO, PutFavoriteResponseDTO, PostCommentResponseDTO, DeleteBoardResponseDTO, PatchBoardResponseDTO } from './response/board';
+import { PostboardResponseDTO, GetBoardResponseDTO, IncreaseViewCountResponseDTO, GetFavoriteListResponseDTO, GetCommentListResponseDTO, PutFavoriteResponseDTO, PostCommentResponseDTO, DeleteBoardResponseDTO, PatchBoardResponseDTO, GetLatesttBoardListResponseDTO, GetTop3BoardListResponseDTO, GetSearchBoardListResonseDTO } from './response/board';
+import { GetPopularListResponseDTO, GetRelationListResponseDTO } from './response/search';
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -12,6 +13,37 @@ const API_DOMAIN = `${DOMAIN}/api/v1`;
 const authorization = (accessToken: string) => {
     return { headers: { Authorization: `Bearer ${accessToken}` } }
 };
+
+const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
+const GET_RELATION_LIST_URL = (searchWord: string) => `${API_DOMAIN}/search/${searchWord}/relation-list`;
+export const getPopularListRequestDTO = async () => {
+    const result = await axios.get(GET_POPULAR_LIST_URL())
+        .then(response => {
+            const responseBody: GetPopularListResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response.data) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result
+}
+
+export const getRelationListRequest = async (searchWord: string) => {
+    const result = await axios.get(GET_RELATION_LIST_URL(searchWord))
+        .then(response => {
+            const responseBody: GetRelationListResponseDTO = response.data;
+            console.log("dsfasd"+responseBody.relativeWordList);
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response.data) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result
+}
 
 const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
 const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
@@ -37,6 +69,7 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 }
 
 export const signUpRequest = async (reqeustBody: SignUpRequestDTO) => {
+    console.log("회원가입 요청");
     const result = await axios.post(SIGN_UP_URL(), reqeustBody)
         .then(response => {
             const responseBody: SignUpResponseDTO = response.data;
@@ -50,7 +83,15 @@ export const signUpRequest = async (reqeustBody: SignUpRequestDTO) => {
     return result
 }
 const GET_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`;
-const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
+const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/board/latest-list`;
+const GET_TOP_3_BOARD_LIST_URL = () => `${API_DOMAIN}/board/top-3`;
+const GET_SEARCH_BOARD_LIST_URL = (searchWord: string, preSearchWord: string | null) => {
+    if (preSearchWord) {
+        return `${API_DOMAIN}/board/search-list/${searchWord}/${preSearchWord}`;
+    } else {
+        return `${API_DOMAIN}/board/search-list/${searchWord}`;
+    }
+};const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
 const GET_FAVORITE_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
 const GET_COMMENT_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/comment-list`;
 const POST_BOARD_URL = () => `${API_DOMAIN}/board/write`;
@@ -73,6 +114,49 @@ export const getBoardRequest = async (boardNumber: number | string) => {
     return result;
 }
 
+export const getLatestBoardListRequest = async () => {
+    const result = await axios.get(GET_LATEST_BOARD_LIST_URL())
+        .then(response => {
+            const responseBody: GetLatesttBoardListResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.reponse.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const getTop3BoardListRequest = async () => {
+    const result = await axios.get(GET_TOP_3_BOARD_LIST_URL())
+        .then(response => {
+            const responseBody: GetTop3BoardListResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.reponse.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const getSearchBoardListRequest = async (searchWord: string, preSearchWord: string | null) => {
+    const result = await axios.get(GET_SEARCH_BOARD_LIST_URL(searchWord, preSearchWord))
+        .then(response => {
+            const responseBody: GetSearchBoardListResonseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+}
+
+
 export const increaseViewCountRequest = async (boardNumber: number | string) => {
     const result = await axios.get(INCREASE_VIEW_COUNT_URL(boardNumber))
         .then(response => {
@@ -80,6 +164,7 @@ export const increaseViewCountRequest = async (boardNumber: number | string) => 
             return responseBody;
         })
         .catch(error => {
+            console.error("An error occurred:", error);
             if (!error.response) return null;
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
@@ -187,6 +272,7 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
 
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
 export const getSignInUserRequest = async (accessToken: string) => {
+    console.log("함수 진입했음 ㅇㅇ");
     const result = await axios.get(GET_SIGN_IN_USER(), authorization(accessToken))
         .then(response => {
             const responseBody: GetSignInUserResponseDTO = response.data;

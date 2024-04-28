@@ -190,7 +190,7 @@ export default function BoardDetail() {
     // state : 댓글 상태
     const [comment, setComment] = useState<string>('');
     // state : 전체 댓글 개수 상태
-    const[totalComentCount, setTotalComentCount] = useState<number>(0);
+    const [totalComentCount, setTotalComentCount] = useState<number>(0);
 
     // function : get favorite list response 처리 함수
     const getFavoriteListResponse = (responseBody: GetFavoriteListResponseDTO | ResponseDto | null) => {
@@ -202,15 +202,19 @@ export default function BoardDetail() {
 
       const { favoriteList } = responseBody as GetFavoriteListResponseDTO;
       setFavoriteList(favoriteList);
-      favoriteList.forEach(favorite => {
-        if (!loginUser) {
-          setFavorite(false);
-          return;
-        }
-        const isFavorite = favoriteList.findIndex(favorite => favorite.userId === loginUser.userId) !== -1;
-        setFavorite(isFavorite);
-      })
+
+      if (!loginUser) {
+        setFavorite(false);
+        return;
+      }
+      const isFavorite = favoriteList.findIndex(favorite => favorite.userId === loginUser.userId) !== -1;
+      setFavorite(isFavorite);
+
     }
+    // //effect : 
+    // useEffect(() => {
+    //   setFavorite(isFavorite);
+    // },[isFavorite])
     // function : get comment list response 처리 함수
     const getCommentListResponse = (responseBody: GetCommentListResponseDTO | ResponseDto | null) => {
       if (!responseBody) return;

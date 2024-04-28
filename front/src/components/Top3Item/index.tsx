@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './style.css'
 import defatultProfileImage from 'assets/image/default-profile-image.png'
 import { BoardListDTO } from "types/interface";
 import { useNavigate } from "react-router-dom";
+import { BOARD_DETAIL_PATH } from "constant";
 
 interface Props{
     top3ListItem:  BoardListDTO
@@ -17,14 +18,13 @@ export default function Top3Item({top3ListItem}:Props){
     const {writeDatetime, writerNickname, writerProfileImage} = top3ListItem;
 
     //  function : 네비게이트 함수
-    // const navigator = useNavigate();
+    const navigator = useNavigate();
 
     // event Handler : 아이템 클릭 이벤트 처리
     const onClickHandler = () => {
-        // navigator(boardNumber);
+        navigator(BOARD_DETAIL_PATH(boardNumber));
     }
-
-
+    
 
     // render : Top3 List Item
     return(

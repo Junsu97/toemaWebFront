@@ -123,11 +123,11 @@ export default function Header() {
       const { userId } = loginUser;
       navigate(USER_PATH(userId));
     }
-    // event handler : 로그인 버튼 클릭 이벤트 처리 함수
+    // event handler : 로그아웃 버튼 클릭 이벤트 처리 함수
     const onSignOutButtonClickHandler = () => {
       resetLoginUser();
-      setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
-      navigate(MAIN_PATH());
+      setCookie('accessToken', '', { path: AUTH_PATH(), expires: new Date() });
+      navigate(AUTH_PATH());
     }
     // event handler : 로그인 버튼 클릭 이벤트 처리 함수
     const onSigninButtonClickHandler = () => {

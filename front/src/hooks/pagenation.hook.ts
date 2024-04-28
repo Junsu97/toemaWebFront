@@ -28,12 +28,7 @@ const usePagination = <T>(countPerPage : number) => {
     const setViewPage = () => {
         const FIRST_INDEX = 10 * (currentSection - 1);
         const LAST_INDEX = totalPageList.length > 10 * currentSection ? 10 * currentSection : totalPageList.length;
-        let isLast = totalPageList.length > 10 * currentSection ? true : false;
         const viewPageList = totalPageList.slice(FIRST_INDEX, LAST_INDEX);
-        console.log("라스트인덱스" + isLast);
-        console.log("훅 함수 커런트 섹션" + currentSection);
-        console.log("커런트 페이지 : " + currentPage);
-        console.log("계산 : " + (10 * currentPage));
         setViewPageList(viewPageList);
     }
 

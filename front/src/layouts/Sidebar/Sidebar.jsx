@@ -22,7 +22,7 @@ const navigation = [
   {
     title: "Badges",
     href: "/badges",
-    icon: "bi bi-patch-check",
+    icon: "bi bi-patch-check", 
   },
   {
     title: "Buttons",
@@ -70,7 +70,7 @@ const Sidebar = () => {
   };
   let location = useLocation();
   return (
-    <div style={{ width: '250px' }}>
+    <div style={{ width: '250px'}}>
       <div className="d-flex align-items-center"></div>
       <div
         className="profilebg"

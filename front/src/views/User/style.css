@@ -1,0 +1,77 @@
+#user-top-wrapper{
+    padding: 40px 45px 0px 45px;
+    margin-left: 5%;
+    width: 1613px;
+    display: flex;
+    justify-content: center;
+}
+.user-top-container{
+    width: 100%;
+    
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.user-top-my-profile-image-box{
+    width: 120px;
+    height: 120px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+    background-color: rgba(217,217,217,1);
+    cursor: pointer;
+}
+
+.user-top-profile-image{
+    height: 100%;
+    width: 100%;
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+    border-radius: 50%;
+}
+
+.user-top-profile-image-box{
+    width: 120px;
+    height: 120px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+    background-color: rgba(217,217,217,1);
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+
+.user-top-info-box{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.user-top-info-nickname-box{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-top-info-nickname{
+    color: rgba(0,0,0,0.7);
+
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.user-top-info-userid{
+    color: rgba(0,0,0,0.4);
+
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 140%;
+}

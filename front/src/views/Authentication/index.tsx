@@ -473,6 +473,7 @@ export default function Authentication() {
       const userIdPattern = /^[a-z0-9]+$/;
       const isUserIdPattern = userIdPattern.test(userId);
       const isUserIdLengthValid = userId.length >= 6 && userId.length <= 12;
+      console.log("회원가입 버튼 클릭");
 
       const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
       const isEmailPattern = emailPattern.test(email);
@@ -540,7 +541,7 @@ export default function Authentication() {
         return;
       }
 
-      if(!isUserNamePattern|| !hasSchool) return;
+      if(!isUserNamePattern) return;
       if(!agreedPersonal){
         alert('개인정보 수집에 동의해주세요.');
         setPage(3);

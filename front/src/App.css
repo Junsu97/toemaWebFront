@@ -1,14 +1,15 @@
-label{
+label {
     font-size: 14px;
     line-height: 2rem;
     padding: 0.2em 0.4em;
 }
+
 [type="radio"],
-span{
+span {
     vertical-align: middle;
 }
 
-[type="radio"]{
+[type="radio"] {
     vertical-align: middle;
     appearance: none;
     border: max(2px, 0.1em) solid gray;
@@ -16,23 +17,40 @@ span{
     width: 1.25em;
     height: 1.25em;
 }
-[type="radio"]:checked{
+
+[type="radio"]:checked {
     border: 0.4em solid tomato;
 }
-[type="radio"]:focus-visible{
+
+[type="radio"]:focus-visible {
     outline: max(2px, 0.1em) dotted tomato;
     outline-offset: max(2px, 0.1em);
 }
 
-.divider{
+.divider {
     width: 100%;
     border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
-.emphasis{
+
+.emphasis {
     font-weight: bolder;
 }
 
-.black-button{
+.word-badge {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
+    padding: 6px 20px;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+}
+.word-badge:hover{
+    background-color: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.black-button {
     border-radius: 46px;
     width: 95px;
     height: 30px;
@@ -41,22 +59,23 @@ span{
     justify-content: center;
     align-items: center;
 
-    background-color: rgba(0,0,0,1);
+    background-color: rgba(0, 0, 0, 1);
 
-    color: rgba(255,255,255,1);
+    color: rgba(255, 255, 255, 1);
 
 
-    font-size:14px;
+    font-size: 14px;
     font-weight: 500;
     line-height: 140%;
 
     cursor: pointer;
 }
-.black-button:hover{
-    background-color: rgba(0,0,0,0.85);
+
+.black-button:hover {
+    background-color: rgba(0, 0, 0, 0.85);
 }
 
-.black-large-full-button{
+.black-large-full-button {
     border-radius: 46px;
 
     width: 100%;
@@ -75,12 +94,12 @@ span{
     cursor: pointer;
 }
 
-.black-large-full-button:hover{
-    background-color: rgba(0,0,0,0.85);
+.black-large-full-button:hover {
+    background-color: rgba(0, 0, 0, 0.85);
 }
 
-.white-button{
-    border: 1px solid rgba(0,0,0,0.05);
+.white-button {
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 46px;
     width: 93px;
     height: 28px;
@@ -89,21 +108,22 @@ span{
     justify-content: center;
     align-items: center;
 
-    background-color: rgba(255,255,255,1);
+    background-color: rgba(255, 255, 255, 1);
 
-    color: rgba(0,0,0,0.5);
+    color: rgba(0, 0, 0, 0.5);
 
 
-    font-size:14px;
+    font-size: 14px;
     font-weight: 500;
     line-height: 140%;
     cursor: pointer;
 }
-.white-button:hover{
-    background-color: rgba(0,0,0,0.08);
+
+.white-button:hover {
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
-.disable-button{
+.disable-button {
     border-radius: 46px;
     width: 95px;
     height: 30px;
@@ -112,12 +132,12 @@ span{
     justify-content: center;
     align-items: center;
 
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
 
-    color: rgba(255,255,255,1);
+    color: rgba(255, 255, 255, 1);
 
 
-    font-size:14px;
+    font-size: 14px;
     font-weight: 500;
     line-height: 140%;
 
@@ -125,7 +145,7 @@ span{
 }
 
 
-.icon-box{
+.icon-box {
     width: 24px;
     height: 24px;
 
@@ -134,7 +154,7 @@ span{
     justify-content: center;
 }
 
-.icon-box-small{
+.icon-box-small {
     width: 16px;
     height: 16px;
 
@@ -143,7 +163,16 @@ span{
     justify-content: center;
 }
 
-.icon-button{
+.icon-box-large {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-button {
     border-radius: 50% 50%;
 
     width: 24px;
@@ -156,11 +185,11 @@ span{
     cursor: pointer;
 }
 
-.icon-button:hover{
-    background-color: rgba(0,0,0,0.05);
+.icon-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
-.icon{
+.icon {
     width: 100%;
     height: 100%;
 
@@ -168,79 +197,94 @@ span{
     background-size: 100% 100%;
 }
 
-.eye-light-off-icon{
+.eye-light-off-icon {
     background-image: url(assets/image/eye-light-off.png);
 }
 
-.eye-light-on-icon{
+.eye-light-on-icon {
     background-image: url(assets/image/eye-light-on.png);
 }
 
-.expand-right-icon{
+.expand-right-icon {
     background-image: url(assets/image/expand-right.png);
 }
-.expand-left-icon{
+
+.expand-left-icon {
     background-image: url(assets/image/expand-left.png);
 }
-.expand-right-light-icon{
+
+.expand-right-light-icon {
     background-image: url(assets/image/expand-right-light.png);
 }
-.expand-left-light-icon{
+
+.expand-left-light-icon {
     background-image: url(assets/image/expand-left-light.png);
 }
 
-.logo-light-icon{
+.logo-light-icon {
     background-image: url(assets/image/logo-light.png);
 }
 
-.insta-icon{
+.insta-icon {
     background-image: url(assets/image/insta.png);
 }
 
-.naver-blog-icon{
+.naver-blog-icon {
     background-image: url(assets/image/naver-blog.png);
 }
 
-.logo-dark-icon{
+.logo-dark-icon {
     background-image: url(assets//image/logo-dark.png);
 }
 
-.search-light-icon{
+.search-light-icon {
     background-image: url(assets//image/search-light.png);
 }
 
-.check-round-fill-icon{
+.check-round-fill-icon {
     background-image: url(assets/image/check-round-fill.png);
 }
 
-.check-ring-light-icon{
+.check-ring-light-icon {
     background-image: url(assets//image/check-ring-light.png);
 }
-.image-box-light-icon{
+
+.image-box-light-icon {
     background-image: url(assets/image/image-box-light.png);
 }
-.close-icon{
+
+.close-icon {
     background-image: url(assets//image/close.png);
 }
 
-.more-icon{
+.more-icon {
     background-image: url(assets/image/more.png);
 }
 
-.favorite-fill-icon{
+.favorite-fill-icon {
     background-image: url(assets/image/favorite-fill.png);
 }
-.favorite-light-icon{
+
+.favorite-light-icon {
     background-image: url(assets/image/favorite-light.png);
 }
 
-.up-light-icon{
+.up-light-icon {
     background-image: url(assets/image/expand-up-light.png);
 }
-.down-light-icon{
+
+.down-light-icon {
     background-image: url(assets/image/expand-down-light.png);
 }
 
-.comment-icon{
+.comment-icon {
     background-image: url(assets//image/chat-light.png);
+}
+
+.edit-icon{
+    background-image: url(assets/image//edit-light.png);
+}
+
+.image-box-white-icon{
+    background-image: url(assets//image/image-box-white-light.png);
 }
