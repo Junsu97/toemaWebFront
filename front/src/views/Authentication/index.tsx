@@ -7,7 +7,7 @@ import { SignInResponseDto, SignUpResponseDTO } from 'apis/response/auth';
 import { ResponseDto } from 'apis/response';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { AUTH_PATH, MAIN_PATH, NOT_FOUND_PATH } from 'constant';
+import { AUTH_PATH, CHANGE_PASSWROD, FIND_ID, MAIN_PATH, NOT_FOUND_PATH } from 'constant';
 import { Input } from 'reactstrap';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 //  component : 인증화면 컴포넌트
@@ -118,6 +118,16 @@ export default function Authentication() {
       setUserType(event.target.value);
     }
 
+    // event handler : 아이디 찾기 버튼 클릭 이벤트 처리
+    const onFindIdClickHandler = () => {
+      navigate(FIND_ID());
+    }
+
+    // event handler : 비밀번호 찾기 버튼 클릭 이벤트 처리
+    const onChangePasswordClickHandler = () => {
+      navigate(CHANGE_PASSWROD());
+    }
+
 
     // render : sign in 컴포넌트 렌더링
     return (
@@ -151,8 +161,13 @@ export default function Authentication() {
             <div className='black-large-full-button' onClick={onSignInButtonClickHandler}>{'로그인'}</div>
             <div className='auth-description-box'>
               <div className='auth-description'>
-                {'신규 사용자이신가요?'}
+                {'신규 사용자이신가요? '}
                 <span className='auth-description-link' onClick={onSignUpLinkClickHandler}>{'회원가입'}</span>
+              </div>
+            </div>
+            <div className='auth-description-box' style={{marginTop:'1px'}}>
+              <div className='auth-description'>
+                <span className='auth-description-link' onClick={onFindIdClickHandler}>{'아이디 찾기 '}</span>{'\|'}<span className='auth-description-link' onClick={onChangePasswordClickHandler}>{' 비밀번호 찾기'}</span>
               </div>
             </div>
           </div>

@@ -1,3 +1,7 @@
+.pageWrapper > div:nth-child(n) {
+    width: 100%;
+}
+
 label {
     font-size: 14px;
     line-height: 2rem;
@@ -287,4 +291,12 @@ span {
 
 .image-box-white-icon{
     background-image: url(assets//image/image-box-white-light.png);
+}
+
+.arrow-right-icon{
+    background-image: url(assets/image//arrow-right.png);
+}
+
+.my-page-icon{
+    background-image: url(assets/image/my-page.png);
 }

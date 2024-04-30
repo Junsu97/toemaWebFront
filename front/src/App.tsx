@@ -11,7 +11,7 @@ import BoardUpdate from 'views/Board/Update';
 import Container from 'layouts/FullLayout';
 import { Mobile, PC } from 'utils/responsive';
 // import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
-import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_LIST, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_LIST, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, FIND_ID, MAIN_PATH, SEARCH_PATH, USER_PATH, USER_UPDATE_PATH } from 'constant';
 import NotFoundPage from 'views/404';
 import { useCookies } from 'react-cookie';
 import { useLoginUserStore } from 'stores';
@@ -20,6 +20,8 @@ import { GetSignInUserResponseDTO } from 'apis/response/user';
 import { ResponseDto } from 'apis/response';
 import { User } from 'types/interface';
 import BoardList from 'views/Board/List';
+import UserInfoUpdatePage from 'views/EditProfile';
+import FindId from 'views/FindId';
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -86,8 +88,10 @@ function App() {
         <Route element={<Container />}>
           <Route path={MAIN_PATH()} element={<Main />} />
           <Route path={AUTH_PATH()} element={<Authentication />} />
+          <Route path={FIND_ID()} element={<FindId/>} />
           <Route path={SEARCH_PATH(':searchWord')} element={<Search />}></Route>
           <Route path={USER_PATH(':userId')} element={<UserPage />} />
+          <Route path={USER_UPDATE_PATH(':userId')} element={<UserInfoUpdatePage/>}/>
           <Route path={BOARD_PATH()}>
             <Route path={BOARD_LIST()} element={<BoardList />}></Route>
             <Route path={BOARD_WRITE_PATH()} element={<BoardWrite />} />

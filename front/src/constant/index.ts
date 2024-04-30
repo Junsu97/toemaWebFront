@@ -2,8 +2,11 @@
 export const MAIN_PATH = () =>'/main';
 // export const AUTH_PATH = () =>'/auth';
 export const AUTH_PATH = () =>'/';
+export const FIND_ID = () => '/user/find-id';
+export const CHANGE_PASSWROD = () => '/auth/change-password';
 export const SEARCH_PATH = (searchWord:string) => `/search/${searchWord}`;
 export const USER_PATH = (userId : string) => `/user/${userId}`;
+export const USER_UPDATE_PATH = (userId : string) => `/user/update/${userId}`;
 export const BOARD_PATH = () => '/board'
 export const BOARD_DETAIL_PATH = (boardNumber : string | number)  => `/board/detail/${boardNumber}`;
 export const BOARD_WRITE_PATH = () => '/board/write'

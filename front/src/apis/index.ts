@@ -2,10 +2,11 @@ import axios from 'axios';
 import { SignInRequestDto, SignUpRequestDTO } from './reqeust/auth';
 import { SignInResponseDto, SignUpResponseDTO } from './response/auth';
 import { ResponseDto } from './response';
-import { GetSignInUserResponseDTO } from './response/user';
+import { GetSignInUserResponseDTO, GetUserResponseDTO, PatchNicknameResponseDTO, PatchProfileImageResponseDTO } from './response/user';
 import { PatchBoardRequestDTO, PostBoardRequestDTO, PostCommentRequestDTO } from './reqeust/board';
-import { PostboardResponseDTO, GetBoardResponseDTO, IncreaseViewCountResponseDTO, GetFavoriteListResponseDTO, GetCommentListResponseDTO, PutFavoriteResponseDTO, PostCommentResponseDTO, DeleteBoardResponseDTO, PatchBoardResponseDTO, GetLatesttBoardListResponseDTO, GetTop3BoardListResponseDTO, GetSearchBoardListResonseDTO } from './response/board';
+import { PostboardResponseDTO, GetBoardResponseDTO, IncreaseViewCountResponseDTO, GetFavoriteListResponseDTO, GetCommentListResponseDTO, PutFavoriteResponseDTO, PostCommentResponseDTO, DeleteBoardResponseDTO, PatchBoardResponseDTO, GetLatesttBoardListResponseDTO, GetTop3BoardListResponseDTO, GetSearchBoardListResonseDTO, GetUserBoardListResponseDTO } from './response/board';
 import { GetPopularListResponseDTO, GetRelationListResponseDTO } from './response/search';
+import { GetUserIdRequestDTO, PatchNicknameRequestDTO, PatchProfileImageRequestDTO } from './reqeust/user';
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -34,7 +35,7 @@ export const getRelationListRequest = async (searchWord: string) => {
     const result = await axios.get(GET_RELATION_LIST_URL(searchWord))
         .then(response => {
             const responseBody: GetRelationListResponseDTO = response.data;
-            console.log("dsfasd"+responseBody.relativeWordList);
+            console.log("dsfasd" + responseBody.relativeWordList);
             return responseBody;
         })
         .catch(error => {
@@ -91,7 +92,9 @@ const GET_SEARCH_BOARD_LIST_URL = (searchWord: string, preSearchWord: string | n
     } else {
         return `${API_DOMAIN}/board/search-list/${searchWord}`;
     }
-};const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
+};
+const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/board/user-board-list/${userId}`;
+const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
 const GET_FAVORITE_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
 const GET_COMMENT_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/comment-list`;
 const POST_BOARD_URL = () => `${API_DOMAIN}/board/write`;
@@ -153,6 +156,20 @@ export const getSearchBoardListRequest = async (searchWord: string, preSearchWor
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         });
+    return result;
+}
+
+export const getUserBoardListRequest = async (userId: string) => {
+    const result = await axios.get(GET_USER_BOARD_LIST_URL(userId))
+        .then(response => {
+            const responseBody: GetUserBoardListResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
     return result;
 }
 
@@ -270,9 +287,41 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
     return result;
 }
 
+const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
+const GET_USER_ID_URL = () => `${API_DOMAIN}/user/find-id`;
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
+const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
+const PATCH_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/profile-image`;
+export const getUserRequest = async (userId: string) => {
+    const result = await axios.get(GET_USER_URL(userId))
+        .then(response => {
+            const responseBody: GetUserResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+}
+
+export const getUserIdRequest = async(requestBody : GetUserIdRequestDTO) => {
+    const result = await axios.post(GET_USER_ID_URL(),requestBody)
+    .then(response => {
+        const responseBody : GetUserResponseDTO = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if (!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}
+
 export const getSignInUserRequest = async (accessToken: string) => {
-    console.log("함수 진입했음 ㅇㅇ");
     const result = await axios.get(GET_SIGN_IN_USER(), authorization(accessToken))
         .then(response => {
             const responseBody: GetSignInUserResponseDTO = response.data;
@@ -284,6 +333,35 @@ export const getSignInUserRequest = async (accessToken: string) => {
             return responseBody;
         });
 
+    return result;
+}
+
+export const patchNicknameRequest = async (requestBody: PatchNicknameRequestDTO, accessToken: string) => {
+    const result = await axios.patch(PATCH_NICKNAME_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchNicknameResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+}
+
+export const patchProfileImageRequest = async (requestBody: PatchProfileImageRequestDTO, accessToken: string) => {
+    const result = await axios.patch(PATCH_PROFILE_IMAGE_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchProfileImageResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
     return result;
 }
 

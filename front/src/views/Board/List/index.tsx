@@ -62,13 +62,13 @@ export default function BoardList() {
     const {
       currentPage, currentSection, viewList, viewPageList, totalSection,
       setCurrentPage, setCurrentSection, setTotalList
-     } = usePagination<BoardListDTO>(5);
+    } = usePagination<BoardListDTO>(5);
     // state : 인기 검색어 리스트 상태
     const [popularWordList, setPopularWordList] = useState<string[]>([]);
 
     // function : get latest board list response  처리 함수
     const getLatestBoardListResponse = (responseBody: GetLatesttBoardListResponseDTO | ResponseDto | null) => {
-      if(!responseBody) return;
+      if (!responseBody) return;
       const { code } = responseBody;
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code !== 'SU') return;
@@ -79,7 +79,7 @@ export default function BoardList() {
 
     // function : getPopularListResponse 처리 함수
     const getPopularListResponse = (responseBody: GetPopularListResponseDTO | ResponseDto | null) => {
-      if(!responseBody) return;
+      if (!responseBody) return;
       const { code } = responseBody;
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code !== 'SU') return;
@@ -92,14 +92,14 @@ export default function BoardList() {
       navigate(SEARCH_PATH(word));
     }
     const onBoardWriteButtonClickHandler = () => {
-      if(!loginUser) {
-        alert ('로그인한 사용자만 이용할 수 있는 서비스입니다.');
+      if (!loginUser) {
+        alert('로그인한 사용자만 이용할 수 있는 서비스입니다.');
         return;
       }
-      if(loginUser.userType === 'STUDENT'){
+      if (loginUser.userType === 'STUDENT') {
         navigate(BOARD_WRITE_PATH());
       }
-      if(loginUser.userType === 'TEACHER'){
+      if (loginUser.userType === 'TEACHER') {
         alert('공부인증 게시글은 학생회원만 작성할 수 있습니다.');
         return;
       }
@@ -128,19 +128,20 @@ export default function BoardList() {
                   </div>
                 </div>
               </div>
+              <div className='imsi' onClick={onBoardWriteButtonClickHandler} style={{marginTop:'55px'}}>{'게시글 작성하기'}</div>
             </div>
             <div>
             </div>
-            <div className='imsi' onClick={onBoardWriteButtonClickHandler}>{'게시글 작성하기'}</div>
+
             <div className='list-bottom-pagination-box'>
-            <Pagenation
-            currentPage={currentPage}
-            currentSection={currentSection}
-            setCurrentPage={setCurrentPage}
-            setCurrentSection={setCurrentSection}
-            viewPageList={viewPageList}
-            totalSection={totalSection}/>
-          </div>
+              <Pagenation
+                currentPage={currentPage}
+                currentSection={currentSection}
+                setCurrentPage={setCurrentPage}
+                setCurrentSection={setCurrentSection}
+                viewPageList={viewPageList}
+                totalSection={totalSection} />
+            </div>
           </div>
         </div>
       </div>
