@@ -1,10 +1,14 @@
 export default interface User{
     userId : string;
+    userName : string;
     nickname : string;
     email : string;
+    emailAuth : boolean|null;
     userType: string;
+    addr: string;
+    addrDetail: string;
     school: string | null;
-    schoolAuth: boolean|null;
+    telNumber:string;
     faceId : string | null;
     profileImage : string | null;
 };

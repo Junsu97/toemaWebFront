@@ -2,11 +2,16 @@ import axios from 'axios';
 import { SignInRequestDto, SignUpRequestDTO } from './reqeust/auth';
 import { SignInResponseDto, SignUpResponseDTO } from './response/auth';
 import { ResponseDto } from './response';
-import { GetSignInUserResponseDTO, GetUserResponseDTO, PatchNicknameResponseDTO, PatchProfileImageResponseDTO } from './response/user';
+import { GetSignInUserResponseDTO, GetUserResponseDTO, PatchNicknameResponseDTO, PatchProfileImageResponseDTO, PatchUserResponseDTO, PostCheckPasswordResponseDTO, PostMailResponseDTO, PostUserIdResponseDTO } from './response/user';
 import { PatchBoardRequestDTO, PostBoardRequestDTO, PostCommentRequestDTO } from './reqeust/board';
 import { PostboardResponseDTO, GetBoardResponseDTO, IncreaseViewCountResponseDTO, GetFavoriteListResponseDTO, GetCommentListResponseDTO, PutFavoriteResponseDTO, PostCommentResponseDTO, DeleteBoardResponseDTO, PatchBoardResponseDTO, GetLatesttBoardListResponseDTO, GetTop3BoardListResponseDTO, GetSearchBoardListResonseDTO, GetUserBoardListResponseDTO } from './response/board';
 import { GetPopularListResponseDTO, GetRelationListResponseDTO } from './response/search';
-import { GetUserIdRequestDTO, PatchNicknameRequestDTO, PatchProfileImageRequestDTO } from './reqeust/user';
+import { PostUserIdRequestDTO, PatchNicknameRequestDTO, PatchProfileImageRequestDTO, PostPasswordRequestDTO, PostCheckPasswordRequestDTO, PostMailSendRequestDTO, PostMailReceiveRequestDTO, PatchUserRequestDTO } from './reqeust/user';
+import PostPasswordResponseDTO from './response/user/post-password.response.dto';
+import PatchPasswordRequestDTO from './reqeust/user/patch-password-request.dto';
+import PatchPasswordResponseDTO from './response/user/patch-password.response.dto';
+import { PostFaceIdRequestDTO } from './reqeust/FaceID';
+import { PostFaceIdResponseDTO } from './response/faceId';
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -288,9 +293,15 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
 }
 
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
-const GET_USER_ID_URL = () => `${API_DOMAIN}/user/find-id`;
+const POST_USER_ID_URL = () => `${API_DOMAIN}/user/find-id`;
+const POST_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
+const POST_CHECK_PASSWORD_URL = () => `${API_DOMAIN}/user/check-password`;
+const POST_MAIL_SEND_URL = () => `${API_DOMAIN}/user/send-mail`;
+const POST_MAIL_RECEIVE_URL = () => `${API_DOMAIN}/user/receive-mail`;
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
 const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
+const PATCH_USER_URL = () => `${API_DOMAIN}/user/edit-user`;
+const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
 const PATCH_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/profile-image`;
 export const getUserRequest = async (userId: string) => {
     const result = await axios.get(GET_USER_URL(userId))
@@ -307,17 +318,73 @@ export const getUserRequest = async (userId: string) => {
     return result;
 }
 
-export const getUserIdRequest = async(requestBody : GetUserIdRequestDTO) => {
-    const result = await axios.post(GET_USER_ID_URL(),requestBody)
-    .then(response => {
-        const responseBody : GetUserResponseDTO = response.data;
-        return responseBody;
-    })
-    .catch(error => {
-        if (!error.response) return null;
-        const responseBody: ResponseDto = error.response.data;
-        return responseBody;
-    })
+
+export const postMailSendRequest = async (requestBody: PostMailSendRequestDTO) => {
+    const result = await axios.post(POST_MAIL_SEND_URL(), requestBody)
+        .then(response => {
+            const responseBody: PostMailResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+export const postMailReceiveRequest = async (requestBody: PostMailReceiveRequestDTO) => {
+    const result = await axios.post(POST_MAIL_RECEIVE_URL(), requestBody)
+        .then(response => {
+            const responseBody: PostMailResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const postPasswordRequest = async (requestBody: PostPasswordRequestDTO) => {
+    const result = await axios.post(POST_PASSWORD_URL(), requestBody)
+        .then(response => {
+            const responseBody: PostPasswordResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const postCheckPasswordRequest = async (requestBody: PostCheckPasswordRequestDTO, accessToken: string) => {
+    const result = await axios.post(POST_CHECK_PASSWORD_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PostCheckPasswordResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const postUserIdRequest = async (requestBody: PostUserIdRequestDTO) => {
+    const result = await axios.post(POST_USER_ID_URL(), requestBody)
+        .then(response => {
+            const responseBody: PostUserIdResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
     return result;
 }
 
@@ -351,6 +418,36 @@ export const patchNicknameRequest = async (requestBody: PatchNicknameRequestDTO,
     return result;
 }
 
+export const patchUserRequest = async (requestBody: PatchUserRequestDTO, accessToken: string) => {
+    const result = await axios.patch(PATCH_USER_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchUserResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+}
+
+export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDTO, accessToken: string) => {
+    const result = await axios.patch(PATCH_PASSWORD_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchPasswordResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+}
+
 export const patchProfileImageRequest = async (requestBody: PatchProfileImageRequestDTO, accessToken: string) => {
     const result = await axios.patch(PATCH_PROFILE_IMAGE_URL(), requestBody, authorization(accessToken))
         .then(response => {
@@ -369,7 +466,6 @@ const FILE_DOMAIN = `${DOMAIN}/file`;
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 const multipartFormData = { headers: { 'Content-Type': 'multipart/form-data' } }
 export const fileUploadRequest = async (data: FormData) => {
-    console.log("이미지 파일 : " + data);
     const result = await axios.post(FILE_UPLOAD_URL(), data, multipartFormData)
         .then(response => {
             const responseBody: string = response.data;
@@ -377,6 +473,21 @@ export const fileUploadRequest = async (data: FormData) => {
         })
         .catch(error => {
             return null;
+        })
+    return result;
+}
+
+const POST_FACE_ID_URL = () => `${API_DOMAIN}/face-id`
+export const postFaceIdRequest = async (reqeustBody: PostFaceIdRequestDTO[], accessToken: string) => {
+    const result = await axios.post(POST_FACE_ID_URL(), reqeustBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PostFaceIdResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
         })
     return result;
 }

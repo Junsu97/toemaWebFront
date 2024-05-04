@@ -11,7 +11,7 @@ import BoardUpdate from 'views/Board/Update';
 import Container from 'layouts/FullLayout';
 import { Mobile, PC } from 'utils/responsive';
 // import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
-import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_LIST, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, FIND_ID, MAIN_PATH, SEARCH_PATH, USER_PATH, USER_UPDATE_PATH } from 'constant';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_LIST, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, CHANGE_PASSWORD, FACE_ID, FIND_ID, FIND_PASSWROD, MAIN_PATH, SEARCH_PATH, USER_PATH, USER_UPDATE_PATH } from 'constant';
 import NotFoundPage from 'views/404';
 import { useCookies } from 'react-cookie';
 import { useLoginUserStore } from 'stores';
@@ -22,6 +22,9 @@ import { User } from 'types/interface';
 import BoardList from 'views/Board/List';
 import UserInfoUpdatePage from 'views/EditProfile';
 import FindId from 'views/FindId';
+import FindPassword from 'views/FindPassword';
+import ChangePassword from 'views/ChangePassword';
+import FaceCapture from 'views/FaceID';
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -42,12 +45,11 @@ function App() {
       return;
     }
     const loginUser: User = { ...(responseBody as GetSignInUserResponseDTO) }
-    console.log("app : " + loginUser.userType);
-    console.log(loginUser.userType === 'TEACHER');
+    console.log("app : " + loginUser.userName);
     if (loginUser.userType === 'TEAHCER') {
       isTeacher = true;
     }
-    console.log("app : " + isTeacher);
+    
     setLoginUser(loginUser);
   }
 
@@ -89,6 +91,9 @@ function App() {
           <Route path={MAIN_PATH()} element={<Main />} />
           <Route path={AUTH_PATH()} element={<Authentication />} />
           <Route path={FIND_ID()} element={<FindId/>} />
+          <Route path={FACE_ID()} element={<FaceCapture/>}/>
+          <Route path={FIND_PASSWROD()} element={<FindPassword/>} />
+          <Route path={CHANGE_PASSWORD(':userId')} element={<ChangePassword/>}/>
           <Route path={SEARCH_PATH(':searchWord')} element={<Search />}></Route>
           <Route path={USER_PATH(':userId')} element={<UserPage />} />
           <Route path={USER_UPDATE_PATH(':userId')} element={<UserInfoUpdatePage/>}/>

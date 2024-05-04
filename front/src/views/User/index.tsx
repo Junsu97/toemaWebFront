@@ -1,20 +1,18 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import { useLoginUserStore } from 'stores';
-import { BoardListDTO, User } from 'types/interface';
+import { BoardListDTO } from 'types/interface';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { useNavigate, useParams } from 'react-router-dom';
-import { latestBoardListMock } from 'mocks';
 import BoardListItem from 'components/BoarListItem';
 import { useCookies } from 'react-cookie';
-import { AUTH_PATH, BOARD_WRITE_PATH, MAIN_PATH, USER_PATH, USER_UPDATE_PATH } from 'constant';
+import { AUTH_PATH, BOARD_WRITE_PATH, CHANGE_PASSWORD, MAIN_PATH, USER_PATH, USER_UPDATE_PATH } from 'constant';
 import { fileUploadRequest, getUserBoardListRequest, getUserRequest, patchNicknameRequest, patchProfileImageRequest } from 'apis';
 import { GetUserResponseDTO, PatchNicknameResponseDTO, PatchProfileImageResponseDTO } from 'apis/response/user';
 import { ResponseDto } from 'apis/response';
 import { PatchNicknameRequestDTO, PatchProfileImageRequestDTO } from 'apis/reqeust/user';
 import { usePagination } from 'hooks';
 import { GetUserBoardListResponseDTO } from 'apis/response/board';
-import { Pagination } from 'reactstrap';
 import Pagenation from 'components/Pagination';
 
 // component : 유저 화면 컴포넌트
@@ -192,7 +190,7 @@ export default function UserPage() {
   // component : 유저 화면 하단 컴포넌트
   const UserBottom = () => {
     // state : 게시물 개수 상태
-    const [count, setCount] = useState<number>(2);
+    const [count, setCount] = useState<number>(0);
     // state : 페이지 네이션 관련 상태
     const {
       currentPage, currentSection, viewList, viewPageList, totalSection,
@@ -202,17 +200,17 @@ export default function UserPage() {
 
     // function :  get user board list response 처리 함수
     const getUserBoardListResponse = (responseBody: GetUserBoardListResponseDTO | ResponseDto | null) => {
-      if(!responseBody) return;
+      if (!responseBody) return;
       const { code } = responseBody;
       if (code === 'NU') {
         alert('존재하지 않는 유저입니다.');
         navigate(MAIN_PATH());
         return;
       }
-      if(code === 'DBE') alert('데이터베이스 오류입니다.');
-      if(code !== 'SU') return;
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
 
-      const {userBoardList} = responseBody as GetUserBoardListResponseDTO;
+      const { userBoardList } = responseBody as GetUserBoardListResponseDTO;
       setTotalList(userBoardList);
       setCount(userBoardList.length);
     }
@@ -233,6 +231,14 @@ export default function UserPage() {
       if (!loginUser) return;
       navigate(USER_UPDATE_PATH(loginUser?.userId));
     }
+    const onChangePasswordClickHandler = () => {
+      if (!loginUser || !cookies.accessToken) {
+        alert('인증이 만료되었습니다.\n다시 로그인 해주세요');
+        navigate(AUTH_PATH());
+        return;
+      }
+      navigate(CHANGE_PASSWORD(loginUser.userId));
+    }
 
     // event handler : 로그인 하기 버튼 클릭 이벤트 처리
     const onLoginButtonClickHandler = () => {
@@ -249,14 +255,21 @@ export default function UserPage() {
     // effect : userid path variable이 변경될 때마다 실행될 함수
     useEffect(() => {
       if (!userId) return;
-      getUserBoardListRequest(userId).then(getUserBoardListResponse);
+      if (loginUser?.userType === 'TEACHER') return;
+      else {
+        getUserBoardListRequest(userId).then(getUserBoardListResponse);
+      }
+
     }, [userId])
 
     // render : 유저 화면 하단 컴포넌트 렌더링
     return (
       <div id='user-bottom-wrapper'>
         <div className='user-bottom-container'>
-          <div className='user-bottom-title'>{isMyPage ? '내 게시물 ' : '게시물 '}<span className='emphasis'>{count}</span></div>
+          {loginUser?.userType === 'STUDENT' &&
+            <div className='user-bottom-title'>{isMyPage ? '내 게시물 ' : '게시물 '}<span className='emphasis'>{count}</span></div>
+          }
+
           <div className='user-bottom-contents-box'>
             {count === 0 ?
               <div className='user-bottom-contents-nothing'>{'게시물이 없습니다.'}</div>
@@ -265,59 +278,70 @@ export default function UserPage() {
                 {viewList.map(boardListItem => <BoardListItem boardListItem={boardListItem} />)}
               </div>
             }
-
             <div className='user-bottom-side-box'>
-              <div className='user-bottom-side-card'>
-                <div className='user-bottom-side-container'>
-                  {isMyPage &&
-                    <>
-                      <div className='icon-box'>
-                        <div className='icon edit-icon'></div>
-                      </div>
-                      <div className='user-bottom-side-text' onClick={onBoardWriterClickHandler}>{'공부인증 게시글쓰기'}</div>
-                    </>
-                  }
-                  {!isMyPage && accessToken &&
-                    <>
-                      <div className='user-bottom-side-text' onClick={onMyPageButtonClickHandler}>{'마이페이지로 이동'}</div>
-                      <div className='icon-box'>
-                        <div className='icon arrow-right-icon'></div>
-                      </div>
-                    </>
-                  }
-                  {!isMyPage && !accessToken &&
-                    <>
-                      <div className='user-bottom-side-text' onClick={onLoginButtonClickHandler}>{'로그인 하기'}</div>
-                      <div className='icon-box'>
-                        <div className='icon arrow-right-icon'></div>
-                      </div>
-                    </>
-                  }
-                </div>
-              </div>
-              {isMyPage &&
+              {loginUser?.userType === 'STUDENT' &&
                 <div className='user-bottom-side-card'>
-
                   <div className='user-bottom-side-container'>
-                    <div className='icon-box'>
-                      <div className='icon my-page-icon'></div>
-                    </div>
-                    <div className='user-bottom-side-text' onClick={onUpdateUserInfoClickHandler}>{'내 정보 수정'}</div>
+                    {isMyPage &&
+                      <>
+                        <div className='icon-box'>
+                          <div className='icon edit-icon'></div>
+                        </div>
+                        <div className='user-bottom-side-text' onClick={onBoardWriterClickHandler}>{'공부인증 게시글쓰기'}</div>
+                      </>
+                    }
+                    {!isMyPage && accessToken &&
+                      <>
+                        <div className='user-bottom-side-text' onClick={onMyPageButtonClickHandler}>{'마이페이지로 이동'}</div>
+                        <div className='icon-box'>
+                          <div className='icon arrow-right-icon'></div>
+                        </div>
+                      </>
+                    }
+                    {!isMyPage && !accessToken &&
+                      <>
+                        <div className='user-bottom-side-text' onClick={onLoginButtonClickHandler}>{'로그인 하기'}</div>
+                        <div className='icon-box'>
+                          <div className='icon arrow-right-icon'></div>
+                        </div>
+                      </>
+                    }
                   </div>
                 </div>
+              }
+
+              {isMyPage &&
+                <>
+                  <div className='user-bottom-side-card'>
+                    <div className='user-bottom-side-container'>
+                      <div className='icon-box'>
+                        <div className='icon my-page-icon'></div>
+                      </div>
+                      <div className='user-bottom-side-text' onClick={onUpdateUserInfoClickHandler}>{'내 정보 수정'}</div>
+                    </div>
+                  </div>
+                  <div className='user-bottom-side-card'>
+                    <div className='user-bottom-side-container'>
+                      <div className='icon-box-middle'>
+                        <div className='icon password-icon' ></div>
+                      </div>
+                      <div className='user-bottom-side-text' onClick={onChangePasswordClickHandler}>{'비밀번호 변경'}</div>
+                    </div>
+                  </div>
+                </>
               }
             </div>
           </div>
           <div className='user-bottom-pagination-box'>
-          {count !== 0 &&
-            <Pagenation
-              currentPage={currentPage}
-              currentSection={currentSection}
-              setCurrentPage={setCurrentPage}
-              setCurrentSection={setCurrentSection}
-              viewPageList={viewPageList}
-              totalSection={totalSection}
-            />}
+            {count !== 0 &&
+              <Pagenation
+                currentPage={currentPage}
+                currentSection={currentSection}
+                setCurrentPage={setCurrentPage}
+                setCurrentSection={setCurrentSection}
+                viewPageList={viewPageList}
+                totalSection={totalSection}
+              />}
           </div>
         </div>
       </div>

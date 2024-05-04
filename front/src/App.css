@@ -157,6 +157,14 @@ span {
     align-items: center;
     justify-content: center;
 }
+.icon-box-middle{
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .icon-box-small {
     width: 16px;
@@ -299,4 +307,8 @@ span {
 
 .my-page-icon{
     background-image: url(assets/image/my-page.png);
+}
+
+.password-icon{
+    background-image: url(assets/image/password-icon.png);
 }

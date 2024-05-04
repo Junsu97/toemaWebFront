@@ -7,7 +7,7 @@ import { SignInResponseDto, SignUpResponseDTO } from 'apis/response/auth';
 import { ResponseDto } from 'apis/response';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { AUTH_PATH, CHANGE_PASSWROD, FIND_ID, MAIN_PATH, NOT_FOUND_PATH } from 'constant';
+import { AUTH_PATH, CHANGE_PASSWORD, FIND_ID, FIND_PASSWROD, MAIN_PATH, NOT_FOUND_PATH } from 'constant';
 import { Input } from 'reactstrap';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 //  component : 인증화면 컴포넌트
@@ -19,7 +19,12 @@ export default function Authentication() {
 
   // state : 쿠키 상태
   const [cookies, setCookie] = useCookies();
-
+  // effect : 로그인 되어있는 사용자 처리
+  useEffect(() => {
+    if (cookies.accessToken) {
+      navigate(MAIN_PATH());
+    }
+  }, [cookies])
   // state : 유저 타입 상태
   const [userType, setUserType] = useState('Student');
   let navigate = useNavigate();
@@ -40,6 +45,7 @@ export default function Authentication() {
     const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon')
     // state : 에러상태
     const [error, setError] = useState<boolean>(false);
+
 
 
 
@@ -125,7 +131,7 @@ export default function Authentication() {
 
     // event handler : 비밀번호 찾기 버튼 클릭 이벤트 처리
     const onChangePasswordClickHandler = () => {
-      navigate(CHANGE_PASSWROD());
+      navigate(FIND_PASSWROD());
     }
 
 
@@ -165,7 +171,7 @@ export default function Authentication() {
                 <span className='auth-description-link' onClick={onSignUpLinkClickHandler}>{'회원가입'}</span>
               </div>
             </div>
-            <div className='auth-description-box' style={{marginTop:'1px'}}>
+            <div className='auth-description-box' style={{ marginTop: '1px' }}>
               <div className='auth-description'>
                 <span className='auth-description-link' onClick={onFindIdClickHandler}>{'아이디 찾기 '}</span>{'\|'}<span className='auth-description-link' onClick={onChangePasswordClickHandler}>{' 비밀번호 찾기'}</span>
               </div>
@@ -283,42 +289,49 @@ export default function Authentication() {
     const open = useDaumPostcodePopup();
 
     // function : sign up response 처리 함수
-    const signUpResponse = (responseBody : SignUpResponseDTO | ResponseDto | null) => {
-      if(!responseBody){
+    const signUpResponse = (responseBody: SignUpResponseDTO | ResponseDto | null) => {
+      if (!responseBody) {
         alert('네트워크 서버에 문제가 발생하였습니다.');
         navigate(NOT_FOUND_PATH());
         return;
       }
 
       const { code } = responseBody;
-      if(code === 'DI'){
+      if (code === 'DI') {
         setUserIdError(true);
         setUserIdErrorMessage('이미 존재하는 아이디 입니다.');
+        setPage(1);
       }
-      if(code === 'DE'){
+      if (code === 'DE') {
         setUserIdError(true);
         setUserIdErrorMessage('이미 존재하는 이메일 주소입니다.');
+        setPage(1)
       }
-      if(code === 'DN'){
+      if (code === 'DN') {
         setNickNameError(true);
         setNicknameErrorMessage('이미 존재하는 닉네임입니다.');
+        setPage(2);
       }
-      if(code === 'DT'){
+      if (code === 'DT') {
         setTelNumberError(true);
         setTelNumberErrorMessage('이미 존재하는 핸드폰 번호입니다.');
+        setPage(2);
       }
-      if(code === 'VF'){
+      if (code === 'VF') {
         alert('모든 값을 입력해주세요.');
       }
-      if(code === 'DBE'){
+      if (code === 'DBE') {
         alert('데이터베이스 오류입니다.');
       }
 
-      if(code !== 'SU') return;
+      if (code !== 'SU') {
+        alert('오류가 발생했습니다.');
+        return;
+      }
 
-      alert(userName +'님 ' +'회원가입 되었습니다.');
+      alert(userName + '님 ' + '회원가입 되었습니다.');
       setView('sign-in');
-    } 
+    }
 
     // event handler : 유저 타입 변경 이벤트 처리
     const onUserTypeChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -532,37 +545,38 @@ export default function Authentication() {
 
       const userNamePattern = /^[가-힣]{2,6}$/;
       const isUserNamePattern = userNamePattern.test(userName);
-      
-      if(!isUserNamePattern){
+
+      if (!isUserNamePattern) {
         setUserNameError(true);
         setUserNameErrorMessage('2-6글자의 한글만 입력해주세요.');
       }
 
-      const hasSchool = school.trim().length > 0;
-      if(userType === 'Teacher'){
-        if(!hasSchool){
+      
+      if (userType === 'Teacher') {
+        const hasSchool = school.trim().length > 0;
+        if (!hasSchool) {
           setSchoolError(true);
           setSchoolErrorMessage('선생님 회원가입은 학교명 필수 사항입니다.');
         }
       }
 
-      if(!agreedPersonal) setAgreedPersonalError(true);
+      if (!agreedPersonal) setAgreedPersonalError(true);
       if (!isUserIdPattern || !isUserIdLengthValid || !isEmailPattern || !isPasswordPattern || !isEqualPassword) {
         setPage(1);
         return;
       }
-      if (!hasNickname || !telNumberPattern || !hasAddress){
+      if (!hasNickname || !telNumberPattern || !hasAddress) {
         setPage(2);
         return;
       }
 
-      if(!isUserNamePattern) return;
-      if(!agreedPersonal){
+      if (!isUserNamePattern) return;
+      if (!agreedPersonal) {
         alert('개인정보 수집에 동의해주세요.');
         setPage(3);
         return;
       }
-      
+
       const requestBody: SignUpRequestDTO = {
         userId, password, userName, nickname, telNumber, email, school, addr, addrDetail, userType, agreedPersonal
       };
@@ -672,7 +686,7 @@ export default function Authentication() {
               <>
                 <InputBox ref={nicknameRef} label='닉네임*' type='text' placeholder='닉네임을 입력해주세요' value={nickname} onChange={onNicknameChangeHandler} error={isNicknameError} message={nicknameErrorMessage} onKeyDown={onNicknameKyeDownHandler} />
                 <InputBox ref={telNumberRef} label='휴대폰 번호' type='text' placeholder='핸드폰 번호를 입력해주세요' value={telNumber} onChange={onTelNumberChangeHandler} error={isTelNumberError} message={telNumberErrorMessage} onKeyDown={onTelNumberKeyDownHandler} />
-                <InputBox ref={addrRef} label='주소*' type='text' placeholder='우편번호 찾기' value={addr} onChange={onAddrChangeHandler} error={isAddrError} message={addrErrorMessage} icon='expand-right-light-icon' onButtonClick={onAddressButtonClickHandler} onKeyDown={onAddrKeyDownHandler} />
+                <InputBox ref={addrRef} label='주소*' type='text' placeholder='주소 검색' value={addr} onChange={onAddrChangeHandler} error={isAddrError} message={addrErrorMessage} icon='expand-right-light-icon' onButtonClick={onAddressButtonClickHandler} onKeyDown={onAddrKeyDownHandler} />
                 <InputBox ref={addrDetailRef} label='상세 주소' type='text' placeholder='상세 주소를 입력해주세요' value={addrDetail} onChange={onAddrDetailChangeHandler} error={false} onKeyDown={onAddrDetailKeyDownHandler} />
               </>
             )}
