@@ -477,9 +477,9 @@ export const fileUploadRequest = async (data: FormData) => {
     return result;
 }
 
-const POST_FACE_ID_URL = () => `${API_DOMAIN}/face-id`
-export const postFaceIdRequest = async (reqeustBody: PostFaceIdRequestDTO[], accessToken: string) => {
-    const result = await axios.post(POST_FACE_ID_URL(), reqeustBody, authorization(accessToken))
+const POST_FACE_ID_URL = () => `${API_DOMAIN}/auth/face-id`
+export const postFaceIdRequest = async (requestBody: PostFaceIdRequestDTO) => {
+    const result = await axios.post(POST_FACE_ID_URL(), requestBody)
         .then(response => {
             const responseBody: PostFaceIdResponseDTO = response.data;
             return responseBody;
@@ -489,5 +489,6 @@ export const postFaceIdRequest = async (reqeustBody: PostFaceIdRequestDTO[], acc
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
+    console.log("API요청 : " , requestBody);
     return result;
 }

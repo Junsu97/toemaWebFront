@@ -312,3 +312,7 @@ span {
 .password-icon{
     background-image: url(assets/image/password-icon.png);
 }
+
+.face-id-icon{
+    background-image: url(assets/image/faceId.png);
+}

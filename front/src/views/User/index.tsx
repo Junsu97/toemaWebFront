@@ -6,7 +6,7 @@ import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { useNavigate, useParams } from 'react-router-dom';
 import BoardListItem from 'components/BoarListItem';
 import { useCookies } from 'react-cookie';
-import { AUTH_PATH, BOARD_WRITE_PATH, CHANGE_PASSWORD, MAIN_PATH, USER_PATH, USER_UPDATE_PATH } from 'constant';
+import {AUTH_PATH, BOARD_WRITE_PATH, CHANGE_PASSWORD, FACE_ID, MAIN_PATH, USER_PATH, USER_UPDATE_PATH} from 'constant';
 import { fileUploadRequest, getUserBoardListRequest, getUserRequest, patchNicknameRequest, patchProfileImageRequest } from 'apis';
 import { GetUserResponseDTO, PatchNicknameResponseDTO, PatchProfileImageResponseDTO } from 'apis/response/user';
 import { ResponseDto } from 'apis/response';
@@ -239,6 +239,14 @@ export default function UserPage() {
       }
       navigate(CHANGE_PASSWORD(loginUser.userId));
     }
+    const onFaceIDButtonClickHandler = () => {
+      if(!loginUser || !cookies.accessToken) {
+        alert('인증이 만료되었습니다.\n다시 로그인 해주세요');
+        navigate(AUTH_PATH());
+        return;
+      }
+      navigate(FACE_ID());
+    }
 
     // event handler : 로그인 하기 버튼 클릭 이벤트 처리
     const onLoginButtonClickHandler = () => {
@@ -290,6 +298,7 @@ export default function UserPage() {
                         <div className='user-bottom-side-text' onClick={onBoardWriterClickHandler}>{'공부인증 게시글쓰기'}</div>
                       </>
                     }
+
                     {!isMyPage && accessToken &&
                       <>
                         <div className='user-bottom-side-text' onClick={onMyPageButtonClickHandler}>{'마이페이지로 이동'}</div>
@@ -326,6 +335,14 @@ export default function UserPage() {
                         <div className='icon password-icon' ></div>
                       </div>
                       <div className='user-bottom-side-text' onClick={onChangePasswordClickHandler}>{'비밀번호 변경'}</div>
+                    </div>
+                  </div>
+                  <div className='user-bottom-side-card'>
+                    <div className='user-bottom-side-container'>
+                      <div className='icon-box-large'>
+                        <div className='icon face-id-icon' ></div>
+                      </div>
+                      <div className='user-bottom-side-text' onClick={onFaceIDButtonClickHandler}>{'FaceID 등록하기'}</div>
                     </div>
                   </div>
                 </>
