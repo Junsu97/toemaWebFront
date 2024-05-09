@@ -2,17 +2,25 @@ import React, { useState, KeyboardEvent, useRef, ChangeEvent, useEffect } from '
 import InputBox from 'components/inputBox';
 import './style.css';
 import { SignInRequestDto, SignUpRequestDTO } from 'apis/reqeust/auth';
-import { signUpRequest, signInRequest } from 'apis';
+import {signUpRequest, signInRequest, postFaceIdRequest, postFaceIdSignRequest} from 'apis';
 import { SignInResponseDto, SignUpResponseDTO } from 'apis/response/auth';
 import { ResponseDto } from 'apis/response';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { AUTH_PATH, CHANGE_PASSWORD, FIND_ID, FIND_PASSWROD, MAIN_PATH, NOT_FOUND_PATH } from 'constant';
-import { Input } from 'reactstrap';
+import {AUTH_PATH, CHANGE_PASSWORD, FIND_ID, FIND_PASSWROD, MAIN_PATH, NOT_FOUND_PATH, USER_PATH} from 'constant';
+import * as faceapi from 'face-api.js';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
+import {PostFaceIdSignInRequestDTO} from "../../apis/reqeust/FaceID";
+import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from "../../apis/response/faceId";
+import ReactModal from "react-modal";
+import Modal from "../../components/Modal";
+
+
+interface DetectionWithExpression extends faceapi.WithFaceExpressions<faceapi.WithFaceLandmarks<faceapi.WithFaceDetection<{}>>> {
+}
+
 //  component : 인증화면 컴포넌트
 export default function Authentication() {
-
   // state : 화면상태
   // const [view, setView] = useState<'index' | 'sign-in' | 'sign-up'>('index');
   const [view, setView] = useState<'index' | 'sign-in' | 'sign-up'>('index');
@@ -26,7 +34,7 @@ export default function Authentication() {
     }
   }, [cookies])
   // state : 유저 타입 상태
-  const [userType, setUserType] = useState('Student');
+  const [userType, setUserType] = useState('STUDENT');
   let navigate = useNavigate();
   // component : sign in card 컴포넌트
   const SignInCard = () => {
@@ -45,7 +53,98 @@ export default function Authentication() {
     const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon')
     // state : 에러상태
     const [error, setError] = useState<boolean>(false);
+    // modal 팝업 상태
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [accumulatedDetections, setAccumulatedDetections] = useState<DetectionWithExpression[]>([]);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [startDetect, setStartDetect] = useState<boolean>(false);
+    const streamRef = useRef<MediaStream | null>(null);
+    const intervalIdRef = useRef<number | null>(null);
+    const totalModal = () => setModalOpen(!modalOpen);
 
+    interface LandmarkPosition {
+      x: number;
+      y: number;
+    }
+
+
+
+    const postFaceIdResponse = (responseBody : PostFaceIdSignInResponseDto | ResponseDto | null) => {
+      stopVideoAndDetection();
+      if(!responseBody){
+        alert('서버에 문제가 발생했습니다.');
+        stopVideoAndDetection();
+        return;
+      }
+      const { code } = responseBody;
+      if (code === 'DBE') {
+        stopVideoAndDetection();
+        alert('데이터베이스 오류입니다.');
+      }
+      if (code === 'SF') {
+        stopVideoAndDetection();
+        alert('FaceID 등록이 되지 않은 회원입니다.');
+      }
+      if (code !== 'SU') {
+        stopVideoAndDetection();
+        alert('오류가 발생했습니다.');
+        return;
+      }
+
+      const { token, expirationTime } = responseBody as PostFaceIdSignInResponseDto;
+      const now = new Date().getTime();
+      const expires = new Date(now + expirationTime * 1000);
+
+      setCookie('accessToken', token, { expires, path: AUTH_PATH() });
+      console.log(cookies);
+      navigate(MAIN_PATH());
+
+    }
+
+    useEffect(() => {
+      let timeoutId: NodeJS.Timeout;
+
+      if (accumulatedDetections.length > 0 && accumulatedDetections.length < 5) {
+        timeoutId = setTimeout(() => {
+          alert("얼굴 인식 정확도가 낮습니다. 얼굴 인식을 다시 시작해주세요.");
+          setAccumulatedDetections([]);
+          detectFace();
+        }, 1000);
+      } else if (accumulatedDetections.length >= 5) {
+        // 정확도, 표정, 랜드마크의 평균을 계산합니다.
+        const averageAccuracy = accumulatedDetections.reduce((acc, detection) => acc + detection.detection.score, 0) / accumulatedDetections.length;
+
+        // 랜드마크 위치의 평균을 계산합니다.
+        const numLandmarks = accumulatedDetections[0].landmarks.positions.length;
+        const averageLandmarks = {
+          positions: Array(numLandmarks).fill(0).map((_, index) => {
+            return accumulatedDetections.reduce((acc, detection) => {
+              acc.x += detection.landmarks.positions[index].x / accumulatedDetections.length;
+              acc.y += detection.landmarks.positions[index].y / accumulatedDetections.length;
+              return acc;
+            }, {x: 0, y: 0});
+          })
+        };
+
+        // 평균값을 사용하여 requestBody를 생성합니다.
+        const requestBody: PostFaceIdSignInRequestDTO = {
+          accuracy: averageAccuracy,
+          landMarks: averageLandmarks,
+          userType: userType
+        };
+        alert('수집완료');
+
+        console.log(requestBody);
+        // 이제 requestBody를 API 요청에 사용할 수 있습니다.
+        postFaceIdSignRequest(requestBody).then(postFaceIdResponse);
+
+        setAccumulatedDetections([]);
+      }
+
+      return () => clearTimeout(timeoutId);
+    }, [accumulatedDetections]);
 
 
 
@@ -61,7 +160,10 @@ export default function Authentication() {
       const { code } = responseBody;
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code === 'SF' || code === 'VF') setError(true);
-      if (code !== 'SU') return;
+      if (code !== 'SU') {
+        alert('오류가 발생했습니다.');
+        return;
+      }
 
       const { token, expirationTime } = responseBody as SignInResponseDto;
       const now = new Date().getTime();
@@ -71,6 +173,108 @@ export default function Authentication() {
       console.log(cookies);
       navigate(MAIN_PATH());
     }
+    useEffect(() => {
+      const startVideo = async () => {
+        try {
+          let stream: MediaStream | null = null;
+
+          await Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+            faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+            faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+            faceapi.nets.faceExpressionNet.loadFromUri('/models')
+          ]);
+          stream = await navigator.mediaDevices.getUserMedia({video: {}});
+          streamRef.current = stream;
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          } else {
+            alert('비디오 혹은 카메라에 이상이 있습니다.');
+            return;
+          }
+          videoRef.current.onloadedmetadata = () => {
+            if (canvasRef.current && videoRef.current) {
+              canvasRef.current.width = videoRef.current.width;
+              canvasRef.current.height = videoRef.current.height;
+            }
+            // Assuming detectFace is defined somewhere
+            detectFace();
+          };
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      console.log(startDetect);
+      if(startDetect){
+        startVideo();
+      }else{
+        stopVideoAndDetection();
+      }
+    }, [startDetect]);
+
+    const changeDetectState = () => {
+      setStartDetect(true);
+    }
+
+    const detectFace = async () => {
+      if (!videoRef.current || !canvasRef.current) return;
+
+      const displaySize = {width: videoRef.current.width, height: videoRef.current.height};
+      faceapi.matchDimensions(canvasRef.current, displaySize);
+      intervalIdRef.current = setInterval(async () => {
+        if (!videoRef.current || !canvasRef.current) return;
+
+        // 캔버스 초기화
+        // 캔버스 초기화
+        canvasRef.current?.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+
+        const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+            .withFaceLandmarks()
+            .withFaceExpressions();
+        const resizedDetections = faceapi.resizeResults(detections, displaySize);
+        const highAccuracyNeutralExpressions = resizedDetections.filter(detection =>
+            detection.detection.score >= 0.9 && detection.expressions.neutral > 0.8) as DetectionWithExpression[];
+
+        if (highAccuracyNeutralExpressions.length > 0) {
+          setAccumulatedDetections(prevDetections => [...prevDetections, ...highAccuracyNeutralExpressions]);
+        }
+
+        faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
+        faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
+        faceapi.draw.drawFaceExpressions(canvasRef.current, resizedDetections);
+      }, 100) as unknown as number;
+    };
+
+    const stopVideoAndDetection = () => {
+      setStartDetect(false);
+      // 비디오 스트리밍 종료
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => {
+          track.stop();
+        });
+        streamRef.current = null;
+      }
+
+      // 얼굴 인식 타이머 종료
+      if (intervalIdRef.current) {
+        clearInterval(intervalIdRef.current);
+        intervalIdRef.current = null;
+      }
+
+      // 비디오와 캔버스 초기화
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+      if (canvasRef.current) {
+        canvasRef.current.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      }
+      setModalOpen(false);
+      setStartDetect(false);
+      // 검출된 얼굴 데이터 초기화
+      setAccumulatedDetections([]);
+    };
+
 
     //event handler : 아이디 변경 이벤트 처리
     const onUserIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +295,12 @@ export default function Authentication() {
         userId, password, userType
       };
       signInRequest(requestBody).then(signInResponse);
+    }
+    
+    // event handler : FaceID 로그인 버튼 클릭 이벤트 처리
+    const onFaceIdSignInButtonClickHandler = () => {
+      totalModal();
+      setIsModalOpen(true);
     }
     // event handler : 회원가입 링크 클릭 이벤트 처리
     const onSignUpLinkClickHandler = () => {
@@ -138,6 +348,7 @@ export default function Authentication() {
     // render : sign in 컴포넌트 렌더링
     return (
       <div className='auth-card'>
+
         <div className='auth-card-box'>
           <div className='auth-card-top'>
             <div className='auth-card-title-box'>
@@ -147,15 +358,16 @@ export default function Authentication() {
             <InputBox ref={passwordRef} label='패스워드' type={passwordType} placeholder='비밀번호를 입력해주세요' error={error} value={password} onChange={onPasswordChangeHandler} icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler} onKeyDown={onPasswordKeyDownHandler} />
             <div className='auth-user-type'>
               <label>
-                <input type="radio" value={'Student'} checked={userType === 'Student'} onChange={onUserTypeChange} />
+                <input type="radio" value={'STUDENT'} checked={userType === 'STUDENT'} onChange={onUserTypeChange} />
                 <span>학생</span>
               </label>
               <label>
-                <input type="radio" value={'Teacher'} checked={userType === 'Teacher'} onChange={onUserTypeChange} />
+                <input type="radio" value={'TEACHER'} checked={userType === 'TEACHER'} onChange={onUserTypeChange} />
                 <span>선생님</span>
               </label>
             </div>
           </div>
+
           <div className='auth-card-bottom'>
             {error &&
               <div className='auth-sign-in-error-box'>
@@ -165,6 +377,8 @@ export default function Authentication() {
               </div>
             }
             <div className='black-large-full-button' onClick={onSignInButtonClickHandler}>{'로그인'}</div>
+            <div className='black-large-full-button' onClick={onFaceIdSignInButtonClickHandler}>{'Face ID 로그인'}</div>
+            <Modal onOpen={changeDetectState} onClose={stopVideoAndDetection} open={modalOpen} videoRef={videoRef} canvasRef={canvasRef} ></Modal>
             <div className='auth-description-box'>
               <div className='auth-description'>
                 {'신규 사용자이신가요? '}

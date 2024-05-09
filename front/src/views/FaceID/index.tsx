@@ -16,12 +16,15 @@ export default function FaceCapture() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [accumulatedDetections, setAccumulatedDetections] = useState<DetectionWithExpression[]>([]);
-
+    const streamRef = useRef<MediaStream | null>(null);
+    const intervalIdRef = useRef<number | null>(null);
     const [cookies] = useCookies(['accessToken']);
+    const [startDetect, setStartDectect] = useState<boolean>(true);
     const {loginUser} = loginUserStore();
     // function : 네비게이트
     const navigate = useNavigate();
     const postFaceIdResponse = (responseBody: PostFaceIdResponseDTO | ResponseDto | null) => {
+        setStartDectect(false);
         if (!loginUser || !cookies.accessToken) {
             alert('인증이 만료되었습니다.');
             navigate(AUTH_PATH());
@@ -29,12 +32,12 @@ export default function FaceCapture() {
         }
         if (!responseBody) return;
         const {code} = responseBody;
-        if (code === 'DBE'){
+        if (code === 'DBE') {
             navigate(USER_PATH(loginUser.userId));
             alert('데이터베이스 오류입니다.');
             return;
         }
-        if (code !== 'SU'){
+        if (code !== 'SU') {
             alert('오류가 발생했습니다.');
             navigate(USER_PATH(loginUser.userId));
             return;
@@ -42,12 +45,16 @@ export default function FaceCapture() {
 
 
         alert('FaceID 저장에 성공했습니다.');
+        stopVideoAndDetection();
+        setStartDectect(false);
         navigate(USER_PATH(loginUser.userId));
     }
     // 여기에 처리 로직 추가
 
 
     useEffect(() => {
+        let stream: MediaStream | null = null;
+
         const startVideo = async () => {
             try {
                 await Promise.all([
@@ -56,11 +63,11 @@ export default function FaceCapture() {
                     faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
                     faceapi.nets.faceExpressionNet.loadFromUri('/models')
                 ]);
-                const stream = await navigator.mediaDevices.getUserMedia({video: {}});
+                stream = await navigator.mediaDevices.getUserMedia({video: {}});
+                streamRef.current = stream;
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
-                }
-                if (!videoRef.current) {
+                } else {
                     alert('비디오 혹은 카메라에 이상이 있습니다.');
                     return;
                 }
@@ -69,15 +76,33 @@ export default function FaceCapture() {
                         canvasRef.current.width = videoRef.current.width;
                         canvasRef.current.height = videoRef.current.height;
                     }
+                    // Assuming detectFace is defined somewhere
                     detectFace();
                 };
             } catch (e) {
                 console.error(e);
             }
         };
+        if(startDetect){
+            startVideo();
+        }else{
+            stopVideoAndDetection();
+        }
 
-        startVideo();
-    }, []);
+
+        // Cleanup function to stop the video stream when the component unmounts
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                if (videoRef.current) {
+                    videoRef.current.srcObject = null;
+                }
+            }
+        };
+    }, [startDetect]);
+
+
+
 
     useEffect(() => {
         let timeoutId: NodeJS.Timeout;
@@ -85,13 +110,13 @@ export default function FaceCapture() {
         if (accumulatedDetections.length > 0 && accumulatedDetections.length < 5) {
             timeoutId = setTimeout(() => {
                 alert("얼굴 인식 정확도가 낮습니다. 얼굴 인식을 다시 시작해주세요.");
-                if(!loginUser) return;
+                if (!loginUser) return;
                 navigate(USER_PATH(loginUser.userId));
                 setAccumulatedDetections([]);
                 detectFace();
             }, 1000);
         } else if (accumulatedDetections.length >= 5) {
-            if(!loginUser) return ;
+            if (!loginUser) return;
             // 정확도, 표정, 랜드마크의 평균을 계산합니다.
             const averageAccuracy = accumulatedDetections.reduce((acc, detection) => acc + detection.detection.score, 0) / accumulatedDetections.length;
 
@@ -109,27 +134,54 @@ export default function FaceCapture() {
 
             // 평균값을 사용하여 requestBody를 생성합니다.
             const requestBody: PostFaceIdRequestDTO = {
-                userId : loginUser.userId,
+                userId: loginUser.userId,
                 accuracy: averageAccuracy,
                 landMarks: averageLandmarks,
+                userType: loginUser.userType
             };
+            postFaceIdRequest(requestBody).then(postFaceIdResponse);
             alert('수집완료');
             console.log(requestBody);
             // 이제 requestBody를 API 요청에 사용할 수 있습니다.
-            postFaceIdRequest(requestBody).then(postFaceIdResponse);
+
 
             setAccumulatedDetections([]);
         }
 
         return () => clearTimeout(timeoutId);
     }, [accumulatedDetections]);
+    const stopVideoAndDetection = () => {
+        setStartDectect(false);
+        // 비디오 스트리밍 종료
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => {
+                track.stop();
+            });
+            streamRef.current = null;
+        }
 
+        // 얼굴 인식 타이머 종료
+        if (intervalIdRef.current) {
+            clearInterval(intervalIdRef.current);
+            intervalIdRef.current = null;
+        }
+
+        // 비디오와 캔버스 초기화
+        if (videoRef.current) {
+            videoRef.current.srcObject = null;
+        }
+        if (canvasRef.current) {
+            canvasRef.current.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        }
+        // 검출된 얼굴 데이터 초기화
+        setAccumulatedDetections([]);
+    };
     const detectFace = async () => {
         if (!videoRef.current || !canvasRef.current) return;
 
         const displaySize = {width: videoRef.current.width, height: videoRef.current.height};
         faceapi.matchDimensions(canvasRef.current, displaySize);
-        setInterval(async () => {
+        intervalIdRef.current = setInterval(async () => {
             if (!videoRef.current || !canvasRef.current) return;
 
             // 캔버스 초기화
@@ -142,7 +194,7 @@ export default function FaceCapture() {
                 .withFaceExpressions();
             const resizedDetections = faceapi.resizeResults(detections, displaySize);
             const highAccuracyNeutralExpressions = resizedDetections.filter(detection =>
-                detection.detection.score >= 0.8 && detection.expressions.neutral > 0.8) as DetectionWithExpression[];
+                detection.detection.score >= 0.9 && detection.expressions.neutral > 0.8) as DetectionWithExpression[];
 
             if (highAccuracyNeutralExpressions.length > 0) {
                 setAccumulatedDetections(prevDetections => [...prevDetections, ...highAccuracyNeutralExpressions]);
@@ -151,14 +203,25 @@ export default function FaceCapture() {
             faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
             faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
             faceapi.draw.drawFaceExpressions(canvasRef.current, resizedDetections);
-        }, 100);
+        }, 100) as unknown as number;
     };
-
     return (
-        <div>
+        <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            position: "relative"
+        }}>
             <video ref={videoRef} autoPlay muted width="720" height="560"/>
-            <canvas ref={canvasRef} style={{position: "absolute", top: "0", left: "0"}}/>
+            <canvas ref={canvasRef} style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)"
+            }}/>
         </div>
     )
+
 
 };

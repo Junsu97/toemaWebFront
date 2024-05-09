@@ -9,6 +9,6 @@ export default interface User{
     addrDetail: string;
     school: string | null;
     telNumber:string;
-    faceId : string | null;
+    faceId : boolean;
     profileImage : string | null;
 };

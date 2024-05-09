@@ -1,5 +1,6 @@
 export default interface PostFaceIdRequestDTO{
     userId : string;
+    userType: string;
     accuracy: number;
   // expressions: {
   //   neutral: number;

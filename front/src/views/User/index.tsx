@@ -239,10 +239,16 @@ export default function UserPage() {
       }
       navigate(CHANGE_PASSWORD(loginUser.userId));
     }
+
+    // event handler : FaceID 등록 버튼 클릭 이벤트 처리
     const onFaceIDButtonClickHandler = () => {
       if(!loginUser || !cookies.accessToken) {
         alert('인증이 만료되었습니다.\n다시 로그인 해주세요');
         navigate(AUTH_PATH());
+        return;
+      }
+      if(loginUser.faceId){
+        alert('이미 등록된 FaceID가 존재합니다.');
         return;
       }
       navigate(FACE_ID());

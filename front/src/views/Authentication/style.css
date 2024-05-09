@@ -2,7 +2,7 @@
     width: 100%;
     padding: 100px 0px 150px;
     min-width: 1440px;
-    height: calc(100vh - 68px - 100px- 150px);
+    height: calc(100vh - 68px - 100px - 150px);
     min-height: 960px;
 
     display: flex;
@@ -138,7 +138,7 @@
 }
 
 .auth-description{
-    color: rgba(0,0,0.0.7);
+    color: rgba(0,0,0,0.7);
 
     font-size: 14px;
     font-weight: 400;

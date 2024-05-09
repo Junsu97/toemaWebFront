@@ -10,8 +10,8 @@ import { PostUserIdRequestDTO, PatchNicknameRequestDTO, PatchProfileImageRequest
 import PostPasswordResponseDTO from './response/user/post-password.response.dto';
 import PatchPasswordRequestDTO from './reqeust/user/patch-password-request.dto';
 import PatchPasswordResponseDTO from './response/user/patch-password.response.dto';
-import { PostFaceIdRequestDTO } from './reqeust/FaceID';
-import { PostFaceIdResponseDTO } from './response/faceId';
+import {PostFaceIdRequestDTO, PostFaceIdSignInRequestDTO} from './reqeust/FaceID';
+import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from './response/faceId';
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -477,7 +477,8 @@ export const fileUploadRequest = async (data: FormData) => {
     return result;
 }
 
-const POST_FACE_ID_URL = () => `${API_DOMAIN}/auth/face-id`
+const POST_FACE_ID_URL = () => `${API_DOMAIN}/auth/face-id`;
+const POST_FACE_ID_SIGN_IN_URL = () => `${API_DOMAIN}/auth/face-sign-in`;
 export const postFaceIdRequest = async (requestBody: PostFaceIdRequestDTO) => {
     const result = await axios.post(POST_FACE_ID_URL(), requestBody)
         .then(response => {
@@ -490,5 +491,23 @@ export const postFaceIdRequest = async (requestBody: PostFaceIdRequestDTO) => {
             return responseBody;
         })
     console.log("API요청 : " , requestBody);
+    return result;
+}
+
+export const postFaceIdSignRequest = async (requestBody: PostFaceIdSignInRequestDTO) => {
+    const result = await axios.post(POST_FACE_ID_SIGN_IN_URL(), requestBody)
+        .then(response => {
+            if (!response) return null;
+            console.log(requestBody);
+            const responseBody: PostFaceIdSignInResponseDto = response.data;
+
+            return responseBody;
+        }).catch(error => {
+            if (!error) return null;
+            if (!error.response.data) return null;
+
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
     return result;
 }
