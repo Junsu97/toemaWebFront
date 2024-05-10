@@ -7,9 +7,11 @@ import PostCheckPasswordResponseDTO from "./post-check-password-response.dto";
 import PatchPasswordResponseDTO from "./patch-password.response.dto";
 import PostMailResponseDTO from "./post-mail-response.dto";
 import PatchUserResponseDTO from "./patch-user-response.dto";
+import GetTeacherSubjectResponseDto from "./get-teacher-subject-response.dto";
 export type {
     GetSignInUserResponseDTO,
     GetUserResponseDTO,
+    GetTeacherSubjectResponseDto,
     PostUserIdResponseDTO,
     PatchNicknameResponseDTO,
     PatchProfileImageResponseDTO,

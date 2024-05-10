@@ -2,7 +2,17 @@ import axios from 'axios';
 import { SignInRequestDto, SignUpRequestDTO } from './reqeust/auth';
 import { SignInResponseDto, SignUpResponseDTO } from './response/auth';
 import { ResponseDto } from './response';
-import { GetSignInUserResponseDTO, GetUserResponseDTO, PatchNicknameResponseDTO, PatchProfileImageResponseDTO, PatchUserResponseDTO, PostCheckPasswordResponseDTO, PostMailResponseDTO, PostUserIdResponseDTO } from './response/user';
+import {
+    GetSignInUserResponseDTO,
+    GetTeacherSubjectResponseDto,
+    GetUserResponseDTO,
+    PatchNicknameResponseDTO,
+    PatchProfileImageResponseDTO,
+    PatchUserResponseDTO,
+    PostCheckPasswordResponseDTO,
+    PostMailResponseDTO,
+    PostUserIdResponseDTO
+} from './response/user';
 import { PatchBoardRequestDTO, PostBoardRequestDTO, PostCommentRequestDTO } from './reqeust/board';
 import { PostboardResponseDTO, GetBoardResponseDTO, IncreaseViewCountResponseDTO, GetFavoriteListResponseDTO, GetCommentListResponseDTO, PutFavoriteResponseDTO, PostCommentResponseDTO, DeleteBoardResponseDTO, PatchBoardResponseDTO, GetLatesttBoardListResponseDTO, GetTop3BoardListResponseDTO, GetSearchBoardListResonseDTO, GetUserBoardListResponseDTO } from './response/board';
 import { GetPopularListResponseDTO, GetRelationListResponseDTO } from './response/search';
@@ -299,6 +309,7 @@ const POST_CHECK_PASSWORD_URL = () => `${API_DOMAIN}/user/check-password`;
 const POST_MAIL_SEND_URL = () => `${API_DOMAIN}/user/send-mail`;
 const POST_MAIL_RECEIVE_URL = () => `${API_DOMAIN}/user/receive-mail`;
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
+const GET_TEACHER_SUBJECT_URL = () => `${API_DOMAIN}/user/subject`;
 const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
 const PATCH_USER_URL = () => `${API_DOMAIN}/user/edit-user`;
 const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
@@ -307,6 +318,21 @@ export const getUserRequest = async (userId: string) => {
     const result = await axios.get(GET_USER_URL(userId))
         .then(response => {
             const responseBody: GetUserResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+}
+
+export const getTeacherSubjectRequest = async (accessToken: string) => {
+    const result = await axios.get(GET_TEACHER_SUBJECT_URL(), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetTeacherSubjectResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {

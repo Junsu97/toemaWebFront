@@ -5,21 +5,23 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { styled } from '@mui/system';
-import { Button, Card } from '@mui/material';
-import { useLoginUserStore } from 'stores';
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import {styled} from '@mui/system';
+import {Button, Card, TextareaAutosize} from '@mui/material';
+import {useLoginUserStore} from 'stores';
+import {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from 'react';
 import InputBox from 'components/inputBox';
-import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
-import { GetUserResponseDTO, PatchUserResponseDTO, PostMailResponseDTO } from 'apis/response/user';
-import { useNavigate, useParams } from 'react-router-dom';
-import { AUTH_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { patchUserRequest, postMailReceiveRequest, postMailSendRequest } from 'apis';
-import { PatchUserRequestDTO, PostMailReceiveRequestDTO, PostMailSendRequestDTO } from 'apis/reqeust/user';
-import { ResponseDto } from 'apis/response';
-import { Cookie, Timer } from '@mui/icons-material';
-import { useCookies } from 'react-cookie';
+import {Address, useDaumPostcodePopup} from 'react-daum-postcode';
+import {GetUserResponseDTO, PatchUserResponseDTO, PostMailResponseDTO} from 'apis/response/user';
+import {useNavigate, useParams} from 'react-router-dom';
+import {AUTH_PATH, MAIN_PATH, USER_PATH} from 'constant';
+import {getTeacherSubjectRequest, patchUserRequest, postMailReceiveRequest, postMailSendRequest} from 'apis';
+import {PatchUserRequestDTO, PostMailReceiveRequestDTO, PostMailSendRequestDTO} from 'apis/reqeust/user';
+import {ResponseDto} from 'apis/response';
+import {Cookie, Timer} from '@mui/icons-material';
+import {useCookies} from 'react-cookie';
 import TimerComponent from 'components/Timer';
+import {isDisabled} from "@testing-library/user-event/dist/utils";
+import {GetTeacherSubjectResponseDto} from "../../apis/response/user";
 
 const FormGrid = styled(Grid)(() => ({
     display: 'flex',
@@ -28,9 +30,9 @@ const FormGrid = styled(Grid)(() => ({
 
 export default function UserInfoUpdatePage() {
     // state : 로그인 유저 상태
-    const { loginUser } = useLoginUserStore();
+    const {loginUser} = useLoginUserStore();
     //state : user id path variable 상태
-    const { userId } = useParams();
+    const {userId} = useParams();
     // function : 네비게이트
     const navigate = useNavigate();
     const Page = () => {
@@ -58,6 +60,17 @@ export default function UserInfoUpdatePage() {
         // state : 연락처 상태
         const [telNumber, setTelNumber] = useState<string>('');
 
+        // state : 과목 체크 상태
+        const [korean, setKorean] = useState<boolean>(false);
+        const [math, setMath] = useState<boolean>(false);
+        const [social, setSocial] = useState<boolean>(false);
+        const [science, setScience] = useState<boolean>(false);
+        const [english, setEnglish] = useState<boolean>(false);
+
+        // state : desc 요소 참조상태
+        const descRef = useRef<HTMLTextAreaElement | null>(null);
+        const [desc, setDesc] = useState<string>('');
+
         // state : 주소 에러 메시지 상태
         const [addrErrorMessage, setAddrErrorMessage] = useState<string>('');
         // state : 학교 인증 여부 상태
@@ -67,12 +80,28 @@ export default function UserInfoUpdatePage() {
         const [startTimer, setStartTimer] = useState(false);
         const [resetTimer, setResetTimer] = useState(false);
 
+        const getTeacherSubjectResponse = (responseBody: GetTeacherSubjectResponseDto | ResponseDto | null) => {
+            if (!responseBody) return;
+            const {code} = responseBody;
+
+            if (code === 'DBE' || code === 'NU' || code !== 'SU') {
+                return null;
+            }
+            const {korean, math, science, social, english, desc} = responseBody as GetTeacherSubjectResponseDto;
+            setKorean(korean);
+            setMath(math);
+            setSocial(social);
+            setScience(science);
+            setEnglish(english);
+            setDesc(desc);
+        }
         // effect : user pathvaliable  변경시 실행될 함수
         useEffect(() => {
             if (!userId) {
                 navigate(MAIN_PATH());
                 return;
-            };
+            }
+            ;
             if (!loginUser) {
                 navigate(AUTH_PATH());
                 return;
@@ -100,6 +129,10 @@ export default function UserInfoUpdatePage() {
 
             if (loginUser.school)
                 setSchool(loginUser.school);
+            if (loginUser.userType === 'TEACHER') {
+                getTeacherSubjectRequest(cookie.accessToken).then(getTeacherSubjectResponse);
+            }
+
         }, [userId])
 
         // function :  다음 주소 검색 팝업 오픈 함수
@@ -108,7 +141,7 @@ export default function UserInfoUpdatePage() {
         // function : post mail receive response 처리 
         const postMailReceiveResponse = (responseBody: PostMailResponseDTO | ResponseDto | null) => {
             if (!responseBody) return;
-            const { code } = responseBody;
+            const {code} = responseBody;
             if (code === 'AF') alert('인증번호가 옳바르지 않습니다.');
             if (code === 'DBE') alert('데이터베이스 오류입니다.');
             if (code === 'NU') alert('인증 오류입니다.');
@@ -125,7 +158,7 @@ export default function UserInfoUpdatePage() {
         // function : post mail send response 처리
         const postMailSendResponse = (responseBody: PostMailResponseDTO | ResponseDto | null) => {
             if (!responseBody) return;
-            const { code } = responseBody;
+            const {code} = responseBody;
             if (code === 'DBE') alert('데이터베이스 오류입니다.');
             if (code !== 'SU') {
                 alert('오류가 발생했습니다.');
@@ -137,7 +170,7 @@ export default function UserInfoUpdatePage() {
         // function : patch user response 처리
         const patchUserResponse = (responseBody: PatchUserResponseDTO | ResponseDto | null) => {
             if (!responseBody) return;
-            const { code } = responseBody;
+            const {code} = responseBody;
             if (code === 'DBE') alert('데이터베이스 오류입니다.');
             if (code !== 'SU') {
                 alert('오류가 발생했습니다.');
@@ -151,15 +184,43 @@ export default function UserInfoUpdatePage() {
 
         // event handler : 주소 이벤트 처리
         const onAddrChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-            const { value } = event.target;
+            const {value} = event.target;
             setAddr(value);
             setAddrError(false);
             setAddrErrorMessage('')
         }
         // event handler : 상세 주소 이벤트 처리
         const onAddrDetailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-            const { value } = event.target;
+            const {value} = event.target;
             setAddrDetail(value);
+        }
+
+        // event handler : 과목 체크 이벤트 처리
+        const onSubjectCheckBoxChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+            switch (event.target.name) {
+                case 'korean':
+                    setKorean(event.target.checked);
+                    break;
+                case 'math':
+                    setMath(event.target.checked);
+                    break;
+                case 'social':
+                    setSocial(event.target.checked);
+                    break;
+                case 'science':
+                    setScience(event.target.checked);
+                    break;
+                case 'english':
+                    setEnglish(event.target.checked);
+                    break;
+                default:
+                    break;
+            }
+        }
+        // event handler : desc 이벤트 처리
+        const onDescChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
+            const {value} = event.target;
+            setDesc(value);
         }
         // event handler : 학교 이벤트 처리
         const onSchoolChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -168,12 +229,12 @@ export default function UserInfoUpdatePage() {
         }
         // event handler : 다음 주소 검색 완료 이벤트 처리
         const onComplete = (data: Address) => {
-            const { address } = data;
+            const {address} = data;
             setAddr(address);
         }
         // event handler : 주소 버튼 클릭 이벤트 처리
         const onAddressButtonClickHandler = () => {
-            open({ onComplete });
+            open({onComplete});
         }
         // event handler : 주소 키입력 이벤트 처리
         const onAddrKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -182,7 +243,7 @@ export default function UserInfoUpdatePage() {
 
         // event handler : 인증 번호 입력 이벤트 처리
         const onAuthNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-            const { value } = event.target;
+            const {value} = event.target;
             setAuthNumber(value);
         }
         // event handler : 인증 번호 버튼 클릭 이벤트 처리
@@ -195,7 +256,8 @@ export default function UserInfoUpdatePage() {
                 alert('정보를 불러오는 중에 오류가 발생하였습니다.');
                 navigate(MAIN_PATH());
                 return;
-            };
+            }
+            ;
             if (isClick) {
                 const requestBody: PostMailReceiveRequestDTO = {
                     email: loginUser.email,
@@ -233,12 +295,26 @@ export default function UserInfoUpdatePage() {
                 addr: addr,
                 addrDetail: addrDetail,
                 school: school,
-                userType: loginUser.userType
+                userType: loginUser.userType,
+                korean: korean,
+                math: math,
+                social: social,
+                science: science,
+                english: english,
+                desc: desc
             }
             patchUserRequest(requestBody, cookie.accessToken).then(patchUserResponse);
         }
         return (
-            <div style={{ width: '80%', justifyContent: 'center', display: 'flex', marginLeft: '5%', marginBottom: '1%', border: '1px solid', padding: '3%' }}>
+            <div style={{
+                width: '80%',
+                justifyContent: 'center',
+                display: 'flex',
+                marginLeft: '5%',
+                marginBottom: '1%',
+                border: '1px solid',
+                padding: '3%'
+            }}>
                 <Grid container spacing={3}>
                     <FormGrid item xs={12} md={6}>
                         <FormLabel htmlFor="first-name" required>
@@ -252,7 +328,7 @@ export default function UserInfoUpdatePage() {
                             required
                             value={loginUser?.userId}
                             readOnly
-                            sx={{ backgroundColor: 'rgba(0,0,0,0.05)' }}
+                            sx={{backgroundColor: 'rgba(0,0,0,0.05)'}}
                         />
                     </FormGrid>
                     <FormGrid item xs={12} md={6}>
@@ -267,7 +343,7 @@ export default function UserInfoUpdatePage() {
                             required
                             value={loginUser?.userName}
                             readOnly
-                            sx={{ backgroundColor: 'rgba(0,0,0,0.05)' }}
+                            sx={{backgroundColor: 'rgba(0,0,0,0.05)'}}
                         />
                     </FormGrid>
                     <FormGrid item xs={12} md={6}>
@@ -283,7 +359,7 @@ export default function UserInfoUpdatePage() {
                             required
                             value={loginUser?.email}
                             readOnly
-                            sx={{ backgroundColor: 'rgba(0,0,0,0.05)' }}
+                            sx={{backgroundColor: 'rgba(0,0,0,0.05)'}}
                         />
                         {loginUser?.emailAuth === false &&
                             <>
@@ -313,7 +389,7 @@ export default function UserInfoUpdatePage() {
                     {loginUser?.emailAuth === false &&
                         <>
                             <FormGrid item xs={12} md={6}>
-                                <FormLabel htmlFor="last-name" >
+                                <FormLabel htmlFor="last-name">
                                     인증 번호
                                 </FormLabel>
                                 <OutlinedInput
@@ -327,11 +403,14 @@ export default function UserInfoUpdatePage() {
                                     onChange={onAuthNumberChangeHandler}
                                 />
                             </FormGrid>
-                            <Timer /><TimerComponent start={startTimer} reset={resetTimer} />
+                            <Timer/><TimerComponent start={startTimer} reset={resetTimer}/>
                         </>
                     }
                     <FormGrid item xs={12}>
-                        <InputBox ref={addrRef} label='주소*' type='text' placeholder='주소 검색' value={addr} onChange={onAddrChangeHandler} error={isAddrError} message={addrErrorMessage} icon='expand-right-light-icon' onButtonClick={onAddressButtonClickHandler} onKeyDown={onAddrKeyDownHandler} />
+                        <InputBox ref={addrRef} label='주소*' type='text' placeholder='주소 검색' value={addr}
+                                  onChange={onAddrChangeHandler} error={isAddrError} message={addrErrorMessage}
+                                  icon='expand-right-light-icon' onButtonClick={onAddressButtonClickHandler}
+                                  onKeyDown={onAddrKeyDownHandler}/>
                     </FormGrid>
                     <FormGrid item xs={12}>
                         <FormLabel htmlFor="address2">상세 주소</FormLabel>
@@ -375,9 +454,55 @@ export default function UserInfoUpdatePage() {
                             required
                             value={telNumber}
                             readOnly
-                            sx={{ backgroundColor: 'rgba(0,0,0,0.05)' }}
+                            sx={{backgroundColor: 'rgba(0,0,0,0.05)'}}
                         />
                     </FormGrid>
+                    {loginUser?.userType === 'TEACHER' &&
+                        <>
+                            <div style={{
+                                width: '100%',
+                                alignItems: 'center',
+                                display: 'flex',
+                                justifyContent: 'center'
+                            }}>
+                                <div style={{alignItems: 'center', justifyContent: 'space-evenly', width: '50%'}}>
+                                    <FormControlLabel control={<Checkbox value={korean} name={'korean'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      label={'국어'}
+                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                    <FormControlLabel control={<Checkbox value={math} name={'math'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      label={'수학'}
+                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                    <FormControlLabel control={<Checkbox value={social} name={'social'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      label={'사회'}
+                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                    <FormControlLabel control={<Checkbox value={science} name={'science'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      label={'과학'}
+                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                    <FormControlLabel control={<Checkbox value={english} name={'english'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      label={'영어'}
+                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                </div>
+                            </div>
+                            <div style={{
+                                width: '100%',
+                                alignItems: 'center',
+                                display: 'flex',
+                                justifyContent: 'center'
+                            }}>
+                                <div style={{alignItems: 'center', justifyContent: 'space-evenly', width: '80%'}}>
+                                    <TextareaAutosize ref={descRef} onChange={onDescChangeHandler} value={desc}
+                                                      minRows={3} placeholder={'선생님의 자기소개 글을 작성해주세요.'}
+                                                      style={{width: '100%', resize: 'none'}}/>
+                                </div>
+                            </div>
+                        </>
+                    }
+
                     <Button
                         type="button"
                         fullWidth
@@ -392,12 +517,12 @@ export default function UserInfoUpdatePage() {
                         {'회원 정보 수정'}
                     </Button>
                 </Grid>
-            </div >
+            </div>
         )
     }
     return (
         <>
-            <Page />
+            <Page/>
         </>
     )
 }
