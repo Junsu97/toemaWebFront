@@ -3,7 +3,18 @@ import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 // import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, INDEX_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
 import { Cookies, useCookies } from 'react-cookie';
-import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_LIST, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+import {
+  AUTH_PATH,
+  BOARD_DETAIL_PATH,
+  BOARD_LIST,
+  BOARD_PATH,
+  BOARD_UPDATE_PATH,
+  BOARD_WRITE_PATH,
+  MAIN_PATH,
+  SEARCH_PATH,
+  TEACHER_LIST,
+  USER_PATH
+} from 'constant';
 
 import { useBoardStore, useLoginUserStore } from 'stores';
 import BoardDetail from 'views/Board/Detail';
@@ -40,6 +51,7 @@ export default function Header() {
   const [isBoardListPage, setBoardListPage] = useState<boolean>(false);
   // state : 유저 페이지 상태
   const [isUserPage, setUserPage] = useState<boolean>(false);
+  const [isTeacherPageList, setTeacherListPage] = useState<boolean>(false);
 
 
   let isTeacher = false;
@@ -245,6 +257,8 @@ export default function Header() {
     setBoardUpdatePage(isBoardUpdatePage);
     const isBoardListPage = pathname.startsWith(BOARD_LIST());
     setBoardListPage(isBoardListPage);
+    const isTeacherListPage = pathname.startsWith(TEACHER_LIST());
+    setTeacherListPage(isTeacherListPage);
   }, [pathname]);
   // effect : login user가 변경될 때 마다 실행 될 함수
   useEffect(() => {
@@ -272,7 +286,7 @@ export default function Header() {
           {(
             <>
               {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && <SearchButton />}
-              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardListPage) && <LoginMyPageButton />}
+              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardListPage || isTeacherPageList) && <LoginMyPageButton />}
               {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
             </>
           )}

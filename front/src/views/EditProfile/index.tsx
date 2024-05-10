@@ -66,10 +66,10 @@ export default function UserInfoUpdatePage() {
         const [social, setSocial] = useState<boolean>(false);
         const [science, setScience] = useState<boolean>(false);
         const [english, setEnglish] = useState<boolean>(false);
-
+        const [desc, setDesc] = useState<string>('');
         // state : desc 요소 참조상태
         const descRef = useRef<HTMLTextAreaElement | null>(null);
-        const [desc, setDesc] = useState<string>('');
+
 
         // state : 주소 에러 메시지 상태
         const [addrErrorMessage, setAddrErrorMessage] = useState<string>('');

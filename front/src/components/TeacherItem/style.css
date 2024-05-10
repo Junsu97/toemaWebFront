@@ -1,0 +1,88 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#profile-cards {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.05);
+}
+
+.card-item {
+    width: 500px;
+    padding: 15px;
+
+    margin: 0.75rem 1.5rem;
+    border-radius: 10px;
+    background-color: white;
+    justify-content: space-between;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
+    display: grid;
+    grid-template-columns: 8fr 4fr;
+    gap:24px;
+}
+
+.image {
+    position: relative;
+    width: 100px;
+    /*bottom: 1.5rem;*/
+    cursor: pointer;
+    background-size: cover;
+
+
+}
+
+.image .image-div .black-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 8px;
+    background-size: cover;
+    transition: all 0.2s linear;
+    display: flex;
+}
+.image-div{
+    width: 150px;
+    height: 150px;
+    margin-bottom: 30px;
+    background-size:100% 100%;
+    background-position: 50% 50%;
+    margin-right: 20px;
+    border-radius: 50% 50%;
+}
+
+.image-div:hover {
+    transform: translateY(-5px);
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
+    border-radius: 50% 50%;
+}
+
+.description ul {
+    display: flex;
+    list-style: none;
+}
+
+.description h2 {
+    font-size: 24px;
+}
+
+.role {
+    color: #e65b00;
+    font-size: 12px;
+}
+
+.description ul li {
+    font-size: 1.2rem;
+    padding: 10px 17px 5px 0;
+}
+
+.description ul li a {
+    text-decoration: none;
+    color: purple;
+}

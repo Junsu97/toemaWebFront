@@ -22,6 +22,7 @@ import PatchPasswordRequestDTO from './reqeust/user/patch-password-request.dto';
 import PatchPasswordResponseDTO from './response/user/patch-password.response.dto';
 import {PostFaceIdRequestDTO, PostFaceIdSignInRequestDTO} from './reqeust/FaceID';
 import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from './response/faceId';
+import {GetTeacherListResponseDTO} from "./response/teacher";
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -108,6 +109,13 @@ const GET_SEARCH_BOARD_LIST_URL = (searchWord: string, preSearchWord: string | n
         return `${API_DOMAIN}/board/search-list/${searchWord}`;
     }
 };
+
+const GET_TEACHER_LIST_URL = (...subjects: (string | null)[]) => {
+    const validSubjects = subjects.filter(subject => subject !== null); // null이 아닌 항목들만 필터링
+    const path = validSubjects.join('/'); // 유효한 항목들을 '/'로 연결
+    return `${API_DOMAIN}/teacher/list/${path}`; // 최종 URL 구성
+}
+
 const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/board/user-board-list/${userId}`;
 const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
 const GET_FAVORITE_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
@@ -118,6 +126,19 @@ const POST_COMMENT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/
 const PUT_FAVORITE_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
 const DELETE_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`
 
+export const getTeacherListRequest = async (sub1: string|null, sub2: string|null, sub3:string|null, sub4:string|null, sub5:string|null)=> {
+    const result = await axios.get(GET_TEACHER_LIST_URL(sub1,sub2,sub3,sub4,sub5))
+        .then(response => {
+            const responseBody : GetTeacherListResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.reponse.data;
+            return responseBody;
+        })
+    return result;
+}
 export const getBoardRequest = async (boardNumber: number | string) => {
     const result = await axios.get(GET_BOARD_URL(boardNumber))
         .then(response => {
