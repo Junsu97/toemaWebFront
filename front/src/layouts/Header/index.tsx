@@ -182,7 +182,7 @@ export default function Header() {
     }
 
     // function : patch board response 처리 함수
-    const patchBoardResponse = (responseBody: PatchBoardResponseDTO | ResponseDto | null) => {
+    const  patchBoardResponse = (responseBody: PatchBoardResponseDTO | ResponseDto | null) => {
       if (!responseBody) return;
 
       const { code } = responseBody;

@@ -4,6 +4,9 @@ import './style.css'
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import {TeacherListItemInterface} from "../../types/interface";
+import {useNavigate} from "react-router-dom";
+import {TEACHER_APPLY} from "../../constant";
+
 
 
 interface Props{
@@ -14,6 +17,12 @@ const maxLength = 30;
 const TeacherListItem = ({teacherListItem} : Props) => {
     const{userId, profileImage, school,korean, math, social, science, english, desc} = teacherListItem;
     const shortenedDesc = desc.length > maxLength ? `${desc.substring(0, maxLength)}...` : desc;
+
+    //  function : 네비게이트 함수
+    const navigator = useNavigate();
+    const onClickHandler = () => {
+        navigator(TEACHER_APPLY(userId));
+    }
     return (
         <section id="profile-cards">
             <div className="card-item">
@@ -47,7 +56,7 @@ const TeacherListItem = ({teacherListItem} : Props) => {
                     <div className={'image-div'} style={{
                         backgroundImage: `url(${profileImage? profileImage : defautltProfileImage})`
                     }}></div>
-                    <div style={{width: '100%', alignItems: 'center', marginLeft:'25px'}}>
+                    <div style={{width: '100%', alignItems: 'center', marginLeft:'25px'}} onClick={onClickHandler}>
                         <div className={'black-button'} >신청하기</div>
                     </div>
                 </div>

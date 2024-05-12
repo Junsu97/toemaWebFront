@@ -22,7 +22,8 @@ import PatchPasswordRequestDTO from './reqeust/user/patch-password-request.dto';
 import PatchPasswordResponseDTO from './response/user/patch-password.response.dto';
 import {PostFaceIdRequestDTO, PostFaceIdSignInRequestDTO} from './reqeust/FaceID';
 import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from './response/faceId';
-import {GetTeacherListResponseDTO} from "./response/teacher";
+import {GetTeacherListResponseDTO, PostApplyTeacherResponseDTO} from "./response/teacher";
+import {PostApplyTeacherRequestDTO} from "./reqeust/teacher";
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -327,15 +328,15 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
 
     return result;
 }
-
+const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
+const GET_TEACHER_SUBJECT_URL = () => `${API_DOMAIN}/user/subject`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const POST_USER_ID_URL = () => `${API_DOMAIN}/user/find-id`;
 const POST_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
 const POST_CHECK_PASSWORD_URL = () => `${API_DOMAIN}/user/check-password`;
 const POST_MAIL_SEND_URL = () => `${API_DOMAIN}/user/send-mail`;
 const POST_MAIL_RECEIVE_URL = () => `${API_DOMAIN}/user/receive-mail`;
-const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
-const GET_TEACHER_SUBJECT_URL = () => `${API_DOMAIN}/user/subject`;
+const POST_APPLY_TEACHER_URL = () => `${API_DOMAIN}/teacher/apply`;
 const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
 const PATCH_USER_URL = () => `${API_DOMAIN}/user/edit-user`;
 const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
@@ -370,7 +371,19 @@ export const getTeacherSubjectRequest = async (accessToken: string) => {
     return result;
 }
 
-
+export const postApplyTeacherRequest = async (requestBody: PostApplyTeacherRequestDTO, accessToken: string)=> {
+    const result = await axios.post(POST_APPLY_TEACHER_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody : PostApplyTeacherResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
 export const postMailSendRequest = async (requestBody: PostMailSendRequestDTO) => {
     const result = await axios.post(POST_MAIL_SEND_URL(), requestBody)
         .then(response => {

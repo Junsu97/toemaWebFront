@@ -85,8 +85,13 @@ export default function BoardWrite() {
   // effect: 마운트 시 실행할 함수
   useEffect(() => {
     const accessToken = cookies.accessToken;
+    if(loginUser?.userType==='TEACHER'){
+      alert('공부인증 게시글은 학생회원만 작성할 수 있습니다.');
+      navigator(BOARD_LIST());
+    }
     if(!accessToken){
-      navigator(MAIN_PATH());
+      alert('로그인 후 이용해주세요.');
+      navigator(AUTH_PATH());
     }
     resetBoard();
   }, []);

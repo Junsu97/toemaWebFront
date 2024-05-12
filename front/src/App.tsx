@@ -23,7 +23,7 @@ import {
   FIND_ID,
   FIND_PASSWROD,
   MAIN_PATH,
-  SEARCH_PATH,
+  SEARCH_PATH, TEACHER_APPLY, TEACHER_APPLY_LIST,
   TEACHER_LIST,
   USER_PATH,
   USER_UPDATE_PATH
@@ -42,6 +42,8 @@ import FindPassword from 'views/FindPassword';
 import ChangePassword from 'views/ChangePassword';
 import FaceCapture from 'views/FaceID';
 import TeacherList from "./views/Teacher/List";
+import TeacherApply from "./views/Teacher/write";
+import ApplyList from "./views/Teacher/applyList";
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -115,6 +117,8 @@ function App() {
           <Route path={SEARCH_PATH(':searchWord')} element={<Search />}></Route>
           <Route path={USER_PATH(':userId')} element={<UserPage />} />
           <Route path={USER_UPDATE_PATH(':userId')} element={<UserInfoUpdatePage/>}/>
+          <Route path={TEACHER_APPLY(':userId')} element={<TeacherApply/>}/>
+          <Route path={TEACHER_APPLY_LIST()} element={<ApplyList/>}/>
           <Route path={BOARD_PATH()}>
             <Route path={BOARD_LIST()} element={<BoardList />}></Route>
             <Route path={BOARD_WRITE_PATH()} element={<BoardWrite />} />
