@@ -5,6 +5,7 @@ enum ResponseCode {
       /** HTTP Status 400*/
       VALIDATION_FAILED = "VF" ,
       DUPLICATE_ID = "DI" ,
+      DUPLICATE_APPLY = "DA",
       DUPLICATE_NICKNAME = "DN" ,
       DUPLICATE_EMAIL = "DE" ,
       DUPLICATE_TEL_NUMBER = "DT",

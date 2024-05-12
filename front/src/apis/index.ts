@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { SignInRequestDto, SignUpRequestDTO } from './reqeust/auth';
-import { SignInResponseDto, SignUpResponseDTO } from './response/auth';
-import { ResponseDto } from './response';
+import {SignInRequestDto, SignUpRequestDTO} from './reqeust/auth';
+import {SignInResponseDto, SignUpResponseDTO} from './response/auth';
+import {ResponseDto} from './response';
 import {
     GetSignInUserResponseDTO,
     GetTeacherSubjectResponseDto,
@@ -13,23 +13,46 @@ import {
     PostMailResponseDTO,
     PostUserIdResponseDTO
 } from './response/user';
-import { PatchBoardRequestDTO, PostBoardRequestDTO, PostCommentRequestDTO } from './reqeust/board';
-import { PostboardResponseDTO, GetBoardResponseDTO, IncreaseViewCountResponseDTO, GetFavoriteListResponseDTO, GetCommentListResponseDTO, PutFavoriteResponseDTO, PostCommentResponseDTO, DeleteBoardResponseDTO, PatchBoardResponseDTO, GetLatesttBoardListResponseDTO, GetTop3BoardListResponseDTO, GetSearchBoardListResonseDTO, GetUserBoardListResponseDTO } from './response/board';
-import { GetPopularListResponseDTO, GetRelationListResponseDTO } from './response/search';
-import { PostUserIdRequestDTO, PatchNicknameRequestDTO, PatchProfileImageRequestDTO, PostPasswordRequestDTO, PostCheckPasswordRequestDTO, PostMailSendRequestDTO, PostMailReceiveRequestDTO, PatchUserRequestDTO } from './reqeust/user';
+import {PatchBoardRequestDTO, PostBoardRequestDTO, PostCommentRequestDTO} from './reqeust/board';
+import {
+    PostboardResponseDTO,
+    GetBoardResponseDTO,
+    IncreaseViewCountResponseDTO,
+    GetFavoriteListResponseDTO,
+    GetCommentListResponseDTO,
+    PutFavoriteResponseDTO,
+    PostCommentResponseDTO,
+    DeleteBoardResponseDTO,
+    PatchBoardResponseDTO,
+    GetLatesttBoardListResponseDTO,
+    GetTop3BoardListResponseDTO,
+    GetSearchBoardListResonseDTO,
+    GetUserBoardListResponseDTO
+} from './response/board';
+import {GetPopularListResponseDTO, GetRelationListResponseDTO} from './response/search';
+import {
+    PostUserIdRequestDTO,
+    PatchNicknameRequestDTO,
+    PatchProfileImageRequestDTO,
+    PostPasswordRequestDTO,
+    PostCheckPasswordRequestDTO,
+    PostMailSendRequestDTO,
+    PostMailReceiveRequestDTO,
+    PatchUserRequestDTO
+} from './reqeust/user';
 import PostPasswordResponseDTO from './response/user/post-password.response.dto';
 import PatchPasswordRequestDTO from './reqeust/user/patch-password-request.dto';
 import PatchPasswordResponseDTO from './response/user/patch-password.response.dto';
 import {PostFaceIdRequestDTO, PostFaceIdSignInRequestDTO} from './reqeust/FaceID';
 import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from './response/faceId';
-import {GetTeacherListResponseDTO, PostApplyTeacherResponseDTO} from "./response/teacher";
+import {GetApplyBeforeResponseDTO, GetTeacherListResponseDTO, PostApplyTeacherResponseDTO} from "./response/teacher";
 import {PostApplyTeacherRequestDTO} from "./reqeust/teacher";
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const authorization = (accessToken: string) => {
-    return { headers: { Authorization: `Bearer ${accessToken}` } }
+    return {headers: {Authorization: `Bearer ${accessToken}`}}
 };
 
 const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
@@ -132,10 +155,10 @@ const POST_COMMENT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/
 const PUT_FAVORITE_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
 const DELETE_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`
 
-export const getTeacherListRequest = async (sub1: string|null, sub2: string|null, sub3:string|null, sub4:string|null, sub5:string|null)=> {
-    const result = await axios.get(GET_TEACHER_LIST_URL(sub1,sub2,sub3,sub4,sub5))
+export const getTeacherListRequest = async (sub1: string | null, sub2: string | null, sub3: string | null, sub4: string | null, sub5: string | null) => {
+    const result = await axios.get(GET_TEACHER_LIST_URL(sub1, sub2, sub3, sub4, sub5))
         .then(response => {
-            const responseBody : GetTeacherListResponseDTO = response.data;
+            const responseBody: GetTeacherListResponseDTO = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -330,6 +353,7 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
 }
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
 const GET_TEACHER_SUBJECT_URL = () => `${API_DOMAIN}/user/subject`;
+const GET_APPLY_BEFORE_URL = () => `${API_DOMAIN}/teacher/apply`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const POST_USER_ID_URL = () => `${API_DOMAIN}/user/find-id`;
 const POST_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
@@ -337,6 +361,7 @@ const POST_CHECK_PASSWORD_URL = () => `${API_DOMAIN}/user/check-password`;
 const POST_MAIL_SEND_URL = () => `${API_DOMAIN}/user/send-mail`;
 const POST_MAIL_RECEIVE_URL = () => `${API_DOMAIN}/user/receive-mail`;
 const POST_APPLY_TEACHER_URL = () => `${API_DOMAIN}/teacher/apply`;
+
 const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
 const PATCH_USER_URL = () => `${API_DOMAIN}/user/edit-user`;
 const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
@@ -356,6 +381,20 @@ export const getUserRequest = async (userId: string) => {
     return result;
 }
 
+export const getApplyBeforeRequest = async (accessToken: string) => {
+    const result = await axios.get(GET_APPLY_BEFORE_URL(), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetApplyBeforeResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
 export const getTeacherSubjectRequest = async (accessToken: string) => {
     const result = await axios.get(GET_TEACHER_SUBJECT_URL(), authorization(accessToken))
         .then(response => {
@@ -371,14 +410,14 @@ export const getTeacherSubjectRequest = async (accessToken: string) => {
     return result;
 }
 
-export const postApplyTeacherRequest = async (requestBody: PostApplyTeacherRequestDTO, accessToken: string)=> {
+export const postApplyTeacherRequest = async (requestBody: PostApplyTeacherRequestDTO, accessToken: string) => {
     const result = await axios.post(POST_APPLY_TEACHER_URL(), requestBody, authorization(accessToken))
         .then(response => {
-            const responseBody : PostApplyTeacherResponseDTO = response.data;
+            const responseBody: PostApplyTeacherResponseDTO = response.data;
             return responseBody;
         })
         .catch(error => {
-            if(!error.response) return null;
+            if (!error.response) return null;
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
@@ -529,7 +568,7 @@ export const patchProfileImageRequest = async (requestBody: PatchProfileImageReq
 
 const FILE_DOMAIN = `${DOMAIN}/file`;
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
-const multipartFormData = { headers: { 'Content-Type': 'multipart/form-data' } }
+const multipartFormData = {headers: {'Content-Type': 'multipart/form-data'}}
 export const fileUploadRequest = async (data: FormData) => {
     const result = await axios.post(FILE_UPLOAD_URL(), data, multipartFormData)
         .then(response => {
@@ -555,7 +594,7 @@ export const postFaceIdRequest = async (requestBody: PostFaceIdRequestDTO) => {
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
-    console.log("API요청 : " , requestBody);
+    console.log("API요청 : ", requestBody);
     return result;
 }
 

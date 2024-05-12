@@ -10,7 +10,10 @@ import GetTeacherListResponseDTO from "../../../apis/response/teacher/get-teache
 import {ResponseDto} from "../../../apis/response";
 import Pagenation from "../../../components/Pagination";
 import './style.css';
-import {getTeacherListRequest} from "../../../apis";
+import {getApplyBeforeRequest, getTeacherListRequest} from "../../../apis";
+import loginUserStore from "../../../stores/login-user.store";
+import {useCookies} from "react-cookie";
+import {GetApplyBeforeResponseDTO} from "../../../apis/response/teacher";
 
 interface CheckedSubjects {
     korean: boolean;
@@ -29,6 +32,8 @@ interface SelectedSubjects {
 }
 
 export default function TeacherList() {
+    const {loginUser} = loginUserStore();
+    const [cookies] = useCookies();
     const [checkedSubjects, setCheckedSubjects] = useState<CheckedSubjects>({
         korean: false,
         math: false,
@@ -91,11 +96,28 @@ export default function TeacherList() {
         const {teacherList} = responseBody as GetTeacherListResponseDTO;
         setTotalList(teacherList);
     }
+
+    // const getApplyBeforeResponse = (responseBody: GetApplyBeforeResponseDTO | ResponseDto | null) => {
+    //     if(!responseBody) return;
+    //     const {code} = responseBody;
+    //     if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    //     if(code === 'DA') {
+    //         alert('선생님 신청은 한 ')
+    //     }
+    // }
     useEffect(() => {
         getTeacherListRequest(selectedSubjects.sub1, selectedSubjects.sub2, selectedSubjects.sub3, selectedSubjects.sub4, selectedSubjects.sub5).then(getTeacherListResponse);
     }, [selectedSubjects]);
     useEffect(() => {
         getTeacherListRequest(selectedSubjects.sub1, selectedSubjects.sub2, selectedSubjects.sub3, selectedSubjects.sub4, selectedSubjects.sub5).then(getTeacherListResponse);
+        // if(loginUser){
+        //     if(loginUser.userType === 'STUDENT'){
+        //         const accessToken = cookies.accessToken;
+        //         if(!accessToken) return;
+        //         getApplyBeforeRequest(accessToken).then(getApplyBeforeResponse);
+        //     }
+        // }
+
     }, []);
 
     return (

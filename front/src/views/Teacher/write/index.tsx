@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useRef, useState} from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {useLoginUserStore} from "../../../stores";
 import {useCookies} from "react-cookie";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
@@ -16,6 +16,14 @@ export default function TeacherApply(){
 
     const [cookies] = useCookies();
     const navigator = useNavigate();
+
+    useEffect(() => {
+        if(!loginUser || !cookies.accessToken){
+            alert('로그인 후 이용해주세요.');
+            navigator(AUTH_PATH());
+            return;
+        }
+    }, []);
 
     const onContentChangeHandler = (event : ChangeEvent<HTMLTextAreaElement>) => {
         const {value} = event.target;
@@ -63,6 +71,7 @@ export default function TeacherApply(){
         const requestBody : PostApplyTeacherRequestDTO = {
             teacherId, content
         }
+
         postApplyTeacherRequest(requestBody, accessToken).then(postApplyTeacherResponse);
     }
 
@@ -72,7 +81,7 @@ export default function TeacherApply(){
                 <div className='board-write-box'>
                     <div className='board-write-title-box'>
                         <div className='board-write-title-textarea'>선생님 신청하기</div>
-                        <div style={{marginLeft:'85%'}} className={'black-button'}>신청하기</div>
+                        <div style={{marginLeft:'85%'}} className={'black-button'} onClick={onApplyButtonClickHandler}>신청하기</div>
                     </div>
                     <div className='divider'></div>
                     <div className='board-write-content-box'>
