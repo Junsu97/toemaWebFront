@@ -63,7 +63,7 @@
     line-height: 140%;
 }
 
-.board-list-item-write-middle{
+.board-list-item-middle{
     display: flex;
     flex-direction: column;
     gap: 5px;

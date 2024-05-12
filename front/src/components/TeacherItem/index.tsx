@@ -10,15 +10,19 @@ interface Props{
     teacherListItem: TeacherListItemInterface
 }
 
+const maxLength = 30;
 const TeacherListItem = ({teacherListItem} : Props) => {
-    const{userId, korean, math, social, science, english, desc} = teacherListItem
+    const{userId, profileImage, school,korean, math, social, science, english, desc} = teacherListItem;
+    const shortenedDesc = desc.length > maxLength ? `${desc.substring(0, maxLength)}...` : desc;
     return (
         <section id="profile-cards">
             <div className="card-item">
                 <div className="description">
-                    <h2> John Doe </h2>
-                    <span className="role"> Frontend Developer </span>
-                    <p>{desc}</p>
+                    <h2> {userId} </h2>
+                    <div>
+                    <p className={'desc'}>{shortenedDesc}</p>
+                    </div>
+                    <span className="role"> {school} </span>
                     <div style={{alignItems: 'center',display:'contents', justifyContent: 'space-evenly', width: '50%'}}>
                         <FormControlLabel control={<Checkbox name={'korean'} disabled={true} checked={korean}/>}
                                           label={'국어'}
@@ -41,7 +45,7 @@ const TeacherListItem = ({teacherListItem} : Props) => {
                 <div className="image">
                     {/* 이미지 경로는 프로젝트 구조에 따라 다를 수 있습니다 */}
                     <div className={'image-div'} style={{
-                        backgroundImage: `url(${defautltProfileImage})`
+                        backgroundImage: `url(${profileImage? profileImage : defautltProfileImage})`
                     }}></div>
                     <div style={{width: '100%', alignItems: 'center', marginLeft:'25px'}}>
                         <div className={'black-button'} >신청하기</div>

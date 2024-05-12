@@ -112,9 +112,14 @@ const GET_SEARCH_BOARD_LIST_URL = (searchWord: string, preSearchWord: string | n
 
 const GET_TEACHER_LIST_URL = (...subjects: (string | null)[]) => {
     const validSubjects = subjects.filter(subject => subject !== null); // null이 아닌 항목들만 필터링
+    // 유효한 항목들이 없을 경우 기본 경로 반환
+    if (validSubjects.length === 0) {
+        return `${API_DOMAIN}/teacher/list`;
+    }
     const path = validSubjects.join('/'); // 유효한 항목들을 '/'로 연결
     return `${API_DOMAIN}/teacher/list/${path}`; // 최종 URL 구성
 }
+
 
 const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/board/user-board-list/${userId}`;
 const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
@@ -134,7 +139,7 @@ export const getTeacherListRequest = async (sub1: string|null, sub2: string|null
         })
         .catch(error => {
             if (!error.response) return null;
-            const responseBody: ResponseDto = error.reponse.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
     return result;

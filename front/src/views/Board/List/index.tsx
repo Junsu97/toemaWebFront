@@ -128,7 +128,7 @@ export default function BoardList() {
                   </div>
                 </div>
               </div>
-              <div className='imsi' onClick={onBoardWriteButtonClickHandler} style={{marginTop:'55px'}}>{'게시글 작성하기'}</div>
+              <div className='black-large-full-button' onClick={onBoardWriteButtonClickHandler} style={{marginTop:'55px'}}>{'게시글 작성하기'}</div>
             </div>
             <div>
             </div>
