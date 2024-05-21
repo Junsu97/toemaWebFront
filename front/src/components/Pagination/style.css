@@ -1,6 +1,7 @@
 #pagination-wrapper{
     display: flex;
     gap: 20px;
+    height: 20px;
 }
 
 .pagination-change-link-box{

@@ -45,8 +45,15 @@ import PatchPasswordRequestDTO from './reqeust/user/patch-password-request.dto';
 import PatchPasswordResponseDTO from './response/user/patch-password.response.dto';
 import {PostFaceIdRequestDTO, PostFaceIdSignInRequestDTO} from './reqeust/FaceID';
 import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from './response/faceId';
-import {GetApplyBeforeResponseDTO, GetTeacherListResponseDTO, PostApplyTeacherResponseDTO} from "./response/teacher";
+import {
+    GetApplyBeforeResponseDTO,
+    GetTeacherListResponseDTO,
+    GetTeacherResponseDTO,
+    PostApplyTeacherResponseDTO
+} from "./response/teacher";
 import {PostApplyTeacherRequestDTO} from "./reqeust/teacher";
+import PostApplyListRequestDto from "./reqeust/teacher/post-apply-list-request.dto";
+import PostApplyListResponseDto from "./response/teacher/post-apply-list-response.dto";
 
 const DOMAIN = 'http://localhost:10000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -354,7 +361,9 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
 const GET_TEACHER_SUBJECT_URL = () => `${API_DOMAIN}/user/subject`;
 const GET_APPLY_BEFORE_URL = () => `${API_DOMAIN}/teacher/apply`;
+const POST_APPLY_LIST_URL = () => `${API_DOMAIN}/teacher/apply-list`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
+const GET_TEACHER_URL = (teacherUserId:string) => `${API_DOMAIN}/teacher/${teacherUserId}`;
 const POST_USER_ID_URL = () => `${API_DOMAIN}/user/find-id`;
 const POST_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
 const POST_CHECK_PASSWORD_URL = () => `${API_DOMAIN}/user/check-password`;
@@ -381,8 +390,23 @@ export const getUserRequest = async (userId: string) => {
     return result;
 }
 
+export const getTeacherRequest = async (teacherUserId: string) => {
+    const result = await axios.get(GET_TEACHER_URL(teacherUserId))
+        .then(response => {
+            const responseBody: GetTeacherResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+}
+
 export const getApplyBeforeRequest = async (accessToken: string) => {
-    const result = await axios.get(GET_APPLY_BEFORE_URL(), authorization(accessToken))
+    const result = await axios.get(GET_APPLY_BEFORE_URL(),authorization(accessToken))
         .then(response => {
             const responseBody: GetApplyBeforeResponseDTO = response.data;
             return responseBody;
@@ -392,6 +416,20 @@ export const getApplyBeforeRequest = async (accessToken: string) => {
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
+    return result;
+}
+
+export const postApplyListRequest = async (requestBody:PostApplyListRequestDto) => {
+    const result = await axios.post(POST_APPLY_LIST_URL(),requestBody)
+        .then(response => {
+            const responseBody : PostApplyListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
     return result;
 }
 

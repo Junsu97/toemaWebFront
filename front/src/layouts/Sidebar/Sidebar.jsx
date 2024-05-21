@@ -5,60 +5,33 @@ import probg from "assets/image/bg/download.jpg";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useLoginUserStore } from 'stores';
 import defautltProfileImage from 'assets/image/default-profile-image.png'
-import { BOARD_LIST } from "constant";
+import {BOARD_LIST, TEACHER_APPLY_LIST, TEACHER_LIST} from "constant";
+import React,{useState, useEffect} from "react";
 
 
-const navigation = [
+const defaultNavigation = [
   {
     title: "공부인증 게시판",
     href: BOARD_LIST(),
     icon: "bi bi-speedometer2",
   },
   {
-    title: "Alert",
-    href: "/alerts",
+    title: "선생님 목록",
+    href: TEACHER_LIST(),
     icon: "bi bi-bell",
   },
   {
-    title: "Badges",
-    href: "/badges",
-    icon: "bi bi-patch-check", 
-  },
-  {
-    title: "Buttons",
-    href: "/buttons",
-    icon: "bi bi-hdd-stack",
-  },
-  {
-    title: "Cards",
-    href: "/cards",
-    icon: "bi bi-card-text",
-  },
-  {
-    title: "Grid",
-    href: "/grid",
-    icon: "bi bi-columns",
-  },
-  {
-    title: "Table",
-    href: "/table",
-    icon: "bi bi-layout-split",
-  },
-  {
-    title: "Forms",
-    href: "/forms",
-    icon: "bi bi-textarea-resize",
-  },
-  {
-    title: "Breadcrumbs",
-    href: "/breadcrumbs",
-    icon: "bi bi-link",
-  },
+    title: "신청 내역",
+    href: TEACHER_APPLY_LIST(),
+    icon: "bi bi-patch-check",
+  }
+
 ];
 
 const Sidebar = () => {
   // state : 유저 로그인 상태
   const { loginUser,resetLoginUser } = useLoginUserStore();
+  const [navigation, setNavigation] = useState(defaultNavigation);
   const showMobilemenu = () => {
     let { userId } = null;
     if (!loginUser) { userId = ''; }
@@ -70,7 +43,7 @@ const Sidebar = () => {
   };
   let location = useLocation();
   return (
-    <div style={{ width: '250px'}}>
+    <div style={{ width: '250px', minHeight:'680px'}}>
       <div className="d-flex align-items-center"></div>
       <div
         className="profilebg"

@@ -14,6 +14,7 @@ import {getApplyBeforeRequest, getTeacherListRequest} from "../../../apis";
 import loginUserStore from "../../../stores/login-user.store";
 import {useCookies} from "react-cookie";
 import {GetApplyBeforeResponseDTO} from "../../../apis/response/teacher";
+import {createTheme} from "@mui/material/styles";
 
 interface CheckedSubjects {
     korean: boolean;
@@ -31,6 +32,17 @@ interface SelectedSubjects {
     sub5: string | null;
 }
 
+const theme = createTheme({
+    components: {
+        MuiFormControlLabel: {
+            styleOverrides: {
+                label: {
+                    marginRight: ''
+                },
+            },
+        },
+    },
+});
 export default function TeacherList() {
     const {loginUser} = loginUserStore();
     const [cookies] = useCookies();
@@ -97,7 +109,7 @@ export default function TeacherList() {
         setTotalList(teacherList);
     }
 
-    // const getApplyBeforeResponse = (responseBody: GetApplyBeforeResponseDTO | ResponseDto | null) => {
+    // const getApplyBeforeResponse = (responseBody: GetApplyBeforeResponseDto | ResponseDto | null) => {
     //     if(!responseBody) return;
     //     const {code} = responseBody;
     //     if(code === 'DBE') alert('데이터베이스 오류입니다.');
@@ -125,43 +137,67 @@ export default function TeacherList() {
             <div style={{width: '100%'}}>
                 <div className='title'>{'신청 가능한 선생님 목록'}</div>
                 <div className='contentBox'>
-                    <div className='formLabelBox'>
+                    <div className='formLabelBox' >
+
                         <FormControlLabel control={<Checkbox name={'korean'}
                                                              onChange={onSubjectCheckBoxChangeHandler}/>}
                                           label={'국어'}
-                                          sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                          sx={{
+                                              width: '130px',
+                                              minWidth: '130px',
+                                              maxWidth: '130px',
+                                              marginRight: '0px'
+                                          }}
+                                          style={{marginRight: '0px'}}/>
                         <FormControlLabel control={<Checkbox name={'math'}
                                                              onChange={onSubjectCheckBoxChangeHandler}/>}
                                           label={'수학'}
-                                          sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                          sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}
+                                          style={{marginRight: '0px'}}/>
                         <FormControlLabel control={<Checkbox name={'social'}
                                                              onChange={onSubjectCheckBoxChangeHandler}/>}
                                           label={'사회'}
-                                          sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                          sx={{
+                                              width: '130px',
+                                              minWidth: '130px',
+                                              maxWidth: '130px',
+                                              marginRight: '0px'
+                                          }}
+                                          style={{marginRight: '0px'}}/>
                         <FormControlLabel control={<Checkbox name={'science'}
                                                              onChange={onSubjectCheckBoxChangeHandler}/>}
                                           label={'과학'}
-                                          sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                          sx={{
+                                              width: '130px',
+                                              minWidth: '130px',
+                                              maxWidth: '130px',
+                                              marginRight: '0px'
+                                          }}
+                                          style={{marginRight: '0px'}}/>
                         <FormControlLabel control={<Checkbox name={'english'}
                                                              onChange={onSubjectCheckBoxChangeHandler}/>}
                                           label={'영어'}
-                                          sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                          sx={{
+                                              width: '130px',
+                                              minWidth: '130px',
+                                              maxWidth: '130px',
+                                              marginRight: '0px'
+                                          }}
+                                          style={{marginRight: '0px'}}/>
                     </div>
                     <div className='container'>
                         {viewList.map(teacherListItem => <TeacherListItem
                             teacherListItem={teacherListItem}></TeacherListItem>)}
-                        <div>
-                            <div className='list-bottom-pagination-box'>
-                                <Pagenation
-                                    currentPage={currentPage}
-                                    currentSection={currentSection}
-                                    setCurrentPage={setCurrentPage}
-                                    setCurrentSection={setCurrentSection}
-                                    viewPageList={viewPageList}
-                                    totalSection={totalSection}/>
-                            </div>
-                        </div>
                     </div>
+                    <div><div className='list-bottom-pagination-box'>
+                        <Pagenation
+                            currentPage={currentPage}
+                            currentSection={currentSection}
+                            setCurrentPage={setCurrentPage}
+                            setCurrentSection={setCurrentSection}
+                            viewPageList={viewPageList}
+                            totalSection={totalSection}/>
+                    </div></div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,123 @@
+#list-top-wrapper{
+    padding: 80px 0 40px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+
+.list-top-container{
+    width: 100%;
+    /* min-width: 1200px; */
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 56px;
+}
+.list-top-title{
+    color: black;
+
+    font-family: 'GimhaeGaya';
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 140%;
+    letter-spacing: -0.8px;
+
+    white-space: pre-wrap;
+    text-align: center;
+}
+.list-top-contents-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+.list-top-contents-title{
+    color: black;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.list-top-contents{
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+#list-bottom-wrapper{
+    padding: 40px 0;
+
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: rgba(0,0,0,0.05);
+}
+
+.list-bottom-container{
+    display: flex; 
+    flex-direction: column;
+    width: 85%;
+    gap: 8%;
+}
+
+.list-bottom-title{
+    color: black;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.list-bottom-contents-box{
+    width: 100%;
+    display: flex;
+
+    gap:24px;
+}
+
+.list-bottom-current-contents{
+    display: flex;
+    width:100%;
+    gap: 16px;
+}
+
+
+
+.list-bottom-popular-card{
+    padding: 24px;
+    background-color: white;
+}
+.list-bottom-popular-card-container{
+    display: flex;
+    flex-direction: column;
+
+    gap: 24px;
+}
+.list-bottom-popular-card-title{
+    color: black;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 140%;
+}
+.list-bottom-popular-card-contents{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.list-bottom-pagination-box{
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+}
+
+
+.imsi{
+    text-align: center;
+    background-color: red;
+}
+
+.imsi:hover{
+    cursor: pointer;
+}

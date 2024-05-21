@@ -23,7 +23,7 @@ import {
   FIND_ID,
   FIND_PASSWROD,
   MAIN_PATH,
-  SEARCH_PATH, TEACHER_APPLY, TEACHER_APPLY_LIST,
+  SEARCH_PATH, TEACHER_APPLY, TEACHER_APPLY_LIST, TEACHER_INFO,
   TEACHER_LIST,
   USER_PATH,
   USER_UPDATE_PATH
@@ -44,6 +44,7 @@ import FaceCapture from 'views/FaceID';
 import TeacherList from "./views/Teacher/List";
 import TeacherApply from "./views/Teacher/write";
 import ApplyList from "./views/Teacher/applyList";
+import TeacherInfo from "./views/Teacher/info";
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -111,6 +112,8 @@ function App() {
           <Route path={AUTH_PATH()} element={<Authentication />} />
           <Route path={FIND_ID()} element={<FindId/>} />
           <Route path={TEACHER_LIST()} element={<TeacherList/>}/>
+          <Route path={TEACHER_INFO(':teacherUserId')} element={<TeacherInfo/>}/>
+          <Route path={TEACHER_APPLY_LIST()} element={<ApplyList/>}/>
           <Route path={FACE_ID()} element={<FaceCapture/>}/>
           <Route path={FIND_PASSWROD()} element={<FindPassword/>} />
           <Route path={CHANGE_PASSWORD(':userId')} element={<ChangePassword/>}/>
@@ -125,6 +128,7 @@ function App() {
             <Route path={BOARD_UPDATE_PATH(':boardNumber')} element={<BoardUpdate />} />
             <Route path={BOARD_DETAIL_PATH(':boardNumber')} element={<BoardDetail />} />
           </Route>
+
           <Route path='*' element={<NotFoundPage />}></Route>
         </Route>
       </Routes>
