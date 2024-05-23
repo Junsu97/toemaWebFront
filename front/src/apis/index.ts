@@ -46,7 +46,7 @@ import PatchPasswordResponseDTO from './response/user/patch-password.response.dt
 import {PostFaceIdRequestDTO, PostFaceIdSignInRequestDTO} from './reqeust/FaceID';
 import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from './response/faceId';
 import {
-    GetApplyBeforeResponseDTO,
+    GetApplyBeforeResponseDTO, GetApplyInfoResponseDTO,
     GetTeacherListResponseDTO,
     GetTeacherResponseDTO,
     PostApplyTeacherResponseDTO
@@ -361,6 +361,7 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
 const GET_TEACHER_SUBJECT_URL = () => `${API_DOMAIN}/user/subject`;
 const GET_APPLY_BEFORE_URL = () => `${API_DOMAIN}/teacher/apply`;
+const GET_APPLY_INFO_URL = (teacherId:string, studentId:string) => `${API_DOMAIN}/teacher/${teacherId}/${studentId}`;
 const POST_APPLY_LIST_URL = () => `${API_DOMAIN}/teacher/apply-list`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const GET_TEACHER_URL = (teacherUserId:string) => `${API_DOMAIN}/teacher/${teacherUserId}`;
@@ -379,6 +380,21 @@ export const getUserRequest = async (userId: string) => {
     const result = await axios.get(GET_USER_URL(userId))
         .then(response => {
             const responseBody: GetUserResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+}
+
+export const getApplyInfoRequest = async (teacherId: string, studentId: string) => {
+    const result = await axios.get(GET_APPLY_INFO_URL(teacherId,studentId))
+        .then(response => {
+            const responseBody: GetApplyInfoResponseDTO = response.data;
             return responseBody;
         })
         .catch(error => {

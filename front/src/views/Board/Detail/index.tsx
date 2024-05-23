@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import FavoriteItem from 'components/FavoriteItem';
-import { commentListMock, favoriteListMock } from 'mocks';
 import { Board, CommentListDTO, FavoriteListDTO } from 'types/interface';
 import CommentItem from 'components/CommentItem';
 import Pagenation from 'components/Pagination';

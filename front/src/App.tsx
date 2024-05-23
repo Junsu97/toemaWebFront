@@ -23,7 +23,7 @@ import {
   FIND_ID,
   FIND_PASSWROD,
   MAIN_PATH,
-  SEARCH_PATH, TEACHER_APPLY, TEACHER_APPLY_LIST, TEACHER_INFO,
+  SEARCH_PATH, TEACHER_APPLY, TEACHER_APPLY_DETAIL, TEACHER_APPLY_LIST, TEACHER_INFO,
   TEACHER_LIST,
   USER_PATH,
   USER_UPDATE_PATH
@@ -43,8 +43,9 @@ import ChangePassword from 'views/ChangePassword';
 import FaceCapture from 'views/FaceID';
 import TeacherList from "./views/Teacher/List";
 import TeacherApply from "./views/Teacher/write";
-import ApplyList from "./views/Teacher/applyList";
+import ApplyList from "./views/Teacher/apply/applyList";
 import TeacherInfo from "./views/Teacher/info";
+import ApplyDetail from "./views/Teacher/apply/applyDetail";
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -114,6 +115,7 @@ function App() {
           <Route path={TEACHER_LIST()} element={<TeacherList/>}/>
           <Route path={TEACHER_INFO(':teacherUserId')} element={<TeacherInfo/>}/>
           <Route path={TEACHER_APPLY_LIST()} element={<ApplyList/>}/>
+          <Route path={TEACHER_APPLY_DETAIL(':teacherUserId',':studentUserId')} element={<ApplyDetail/>}/>
           <Route path={FACE_ID()} element={<FaceCapture/>}/>
           <Route path={FIND_PASSWROD()} element={<FindPassword/>} />
           <Route path={CHANGE_PASSWORD(':userId')} element={<ChangePassword/>}/>

@@ -130,19 +130,17 @@ export default function BoardList() {
               </div>
               <div className='black-large-full-button' onClick={onBoardWriteButtonClickHandler} style={{marginTop:'55px'}}>{'게시글 작성하기'}</div>
             </div>
-            <div>
-              <div className='list-bottom-pagination-box'>
-                <Pagenation
-                    currentPage={currentPage}
-                    currentSection={currentSection}
-                    setCurrentPage={setCurrentPage}
-                    setCurrentSection={setCurrentSection}
-                    viewPageList={viewPageList}
-                    totalSection={totalSection} />
-              </div>
+          </div>
+          <div>
+            <div className='list-bottom-pagination-box'>
+              <Pagenation
+                  currentPage={currentPage}
+                  currentSection={currentSection}
+                  setCurrentPage={setCurrentPage}
+                  setCurrentSection={setCurrentSection}
+                  viewPageList={viewPageList}
+                  totalSection={totalSection} />
             </div>
-
-
           </div>
         </div>
       </div>

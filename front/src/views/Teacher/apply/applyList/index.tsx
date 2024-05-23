@@ -1,16 +1,16 @@
-import Pagenation from "../../../components/Pagination";
+import Pagenation from "../../../../components/Pagination";
 import React, {useEffect, useState} from "react";
-import {usePagination} from "../../../hooks";
-import loginUserStore from "../../../stores/login-user.store";
+import {usePagination} from "../../../../hooks";
+import loginUserStore from "../../../../stores/login-user.store";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
-import {AUTH_PATH} from "../../../constant";
-import ApplyListItem from "../../../components/ApplyListItem";
-import ApplyListItemInterface from "../../../types/interface/apply-list-item.interface";
-import {postApplyListRequest} from "../../../apis";
-import PostApplyListRequestDto from "../../../apis/reqeust/teacher/post-apply-list-request.dto";
-import PostApplyListResponseDto from "../../../apis/response/teacher/post-apply-list-response.dto";
-import {ResponseDto} from "../../../apis/response";
+import {AUTH_PATH} from "../../../../constant";
+import ApplyListItem from "../../../../components/ApplyListItem";
+import ApplyListItemInterface from "../../../../types/interface/apply-list-item.interface";
+import {postApplyListRequest} from "../../../../apis";
+import PostApplyListRequestDto from "../../../../apis/reqeust/teacher/post-apply-list-request.dto";
+import PostApplyListResponseDto from "../../../../apis/response/teacher/post-apply-list-response.dto";
+import {ResponseDto} from "../../../../apis/response";
 import './style.css';
 
 export default function ApplyList() {
