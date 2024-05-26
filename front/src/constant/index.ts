@@ -4,10 +4,11 @@ export const MAIN_PATH = () =>'/main';
 export const AUTH_PATH = () =>'/';
 export const FIND_ID = () => '/user/find-id';
 export const FIND_PASSWROD = () => '/user/find-password';
-
+export const MATCHED_STUDENT_LIST = () => '/teacher/matched-student';
 export const TEACHER_LIST = () => '/teacher/list';
 export const TEACHER_APPLY_LIST = () => '/teacher/my-apply';
 export const TEACHER_APPLY = (teacherUserId:String) => `/teacher/apply/${teacherUserId}`;
+export const TEACHER_APPLY_UPDATE = (teacherUserId:string, studentUserId:string) => `/teacher/apply-update/${teacherUserId}/${studentUserId}`;
 export const TEACHER_APPLY_DETAIL = (teacherUserId:string, studentUserId:string) => `/teacher/apply-detail/${teacherUserId}/${studentUserId}`;
 export const TEACHER_INFO = (teacherUserId:String) => `/teacher/info/${teacherUserId}`;
 export const FACE_ID = () => `/face`;

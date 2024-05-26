@@ -17,6 +17,7 @@ export default function ApplyList() {
     const {loginUser} = loginUserStore();
     const [isStudent, setIsStudent] = useState<boolean>(false);
     const [cookies, setCookies] = useCookies();
+    const [matchState, setMatchState] = useState<string>('');
     const navigate = useNavigate();
 
     const postApplyListResponse = (responseBody : PostApplyListResponseDto | ResponseDto | null) => {

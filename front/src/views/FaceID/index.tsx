@@ -48,6 +48,7 @@ export default function FaceCapture() {
         stopVideoAndDetection();
         setStartDectect(false);
         navigate(USER_PATH(loginUser.userId));
+        return;
     }
     // 여기에 처리 로직 추가
 
@@ -194,7 +195,7 @@ export default function FaceCapture() {
                 .withFaceExpressions();
             const resizedDetections = faceapi.resizeResults(detections, displaySize);
             const highAccuracyNeutralExpressions = resizedDetections.filter(detection =>
-                detection.detection.score >= 0.9 && detection.expressions.neutral > 0.8) as DetectionWithExpression[];
+                detection.detection.score >= 0.9 && detection.expressions.neutral >= 0.9) as DetectionWithExpression[];
 
             if (highAccuracyNeutralExpressions.length > 0) {
                 setAccumulatedDetections(prevDetections => [...prevDetections, ...highAccuracyNeutralExpressions]);

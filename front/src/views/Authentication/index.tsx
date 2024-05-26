@@ -100,7 +100,7 @@ export default function Authentication() {
       setCookie('accessToken', token, { expires, path: AUTH_PATH() });
       console.log(cookies);
       navigate(MAIN_PATH());
-
+      return;
     }
 
     useEffect(() => {
@@ -111,6 +111,7 @@ export default function Authentication() {
           alert("얼굴 인식 정확도가 낮습니다. 얼굴 인식을 다시 시작해주세요.");
           setAccumulatedDetections([]);
           detectFace();
+
         }, 1000);
       } else if (accumulatedDetections.length >= 5) {
         // 정확도, 표정, 랜드마크의 평균을 계산합니다.

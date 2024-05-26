@@ -1,9 +1,10 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import {AUTH_PATH, BOARD_DETAIL_PATH, TEACHER_APPLY_DETAIL} from 'constant';
 import loginUserStore from "../../stores/login-user.store";
 import ApplyListItemInterface from "../../types/interface/apply-list-item.interface";
+import {useCookies} from "react-cookie";
 
 
 
@@ -21,15 +22,20 @@ export default function ApplyListItem({applyListItem} : Props) {
     //  function : 네비게이트 함수
     const navigator = useNavigate();
     const{loginUser} = loginUserStore();
+    const [cookies, setCookies] = useCookies();
+    const [state, setState] = useState<string>('');
 
     // event Handler : 아이템 클릭 이벤트 처리
     const onClickHandler = () => {
         if(!loginUser){
+            return;
+        }
+        if(!cookies.accessToken){
             alert('로그인후 다시 시도해주세요.');
             navigator(AUTH_PATH());
             return;
         }
-        if(loginUser.userType==='TEAHCER'){
+        if(loginUser.userType==='TEACHER'){
             navigator(TEACHER_APPLY_DETAIL(loginUser.userId,userId));
         }else{
             navigator(TEACHER_APPLY_DETAIL(userId,loginUser.userId));

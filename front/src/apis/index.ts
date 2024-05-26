@@ -48,10 +48,10 @@ import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from './response/fac
 import {
     GetApplyBeforeResponseDTO, GetApplyInfoResponseDTO,
     GetTeacherListResponseDTO,
-    GetTeacherResponseDTO,
+    GetTeacherResponseDTO, PatchApplyResponseDTO,
     PostApplyTeacherResponseDTO
 } from "./response/teacher";
-import {PostApplyTeacherRequestDTO} from "./reqeust/teacher";
+import {PatchApplyRequestDTO, PostApplyTeacherRequestDTO} from "./reqeust/teacher";
 import PostApplyListRequestDto from "./reqeust/teacher/post-apply-list-request.dto";
 import PostApplyListResponseDto from "./response/teacher/post-apply-list-response.dto";
 
@@ -361,16 +361,17 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
 const GET_TEACHER_SUBJECT_URL = () => `${API_DOMAIN}/user/subject`;
 const GET_APPLY_BEFORE_URL = () => `${API_DOMAIN}/teacher/apply`;
-const GET_APPLY_INFO_URL = (teacherId:string, studentId:string) => `${API_DOMAIN}/teacher/${teacherId}/${studentId}`;
+const GET_APPLY_INFO_URL = (teacherId: string, studentId: string) => `${API_DOMAIN}/teacher/${teacherId}/${studentId}`;
 const POST_APPLY_LIST_URL = () => `${API_DOMAIN}/teacher/apply-list`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
-const GET_TEACHER_URL = (teacherUserId:string) => `${API_DOMAIN}/teacher/${teacherUserId}`;
+const GET_TEACHER_URL = (teacherUserId: string) => `${API_DOMAIN}/teacher/${teacherUserId}`;
 const POST_USER_ID_URL = () => `${API_DOMAIN}/user/find-id`;
 const POST_PASSWORD_URL = () => `${API_DOMAIN}/user/password`;
 const POST_CHECK_PASSWORD_URL = () => `${API_DOMAIN}/user/check-password`;
 const POST_MAIL_SEND_URL = () => `${API_DOMAIN}/user/send-mail`;
 const POST_MAIL_RECEIVE_URL = () => `${API_DOMAIN}/user/receive-mail`;
 const POST_APPLY_TEACHER_URL = () => `${API_DOMAIN}/teacher/apply`;
+const PATCH_APPLY_URL = () => `${API_DOMAIN}/teacher/apply`;
 
 const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
 const PATCH_USER_URL = () => `${API_DOMAIN}/user/edit-user`;
@@ -392,7 +393,7 @@ export const getUserRequest = async (userId: string) => {
 }
 
 export const getApplyInfoRequest = async (teacherId: string, studentId: string) => {
-    const result = await axios.get(GET_APPLY_INFO_URL(teacherId,studentId))
+    const result = await axios.get(GET_APPLY_INFO_URL(teacherId, studentId))
         .then(response => {
             const responseBody: GetApplyInfoResponseDTO = response.data;
             return responseBody;
@@ -404,6 +405,22 @@ export const getApplyInfoRequest = async (teacherId: string, studentId: string) 
         });
 
     return result;
+}
+
+export const patchApplyRequest = async (requestBody: PatchApplyRequestDTO, accessToken: string) => {
+    const result = await axios.patch(PATCH_APPLY_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchApplyResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+
 }
 
 export const getTeacherRequest = async (teacherUserId: string) => {
@@ -422,7 +439,7 @@ export const getTeacherRequest = async (teacherUserId: string) => {
 }
 
 export const getApplyBeforeRequest = async (accessToken: string) => {
-    const result = await axios.get(GET_APPLY_BEFORE_URL(),authorization(accessToken))
+    const result = await axios.get(GET_APPLY_BEFORE_URL(), authorization(accessToken))
         .then(response => {
             const responseBody: GetApplyBeforeResponseDTO = response.data;
             return responseBody;
@@ -435,10 +452,10 @@ export const getApplyBeforeRequest = async (accessToken: string) => {
     return result;
 }
 
-export const postApplyListRequest = async (requestBody:PostApplyListRequestDto) => {
-    const result = await axios.post(POST_APPLY_LIST_URL(),requestBody)
+export const postApplyListRequest = async (requestBody: PostApplyListRequestDto) => {
+    const result = await axios.post(POST_APPLY_LIST_URL(), requestBody)
         .then(response => {
-            const responseBody : PostApplyListResponseDto = response.data;
+            const responseBody: PostApplyListResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
