@@ -40,9 +40,9 @@ const Sidebar = () => {
         } else {
             userId = loginUser.userId;
 
-            if (loginUser.userType === 'TEACHER') {
-                setIsTeacher(true);
-            }
+            // if (loginUser.userType === 'TEACHER') {
+            //     setIsTeacher(true);
+            // }
         }
 
         document.getElementById("sidebarArea").classList.toggle("showSidebar");
@@ -53,23 +53,34 @@ const Sidebar = () => {
             return;
         }
         if (loginUser.userType === 'TEACHER') {
-            setIsTeacher(true);
-        }
-
-    },[])
-
-    useEffect(() => {
-        if (isTeacher) {
             setNavigation(prevNavigation => [
                 ...prevNavigation,
                 {
                     title: "관리중인 학생",
-                    href: MATCHED_STUDENT_LIST(),
+                    href: MATCHED_STUDENT_LIST(loginUser.userId),
+                    icon: "bi bi-speedometer2",
+                }
+            ]);
+        }else{
+            setNavigation(prevNavigation => [
+                ...prevNavigation,
+                {
+                    title: "숙제 확인",
+                    href: MATCHED_STUDENT_LIST(loginUser.userId),
                     icon: "bi bi-speedometer2",
                 }
             ]);
         }
-    }, [isTeacher]);
+
+    },[loginUser])
+
+    // useEffect(() => {
+    //     if (isTeacher) {
+    //
+    //     } else {
+    //
+    //     }
+    // }, [isTeacher]);
     let location = useLocation();
     return (
         <div style={{width: '250px', minHeight: '680px'}}>

@@ -268,7 +268,11 @@ export default function UserPage() {
 
     // effect : userid path variable이 변경될 때마다 실행될 함수
     useEffect(() => {
-      if (!userId) return;
+      if (!userId) {
+        alert('잘못된 접근입니다.');
+        navigate(MAIN_PATH());
+        return;
+      }
       if (loginUser?.userType === 'TEACHER') return;
       else {
         getUserBoardListRequest(userId).then(getUserBoardListResponse);

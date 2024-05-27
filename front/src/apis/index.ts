@@ -46,7 +46,7 @@ import PatchPasswordResponseDTO from './response/user/patch-password.response.dt
 import {PostFaceIdRequestDTO, PostFaceIdSignInRequestDTO} from './reqeust/FaceID';
 import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from './response/faceId';
 import {
-    GetApplyBeforeResponseDTO, GetApplyInfoResponseDTO,
+    GetApplyBeforeResponseDTO, GetApplyInfoResponseDTO, GetMatchedStudentListResponseDto,
     GetTeacherListResponseDTO,
     GetTeacherResponseDTO, PatchApplyResponseDTO,
     PostApplyTeacherResponseDTO
@@ -151,6 +151,7 @@ const GET_TEACHER_LIST_URL = (...subjects: (string | null)[]) => {
     return `${API_DOMAIN}/teacher/list/${path}`; // 최종 URL 구성
 }
 
+const GET_MATCHED_STUDENT_LIST_URL = () => `${API_DOMAIN}/teacher/getStudentList`;
 
 const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/board/user-board-list/${userId}`;
 const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
@@ -161,6 +162,20 @@ const PATCH_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/$
 const POST_COMMENT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/comment`;
 const PUT_FAVORITE_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
 const DELETE_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`
+
+export const getMatchedStudentListRequest = async (accessToken:string) => {
+    const result = await axios.get(GET_MATCHED_STUDENT_LIST_URL(), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetMatchedStudentListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
 
 export const getTeacherListRequest = async (sub1: string | null, sub2: string | null, sub3: string | null, sub4: string | null, sub5: string | null) => {
     const result = await axios.get(GET_TEACHER_LIST_URL(sub1, sub2, sub3, sub4, sub5))

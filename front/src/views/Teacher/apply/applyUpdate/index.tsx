@@ -6,6 +6,7 @@ import {PatchApplyRequestDTO} from "../../../../apis/reqeust/teacher";
 import {useCookies} from "react-cookie";
 import {useNavigate, useParams} from "react-router-dom";
 import {patchApplyRequest} from "../../../../apis";
+import loginUserStore from "../../../../stores/login-user.store";
 
 export default function ApplyUpdate(){
     const [cookies, setCookies] = useCookies();
@@ -13,7 +14,7 @@ export default function ApplyUpdate(){
     const navigate = useNavigate();
     const [content, setContent] = useState<string>('');
     const contentRef = useRef<HTMLTextAreaElement | null>(null);
-
+    const {loginUser} = loginUserStore();
     const onContentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const {value} = event.target;
         setContent(value);
@@ -43,12 +44,15 @@ export default function ApplyUpdate(){
         return;
     }
     const updateButtonClickHandler = () => {
+        if(!loginUser){
+            return;
+        }
         const requestBody: PatchApplyRequestDTO = {
             studentId: studentUserId as string,
             teacherId: teacherUserId as string,
             content: content,
-            status: 'A',
-            userType: ''
+            status: '신청됨',
+            userType: loginUser.userType
         }
         patchApplyRequest(requestBody, cookies.accessToken).then(patchApplyResponse);
 

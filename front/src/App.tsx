@@ -22,8 +22,15 @@ import {
   FACE_ID,
   FIND_ID,
   FIND_PASSWROD,
-  MAIN_PATH, MATCHED_STUDENT_LIST,
-  SEARCH_PATH, TEACHER_APPLY, TEACHER_APPLY_DETAIL, TEACHER_APPLY_LIST, TEACHER_APPLY_UPDATE, TEACHER_INFO,
+  MAIN_PATH,
+  MATCHED_STUDENT_LIST,
+  SEARCH_PATH,
+  STUDENT_INFO,
+  TEACHER_APPLY,
+  TEACHER_APPLY_DETAIL,
+  TEACHER_APPLY_LIST,
+  TEACHER_APPLY_UPDATE,
+  TEACHER_INFO,
   TEACHER_LIST,
   USER_PATH,
   USER_UPDATE_PATH
@@ -48,6 +55,7 @@ import TeacherInfo from "./views/Teacher/info";
 import ApplyDetail from "./views/Teacher/apply/applyDetail";
 import ApplyUpdate from "./views/Teacher/apply/applyUpdate";
 import MatchedStudents from "./views/Teacher/student/list";
+import StudentInfo from "./views/Teacher/student/info";
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -119,7 +127,8 @@ function App() {
           <Route path={TEACHER_APPLY_LIST()} element={<ApplyList/>}/>
           <Route path={TEACHER_APPLY_DETAIL(':teacherUserId',':studentUserId')} element={<ApplyDetail/>}/>
           <Route path={FACE_ID()} element={<FaceCapture/>}/>
-          <Route path={MATCHED_STUDENT_LIST()} element={<MatchedStudents/>}/>
+          <Route path={MATCHED_STUDENT_LIST(':teacherId')} element={<MatchedStudents/>}/>
+          <Route path={STUDENT_INFO(':studentId')} element={<StudentInfo/>}/>
           <Route path={FIND_PASSWROD()} element={<FindPassword/>} />
           <Route path={CHANGE_PASSWORD(':userId')} element={<ChangePassword/>}/>
           <Route path={TEACHER_APPLY_UPDATE(':teacherUserId',':studentUserId')} element={<ApplyUpdate/>}/>
