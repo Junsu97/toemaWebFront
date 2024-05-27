@@ -11,6 +11,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@fullcalendar/daygrid": "^6.1.13",
     "@fullcalendar/react": "^6.1.13",
+    "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "@tensorflow/tfjs-node": "^4.19.0",

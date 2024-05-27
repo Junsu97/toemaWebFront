@@ -1,7 +1,10 @@
-import './App.css';
+
 import { useState } from 'react';
 import moment from 'moment';
-import './assets/css/calendar.scss'
+import './calender.css';
+import mock_data from '../../../mocks/data.json';
+import ModalCalender from "../CalenderModal";
+
 const Calender = () => {
 
     const [getMoment, setMoment] = useState(moment());
@@ -9,10 +12,11 @@ const Calender = () => {
     const today = getMoment;
     const firstWeek = today.clone().startOf('month').week();
     const lastWeek = today.clone().endOf('month').week() === 1 ? 53 : today.clone().endOf('month').week();
+    const [modalOpen, setModalOpen] = useState(false);
 
     const calendarArr = () => {
 
-        let result : any[] = [];
+        let result = [];
         let week = firstWeek;
         for (week; week <= lastWeek; week++) {
             result = result.concat(
@@ -25,23 +29,26 @@ const Calender = () => {
                                 return (
                                     <div className='calendar_body_days' onClick={() => console.log(days.format('YYYYMMDD'))} key={index} >
                                         <span style={{ color: 'red' }}>{days.format('D')}</span>
+                                        <Show_event days={days} />
                                     </div>
                                 );
                             } else if (days.format('MM') !== today.format('MM')) {
                                 return (
                                     <div className='calendar_body_days' onClick={() => console.log(days.format('YYYYMMDD'))} key={index} >
-                                        <span style={{ color: 'gray' }}>{days.format('D')}</span>
+                                        <span style={{ color: 'grey' }}>{days.format('D')}</span>
                                     </div>
                                 );
                             } else {
                                 return (
                                     <div className='calendar_body_days' onClick={() => console.log(days.format('YYYYMMDD'))} key={index}  >
                                         <span>{days.format('D')}</span>
+                                        <Show_event days={days} />
                                     </div>
                                 );
                             }
                         })
                     }
+                    {modalOpen && <ModalCalender setmodal={setModalOpen} />}
                 </div>
             );
         }
@@ -65,6 +72,20 @@ const Calender = () => {
     );
 }
 export default Calender;
+
+function Show_event({ days }) {
+    return (
+        <>
+            {
+                mock_data.work.map((v, i) => {
+                    if (days.format('YYYYMMDD') == moment(v.start).format('YYYYMMDD')) {
+                        return <div key={i} onClick={() => ModalCalender(true)} className='calendar_body_days_event'>{v.data}</div>
+                    }
+                })
+            }
+        </>
+    )
+}
 
 function Day_kor() {
     return (

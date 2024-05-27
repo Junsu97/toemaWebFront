@@ -1,0 +1,88 @@
+.modal{
+  color:#00A5FF;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .modal_div{
+    background-color: white;
+    height: 90vh;
+    width: 90vw;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    .modal_title{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 5px;
+      font-size: 3vh;
+      height: 10%;
+      width: 90%;
+      border: 2px solid #00A5FF;
+    }
+    .modal_body{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 80%;
+      width: 90%;
+      border: 2px solid #00C3FF;
+      .modal_button_start{
+        text-align: center;
+        margin:10px;
+        padding: 2px;
+      }
+      .modal_button_end{
+        text-align: center;
+        margin:10px;
+        padding: 2px;
+      }
+      .modal_calendar{
+        display: flex;
+        flex-direction: column;
+        border: 2px solid #00C3FF;
+        background-color: #96FFFF;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 2vh;
+        .calendar_body_head{
+          color : rgb(15, 15, 15);
+          display: flex;
+          .calendar_body_head_days{
+            width: 100%;
+            font-size:2vw;
+          }
+        }
+        .calendar_body_line{
+          display:flex;
+          flex-direction: row;
+          width: 100%;
+          height: 100%;
+          .calendar_body_days{
+            display:flex;
+            flex-direction: column;
+            width: 100%;
+            height:100%;
+            font-size : 2vw;
+            margin:2px;
+            padding: 1px;
+          }
+          .calendar_body_days :hover{
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #00e1ff;
+          }
+
+        }
+      }
+    }
+  }
+}
