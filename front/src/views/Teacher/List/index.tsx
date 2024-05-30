@@ -185,7 +185,7 @@ export default function TeacherList() {
                                           }}
                                           style={{marginRight: '0px'}}/>
                     </div>
-                    <div className='container'>
+                    <div className='container-teacher'>
                         {viewList.map(teacherListItem => <TeacherListItem
                             teacherListItem={teacherListItem}></TeacherListItem>)}
                     </div>

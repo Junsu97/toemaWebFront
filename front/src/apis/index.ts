@@ -60,7 +60,7 @@ import {PatchApplyRequestDTO, PostApplyTeacherRequestDTO} from "./reqeust/teache
 import PostApplyListRequestDto from "./reqeust/teacher/post-apply-list-request.dto";
 import PostApplyListResponseDto from "./response/teacher/post-apply-list-response.dto";
 
-const DOMAIN = 'http://localhost:10000';
+const DOMAIN = 'http://localhost:11000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const authorization = (accessToken: string) => {

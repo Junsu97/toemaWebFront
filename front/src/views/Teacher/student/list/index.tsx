@@ -64,7 +64,7 @@ export default function MatchedStudents(){
             <div style={{width: '100%'}}>
                 <div className='title' style={{marginBottom:'10px'}}>{'관리중인 학생 목록'}</div>
                 <div className='contentBox'>
-                    <div className='container'>
+                    <div className='container-student'>
                         {viewList.map(studentListItem => <MatchedStudentList
                             studentListItem={studentListItem}></MatchedStudentList>)}
                     </div>

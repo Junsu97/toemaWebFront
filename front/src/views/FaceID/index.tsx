@@ -187,23 +187,27 @@ export default function FaceCapture() {
 
             // 캔버스 초기화
             // 캔버스 초기화
-            canvasRef.current?.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            if(canvasRef) {
 
 
-            const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-                .withFaceLandmarks()
-                .withFaceExpressions();
-            const resizedDetections = faceapi.resizeResults(detections, displaySize);
-            const highAccuracyNeutralExpressions = resizedDetections.filter(detection =>
-                detection.detection.score >= 0.9 && detection.expressions.neutral >= 0.9) as DetectionWithExpression[];
+                canvasRef.current?.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
-            if (highAccuracyNeutralExpressions.length > 0) {
-                setAccumulatedDetections(prevDetections => [...prevDetections, ...highAccuracyNeutralExpressions]);
+
+                const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceExpressions();
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+                const highAccuracyNeutralExpressions = resizedDetections.filter(detection =>
+                    detection.detection.score >= 0.9 && detection.expressions.neutral >= 0.9) as DetectionWithExpression[];
+
+                if (highAccuracyNeutralExpressions.length > 0) {
+                    setAccumulatedDetections(prevDetections => [...prevDetections, ...highAccuracyNeutralExpressions]);
+                }
+
+                faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
+                faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
+                faceapi.draw.drawFaceExpressions(canvasRef.current, resizedDetections);
             }
-
-            faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
-            faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
-            faceapi.draw.drawFaceExpressions(canvasRef.current, resizedDetections);
         }, 100) as unknown as number;
     };
     return (

@@ -26,7 +26,7 @@
     align-items: center;
     gap: 24px;
 }
-.container{
+.container-teacher{
     width: 100%;
     /* min-width: 1200px; */
 
@@ -35,7 +35,6 @@
     gap: 16px;
     flex-direction: column;
     align-items: center;
-    gap: 56px;
 }
 .formLabelBox{
     background-color: white;

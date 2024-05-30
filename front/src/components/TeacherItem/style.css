@@ -135,6 +135,7 @@ html {
 .content {
     position: relative;
     animation: animatop 0.9s cubic-bezier(0.425, 1.140, 0.470, 1.125) forwards;
+    width:500px;
 }
 
 .card {

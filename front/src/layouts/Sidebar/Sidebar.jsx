@@ -5,7 +5,7 @@ import probg from "assets/image/bg/download.jpg";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useLoginUserStore} from 'stores';
 import defautltProfileImage from 'assets/image/default-profile-image.png'
-import {BOARD_LIST, MATCHED_STUDENT_LIST, TEACHER_APPLY_LIST, TEACHER_LIST} from "constant";
+import {BOARD_LIST, HOMEWORK_LIST, MATCHED_STUDENT_LIST, TEACHER_APPLY_LIST, TEACHER_LIST} from "constant";
 import React, {useState, useEffect} from "react";
 
 
@@ -66,7 +66,7 @@ const Sidebar = () => {
                 ...prevNavigation,
                 {
                     title: "숙제 확인",
-                    href: MATCHED_STUDENT_LIST(loginUser.userId),
+                    href: HOMEWORK_LIST(loginUser.userId),
                     icon: "bi bi-speedometer2",
                 }
             ]);

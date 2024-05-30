@@ -13,8 +13,7 @@
     gap: 24px;
 }
 
-.container {
-    width: 100%;
+.container-student {
     /* min-width: 1200px; */
     display: grid;
     grid-template-columns: repeat(2, 1fr);

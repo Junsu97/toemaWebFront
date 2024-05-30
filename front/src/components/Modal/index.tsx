@@ -36,7 +36,7 @@ const Modal: React.FC<ModalProps> = ({onOpen,onClose,open,videoRef, canvasRef}) 
                 clearInterval(intervalIdRef.current);
             }
         };
-    }, []);
+    }, [onClose]);
 
     const customModalStyles: ReactModal.Styles = {
         overlay: {
