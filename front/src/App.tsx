@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+
 import './App.css';
 import Main from 'views/Main';
 import Authentication from 'views/Authentication';
@@ -128,7 +129,7 @@ function App() {
           <Route path={TEACHER_APPLY_LIST()} element={<ApplyList/>}/>
           <Route path={TEACHER_APPLY_DETAIL(':teacherUserId',':studentUserId')} element={<ApplyDetail/>}/>
           <Route path={FACE_ID()} element={<FaceCapture/>}/>
-          <Route path={HOMEWORK()} element={<Homework/>}/>
+          <Route path={HOMEWORK(':teacherUserId',':studentUserId')} element={<Homework/>}/>
           <Route path={MATCHED_STUDENT_LIST(':teacherId')} element={<MatchedStudents/>}/>
           <Route path={STUDENT_INFO(':studentId')} element={<StudentInfo/>}/>
           <Route path={FIND_PASSWROD()} element={<FindPassword/>} />

@@ -2,7 +2,7 @@ import MatchedStudentListItemInterface from "../../types/interface/matched-stude
 import defautltProfileImage from "../../assets/image/default-profile-image.png";
 import './style.css';
 import React, {useEffect, useState} from "react";
-import {STUDENT_INFO, TEACHER_APPLY_LIST, TEACHER_INFO} from "../../constant";
+import {HOMEWORK, MAIN_PATH, STUDENT_INFO, TEACHER_APPLY_LIST, TEACHER_INFO} from "../../constant";
 import {useNavigate, useParams} from "react-router-dom";
 import {patchApplyRequest} from "../../apis";
 import {PatchApplyRequestDTO} from "../../apis/reqeust/teacher";
@@ -20,6 +20,7 @@ export default function MatchedStudentList({studentListItem} : Props){
     const [cookies] = useCookies();
     const navigator = useNavigate();
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [studentId, setStudentId] = useState<string>('');
     const {teacherId} = useParams();
     const {loginUser} = loginUserStore();
 
@@ -66,10 +67,20 @@ export default function MatchedStudentList({studentListItem} : Props){
         setShowModal(false);
     };
 
-    const patchMatched = () => {
-        // patchMatched 함수 구현
-        console.log('patchMatched 함수 호출됨');
-    };
+    useEffect(() => {
+        setStudentId(studentListItem.userId);
+        if(!teacherId){
+            alert('비정상적인 접근입니다.');
+            navigator(MAIN_PATH());
+        }
+    }, [teacherId]);
+    const homeworkButtonClickHandler = () => {
+        if(!teacherId){
+            alert('비정상적인 접근입니다.');
+            navigator(MAIN_PATH());
+        }
+        navigator(HOMEWORK(teacherId as string,studentId));
+    }
 
 
     return(
@@ -94,7 +105,7 @@ export default function MatchedStudentList({studentListItem} : Props){
                         width: '550px',
                         height:'150px',
                     }}>
-                        <div className={'black-button'}>숙제 관리</div><div className={'black-button'}>과외 일정</div><div className={'black-button'} onClick={handleOpenDialog}>매치 해제</div>
+                        <div className={'black-button'} onClick={homeworkButtonClickHandler}>숙제 관리</div><div className={'black-button'}>과외 일정</div><div className={'black-button'} onClick={handleOpenDialog}>매치 해제</div>
                         {showModal && (
                             <ConfirmModal message={'학생과의 매치를 해제하시겠습니까?'} onConfirm={handleConfirm} onCancel={handleCancel}/>
                         )}

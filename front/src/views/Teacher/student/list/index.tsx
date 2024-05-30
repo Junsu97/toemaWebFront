@@ -1,12 +1,8 @@
 import loginUserStore from "../../../../stores/login-user.store";
 import {useNavigate, useParams} from "react-router-dom";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import TeacherListItem from "../../../../components/TeacherItem";
 import Pagenation from "../../../../components/Pagination";
 import * as React from "react";
 import {usePagination} from "../../../../hooks";
-import {TeacherListItemInterface} from "../../../../types/interface";
 import MatchedStudentList from "../../../../components/MatchedStudentListItem";
 import {useEffect} from "react";
 import {getMatchedStudentListRequest} from "../../../../apis";
@@ -15,6 +11,7 @@ import {AUTH_PATH, MAIN_PATH} from "../../../../constant";
 import {GetMatchedStudentListResponseDto} from "../../../../apis/response/teacher";
 import {ResponseDto} from "../../../../apis/response";
 import MatchedStudentListItemInterface from "../../../../types/interface/matched-student-list-item.interface";
+import './style.css';
 
 export default function MatchedStudents(){
     const {loginUser} = loginUserStore();
@@ -65,7 +62,7 @@ export default function MatchedStudents(){
     return(
         <div className='wrapper'>
             <div style={{width: '100%'}}>
-                <div className='title'>{'관리중인 학생 목록'}</div>
+                <div className='title' style={{marginBottom:'10px'}}>{'관리중인 학생 목록'}</div>
                 <div className='contentBox'>
                     <div className='container'>
                         {viewList.map(studentListItem => <MatchedStudentList

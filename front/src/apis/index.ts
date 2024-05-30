@@ -13,7 +13,12 @@ import {
     PostMailResponseDTO,
     PostUserIdResponseDTO
 } from './response/user';
-import {PatchBoardRequestDTO, PostBoardRequestDTO, PostCommentRequestDTO} from './reqeust/board';
+import {
+    PatchBoardRequestDTO,
+    PatchCommentRequestDTO,
+    PostBoardRequestDTO,
+    PostCommentRequestDTO
+} from './reqeust/board';
 import {
     PostboardResponseDTO,
     GetBoardResponseDTO,
@@ -27,7 +32,7 @@ import {
     GetLatesttBoardListResponseDTO,
     GetTop3BoardListResponseDTO,
     GetSearchBoardListResonseDTO,
-    GetUserBoardListResponseDTO
+    GetUserBoardListResponseDTO, PatchCommentResponseDTO, DeleteCommentResponseDTO
 } from './response/board';
 import {GetPopularListResponseDTO, GetRelationListResponseDTO} from './response/search';
 import {
@@ -157,6 +162,8 @@ const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/board/user-bo
 const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
 const GET_FAVORITE_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
 const GET_COMMENT_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/comment-list`;
+const PATCH_COMMENT_URL = () => `${API_DOMAIN}/board/comment`;
+const DELETE_COMMENT_URL = (boardNumber:number|string, commentNumber:number|string) => `${API_DOMAIN}/board/comment/${boardNumber}/${commentNumber}`;
 const POST_BOARD_URL = () => `${API_DOMAIN}/board/write`;
 const PATCH_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`;
 const POST_COMMENT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/comment`;
@@ -294,6 +301,34 @@ export const getCommentListRequest = async (boardNumber: number | string) => {
         .then(response => {
             const reqeustBody: GetCommentListResponseDTO = response.data;
             return reqeustBody;
+        })
+        .catch(error => {
+            if (!error.reponse) return null;
+            const reqeustBody: ResponseDto = error.reponse.data;
+            return reqeustBody;
+        })
+    return result;
+}
+
+export const patchCommentRequest = async (requestBody:PatchCommentRequestDTO, accessToken:string) => {
+    const result = await axios.patch(PATCH_COMMENT_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchCommentResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.reponse) return null;
+            const reqeustBody: ResponseDto = error.reponse.data;
+            return reqeustBody;
+        })
+    return result;
+}
+
+export const deleteCommentRequest = async (boardNumber:number|string, commentNumber:number|string,accessToken:string) => {
+    const result =  await axios.delete(DELETE_COMMENT_URL(boardNumber,commentNumber), authorization(accessToken))
+        .then(response => {
+            const responseBody: DeleteCommentResponseDTO = response.data;
+            return responseBody;
         })
         .catch(error => {
             if (!error.reponse) return null;

@@ -188,6 +188,7 @@ html {
     flex-direction: row;
     z-index: 2;
     position: relative;
+    width:100%
 }
 
 .firstinfo img {

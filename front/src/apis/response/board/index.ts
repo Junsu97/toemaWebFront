@@ -11,6 +11,8 @@ import GetTop3BoardListResponseDTO from './get-top-3-board.list.response.dto';
 import GetUserBoardListResponseDTO from './get-user-board-list.response.dto';
 import GetLatesttBoardListResponseDTO from './get-latest-board-list.reponse.dto';
 import GetSearchBoardListResonseDTO from './get-search-board-list.response.dto';
+import PatchCommentResponseDTO from "./patch-comment.response.dto";
+import DeleteCommentResponseDTO from "./delete-comment.response.dto";
 export type{
     GetBoardResponseDTO,
     GetTop3BoardListResponseDTO,
@@ -29,5 +31,9 @@ export type{
 
     PutFavoriteResponseDTO,
 
-    DeleteBoardResponseDTO
+    PatchCommentResponseDTO,
+
+    DeleteBoardResponseDTO,
+    DeleteCommentResponseDTO
+
 }

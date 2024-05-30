@@ -1,0 +1,81 @@
+/* styles.css */
+
+.fc-day-sun a {
+    color: red;
+}
+
+.fc-day-mon a {
+    color: black;
+}
+
+.fc-day-tue a {
+    color: black;
+}
+
+.fc-day-wed a {
+    color: black;
+}
+
+.fc-day-thu a {
+    color: black;
+}
+
+.fc-day-fri a {
+    color: black;
+}
+
+/* style.css */
+.calendar-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* 스크롤을 없애기 위해 오버플로우 속성을 숨김으로 설정 */
+}
+
+.fc {
+    width: 100%;
+    height: 100%;
+}
+
+.fc-scrollgrid {
+    overflow: hidden; /* FullCalendar 내부의 스크롤을 없앰 */
+}
+
+.fc-daygrid-day {
+    cursor: pointer; /* 날짜 셀에 커서 포인터 적용 */
+}
+
+/* 토요일 날짜: 파란색 */
+.fc-day-sat a {
+    color: blue;
+}
+
+.calendar-container {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #003458;
+}
+
+
+.left-container {
+    width: 40%;
+    height: 100%;
+    float: left;
+    box-sizing: border-box;
+    border-right: 1px solid #003458;
+}
+
+.right-container {
+    width: 60%;
+    height: 100%;
+    float: right;
+    box-sizing: border-box;
+}
+
+.date-text {
+    text-align: center;
+    color: rgba(0, 0, 0, 1);
+
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 140%;
+}

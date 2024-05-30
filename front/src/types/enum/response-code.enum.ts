@@ -13,6 +13,7 @@ enum ResponseCode {
       NOT_EXISTED_USER = "NU" ,
       NOT_EXISTED_BOARD = "NB" ,
       NOT_EXISTED_APPLY = "NA",
+      NOT_EXISTED_COMMENT = "NC",
   
       /** HTTP Status 401*/
       SIGN_IN_FAIL = "SF" ,

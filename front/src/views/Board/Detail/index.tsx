@@ -6,9 +6,18 @@ import CommentItem from 'components/CommentItem';
 import Pagenation from 'components/Pagination';
 import { useLoginUserStore } from 'stores';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BOARD_LIST, BOARD_UPDATE_PATH, USER_PATH } from 'constant';
+import {BOARD_DETAIL_PATH, BOARD_LIST, BOARD_UPDATE_PATH, USER_PATH} from 'constant';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
-import { deleteBoardRequest, getBoardRequest, getCommentListRequest, getFavoriteListReqeust, increaseViewCountRequest, postCommentRequest, putFavoriteRequest } from 'apis';
+import {
+  deleteBoardRequest,
+  getBoardRequest,
+  getCommentListRequest,
+  getFavoriteListReqeust,
+  increaseViewCountRequest,
+  patchCommentRequest,
+  postCommentRequest,
+  putFavoriteRequest
+} from 'apis';
 import GetBoardResponseDTO from 'apis/response/board/get-board.reponse.dto';
 import { ResponseDto } from 'apis/response';
 import { DeleteBoardResponseDTO, GetCommentListResponseDTO, GetFavoriteListResponseDTO, IncreaseViewCountResponseDTO, PostCommentResponseDTO, PutFavoriteResponseDTO } from 'apis/response/board';
@@ -17,6 +26,8 @@ import dayjs from 'dayjs';
 import { useCookies } from 'react-cookie';
 import { PostCommentRequestDTO } from 'apis/reqeust/board';
 import { usePagination } from 'hooks';
+import {PatchCommentRequestDTO} from "../../../apis/reqeust/board";
+import {PatchCommentResponseDTO} from "../../../apis/response/board";
 interface Props {
   favoriteListItem: FavoriteListDTO;
 }
@@ -186,10 +197,14 @@ export default function BoardDetail() {
     const [showFavorite, setShowFavorite] = useState<boolean>(false);
     // state : 댓글 리스트 보기 상태
     const [showComment, setShowComment] = useState<boolean>(false);
+    const [commentNumber, setCommentNumber] = useState<number>(0);
+    const {boardNumber} = useParams();
     // state : 댓글 상태
     const [comment, setComment] = useState<string>('');
     // state : 전체 댓글 개수 상태
     const [totalComentCount, setTotalComentCount] = useState<number>(0);
+
+    const [editingComment, setEditingComment] = useState<CommentListDTO | null>(null); // State to track the comment being edited
 
     // function : get favorite list response 처리 함수
     const getFavoriteListResponse = (responseBody: GetFavoriteListResponseDTO | ResponseDto | null) => {
@@ -215,7 +230,7 @@ export default function BoardDetail() {
     //   setFavorite(isFavorite);
     // },[isFavorite])
     // function : get comment list response 처리 함수
-    const getCommentListResponse = (responseBody: GetCommentListResponseDTO | ResponseDto | null) => {
+    const getCommentListResponse =  (responseBody: GetCommentListResponseDTO | ResponseDto | null) => {
       if (!responseBody) return;
       const { code } = responseBody;
       if (code === 'NB') alert('존재하지 않는 게시물입니다.');
@@ -291,6 +306,69 @@ export default function BoardDetail() {
       getCommentListRequest(boardNumber).then(getCommentListResponse)
     }, [boardNumber])
 
+
+
+    const onCommentedChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setComment(e.target.value);
+
+    };
+
+
+    const onEditButtonClick = (comment: CommentListDTO) => {
+      setEditingComment(comment); // Set the comment to be edited
+      setCommentNumber(comment.commentNumber);
+      setComment(comment.content); // Populate the textarea with the existing comment content
+    };
+
+
+    const patchCommentResponse = (responseBody: PatchCommentResponseDTO | ResponseDto | null) => {
+      if(!responseBody){
+        alert('서버로 부터 데이터를 불러올 수 없습니다.');
+        return;
+      }
+
+      const {code} = responseBody;
+
+      if(code === 'NC'){
+        alert('존재하지 않는 댓글입니다.');
+        return;
+      }
+      if(code === 'NP'){
+        alert('권한이 없습니다.');
+        return;
+      }
+      if(code === 'DBE'){
+        alert('데이터베이스 오류입니다.');
+        return;
+      }
+      if(code !== 'SU'){
+        alert('오류가 발생했습니다.');
+        return;
+      }
+      if(!boardNumber){
+        alert('비정상적인 접근입니다.');
+        return;
+      }
+      alert('수정되었습니다.');
+      navigator(BOARD_DETAIL_PATH(boardNumber));
+    }
+    const onCommentUpdateSubmitButtonClickHandler = () => {
+      // Logic for updating a comment
+      if(!boardNumber){
+        alert('비정상적인 접근입니다.');
+        return;
+      }
+      if(!comment){
+        alert('댓글 내용을 입력해주세요');
+        return;
+      }
+      const content = comment;
+      const requestBody: PatchCommentRequestDTO = {boardNumber,commentNumber,content}
+      patchCommentRequest(requestBody, cookies.accessToken).then(patchCommentResponse);
+    };
+
+
+
     // render : 게시물 상세 하단 컴포넌트 렌더링
     return (
       <div id='board-detail-bottom'>
@@ -336,33 +414,62 @@ export default function BoardDetail() {
           </div>
         }
         {showComment &&
-          <div className='board-detail-bottom-comment-box'>
-            <div className='board-detail-bottom-comment-container'>
-              <div className='board-detail-bottom-comment-title'>{'댓글 '}<span className='emphasis'>{totalComentCount}</span></div>
-              <div className='board-detail-bottom-comment-list-container'>
-                {viewList.map(item => <CommentItem commentListItem={item} />)}
-              </div>
-            </div>
-            <div className='divider'></div>
-            <div className='board-detail-bottom-comment-pagenation-box'>
-              <Pagenation
-                currentPage={currentPage}
-                currentSection={currentSection}
-                setCurrentPage={setCurrentPage}
-                setCurrentSection={setCurrentSection}
-                viewPageList={viewPageList}
-                totalSection={totalSection} />
-            </div>
-            {loginUser !== null &&
-              <div className='board-detail-bottom-comment-input-box'>
-                <div className='board-detail-bottom-comment-input-container'>
-                  <textarea ref={commentRef} className='board-detail-bottom-comment-textarea' placeholder='댓글을 작성해주세요.' value={comment} onChange={onCommentChangeHandler} />
-                  <div className='board-detail-bottom-comment-button-box'>
-                    <div className={comment === '' ? 'disable-button' : 'black-button'} onClick={onCommentSubmitButtonClickHandler}>{'댓글 달기'}</div>
-                  </div>
+            <div className='board-detail-bottom-comment-box'>
+              <div className='board-detail-bottom-comment-container'>
+                <div className='board-detail-bottom-comment-title'>
+                  {'댓글 '}<span className='emphasis'>{totalComentCount}</span>
+                </div>
+                <div className='board-detail-bottom-comment-list-container'>
+                  {viewList.map(item => (
+                      <CommentItem
+                          key={item.commentNumber}
+                          commentListItem={item}
+                          onEditButtonClick={onEditButtonClick}
+                      />
+                  ))}
                 </div>
               </div>
-            }
+              <div className='divider'></div>
+              <div className='board-detail-bottom-comment-pagenation-box'>
+                <Pagenation
+                    currentPage={currentPage}
+                    currentSection={currentSection}
+                    setCurrentPage={setCurrentPage}
+                    setCurrentSection={setCurrentSection}
+                    viewPageList={viewPageList}
+                    totalSection={totalSection}
+                />
+              </div>
+              {loginUser !== null &&
+                  <div className='board-detail-bottom-comment-input-box'>
+                    <div className='board-detail-bottom-comment-input-container'>
+                            <textarea
+                                ref={commentRef}
+                                className='board-detail-bottom-comment-textarea'
+                                placeholder='댓글을 작성해주세요.'
+                                value={comment}
+                                onChange={onCommentChangeHandler}
+                            />
+                      <div className='board-detail-bottom-comment-button-box'>
+                        {editingComment ? (
+                            <div
+                                className={comment === '' ? 'disable-button' : 'black-button'}
+                                onClick={onCommentUpdateSubmitButtonClickHandler}
+                            >
+                              {'댓글 수정'}
+                            </div>
+                        ) : (
+                            <div
+                                className={comment === '' ? 'disable-button' : 'black-button'}
+                                onClick={onCommentSubmitButtonClickHandler}
+                            >
+                              {'댓글 달기'}
+                            </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+              }
           </div>
         }
       </div>

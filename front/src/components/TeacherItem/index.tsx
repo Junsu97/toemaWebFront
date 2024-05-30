@@ -5,7 +5,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import {TeacherListItemInterface} from "../../types/interface";
 import {useNavigate} from "react-router-dom";
-import {TEACHER_APPLY, TEACHER_INFO} from "../../constant";
+import { TEACHER_INFO} from "../../constant";
 
 
 interface Props {
