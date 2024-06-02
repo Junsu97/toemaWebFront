@@ -59,6 +59,8 @@ import {
 import {PatchApplyRequestDTO, PostApplyTeacherRequestDTO} from "./reqeust/teacher";
 import PostApplyListRequestDto from "./reqeust/teacher/post-apply-list-request.dto";
 import PostApplyListResponseDto from "./response/teacher/post-apply-list-response.dto";
+import {GetHomeworkResponseDTO, HomeAnotherResponseDTO} from "./response/homework";
+import {PostPatchHomeworkRequestDTO} from "./reqeust/homework";
 
 const DOMAIN = 'http://localhost:11000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -734,5 +736,66 @@ export const postFaceIdSignRequest = async (requestBody: PostFaceIdSignInRequest
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
+    return result;
+}
+
+const GET_HOMEWORK_URL = (teacherUserId: string, studentUserId: string) => `${API_DOMAIN}/homework/${teacherUserId}/${studentUserId}`;
+const POST_HOMEWORK_URL = () => `${API_DOMAIN}/homework/write`;
+const PATCH_HOMEWORK_URL = (seq:number|string) => `${API_DOMAIN}/homework/update/${seq}`;
+const DELETE_HOMEWORK_URL = (seq:number|string) => `${API_DOMAIN}/homework/delete/${seq}`;
+
+export const getHomeworkRequest = async (teacherUserId: string, studentUserId: string) => {
+    const result = await axios.get(GET_HOMEWORK_URL(teacherUserId,studentUserId))
+        .then(response => {
+            const responseBody: GetHomeworkResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.reponse.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const postHomeworkRequest = async (requestBody:PostPatchHomeworkRequestDTO, accessToken:string) => {
+    const result = await axios.post(POST_HOMEWORK_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: HomeAnotherResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const patchHomeworkRequest = async (requestBody: PostPatchHomeworkRequestDTO, seq:number|string, accessToken:string)=> {
+    const result = await axios.patch(PATCH_HOMEWORK_URL(seq), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: HomeAnotherResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const deleteHomeworkRequest = async (seq:number|string, accessToken:string)=> {
+    const result = await axios.delete(DELETE_HOMEWORK_URL(seq), authorization(accessToken))
+        .then(response => {
+            const responseBody: HomeAnotherResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
     return result;
 }
