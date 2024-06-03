@@ -59,7 +59,7 @@ import {
 import {PatchApplyRequestDTO, PostApplyTeacherRequestDTO} from "./reqeust/teacher";
 import PostApplyListRequestDto from "./reqeust/teacher/post-apply-list-request.dto";
 import PostApplyListResponseDto from "./response/teacher/post-apply-list-response.dto";
-import {GetHomeworkResponseDTO, HomeAnotherResponseDTO} from "./response/homework";
+import {GetHomeworkListResponseDto, HomeAnotherResponseDTO} from "./response/homework";
 import {PostPatchHomeworkRequestDTO} from "./reqeust/homework";
 
 const DOMAIN = 'http://localhost:11000';
@@ -739,20 +739,21 @@ export const postFaceIdSignRequest = async (requestBody: PostFaceIdSignInRequest
     return result;
 }
 
-const GET_HOMEWORK_URL = (teacherUserId: string, studentUserId: string) => `${API_DOMAIN}/homework/${teacherUserId}/${studentUserId}`;
+const GET_HOMEWORK_URL = () => ``;
+const GET_HOMEWORK_LIST_URL = (teacherUserId: string, studentUserId: string) => `${API_DOMAIN}/homework/${teacherUserId}/${studentUserId}/list`;
 const POST_HOMEWORK_URL = () => `${API_DOMAIN}/homework/write`;
 const PATCH_HOMEWORK_URL = (seq:number|string) => `${API_DOMAIN}/homework/update/${seq}`;
 const DELETE_HOMEWORK_URL = (seq:number|string) => `${API_DOMAIN}/homework/delete/${seq}`;
 
-export const getHomeworkRequest = async (teacherUserId: string, studentUserId: string) => {
-    const result = await axios.get(GET_HOMEWORK_URL(teacherUserId,studentUserId))
+export const getHomeworkListRequest = async (teacherUserId: string, studentUserId: string) => {
+    const result = await axios.get(GET_HOMEWORK_LIST_URL(teacherUserId,studentUserId))
         .then(response => {
-            const responseBody: GetHomeworkResponseDTO = response.data;
+            const responseBody: GetHomeworkListResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
             if (!error.response) return null;
-            const responseBody: ResponseDto = error.reponse.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
     return result;

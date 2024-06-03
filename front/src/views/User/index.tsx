@@ -207,7 +207,10 @@ export default function UserPage() {
         navigate(MAIN_PATH());
         return;
       }
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'DBE') {
+        alert('데이터베이스 오류입니다.');
+        return;
+      }
       if (code !== 'SU') return;
 
       const { userBoardList } = responseBody as GetUserBoardListResponseDTO;
@@ -219,7 +222,7 @@ export default function UserPage() {
     // event handler : 게시글 쓰기 버튼 클릭 이벤트 처리
     const onBoardWriterClickHandler = () => {
       if (!loginUser) return;
-      if (loginUser.userType === 'TEAHCER') {
+      if (loginUser.userType === 'TEACHER') {
         alert('공부인증 게시글은 학생회원만 작성할 수 있습니다.');
         return;
       }

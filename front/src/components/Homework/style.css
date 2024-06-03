@@ -1,0 +1,30 @@
+#homework{
+    padding-bottom: 25px;
+}
+
+.homework-wrapper{
+    background-color: rgba(0,0,0,0.04);
+    height: 130px;
+}
+
+.content-date-container{
+    display: flex;
+    justify-content:space-evenly;
+    height:50px;
+    align-items: center;
+}
+.homework-content{
+    height: 60px;
+}
+
+.content-date{
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 140%;
+    font-family: 'GimhaeGaya';
+}
+.button-box{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
