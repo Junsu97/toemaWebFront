@@ -6,15 +6,18 @@ import './style.css';
 import { styled } from '@mui/material/styles';
 import dayjs, { Dayjs } from "dayjs";
 import { TextareaAutosize } from "@mui/material";
-import { getHomeworkListRequest } from "../../../apis";
-import { useParams } from "react-router-dom";
-import { GetHomeworkListResponseDto, } from "../../../apis/response/homework";
+import {getHomeworkListRequest, postHomeworkRequest} from "../../../apis";
+import {useNavigate, useParams} from "react-router-dom";
+import {GetHomeworkListResponseDto, HomeAnotherResponseDTO,} from "../../../apis/response/homework";
 import { ResponseDto } from "../../../apis/response";
 import HomeworkListItemInterface from "../../../types/interface/homework-list-item.interface";
 import isBetween from "dayjs/plugin/isBetween";
 import HomeworkList from "../../Homework";
 import { usePagination } from "../../../hooks";
 import Pagenation from "../../Pagination";
+import {PostPatchHomeworkRequestDTO} from "../../../apis/reqeust/homework";
+import {useCookies} from "react-cookie";
+import {MAIN_PATH, MATCHED_STUDENT_LIST} from "../../../constant";
 
 dayjs.extend(isBetween);
 
@@ -34,6 +37,8 @@ export default function CalendarItem() {
     const disableStartDate = dayjs(today).format('YYYY-MM-DD');
     const disableEndDate = startDate;
     const contentRef = useRef<HTMLTextAreaElement | null>(null);
+    const [cookies] = useCookies();
+    const navigate = useNavigate();
 
     const [homeworkContent, setHomeworkContent] = useState<string>('');
     const [selectDate, setSelectDate] = useState<string>(dayjs(today).format('YYYY-MM-DD'));
@@ -140,6 +145,72 @@ export default function CalendarItem() {
         );
     };
 
+    const postHomeworkResponse = (responseBody: HomeAnotherResponseDTO | ResponseDto | null) => {
+        if(!teacherUserId){
+            return;
+        }
+        if (!responseBody) {
+            alert('서버로부터 데이터를 불러올 수 없습니다.');
+            return;
+        }
+        const { code } = responseBody;
+        if(code === 'VF'){
+            alert('비정상적인 접근입니다.');
+            return;
+        }
+        if(code === 'NU'){
+            alert('사용자 정보가 옳바르지 않습니다.');
+            return;
+        }
+        if(code === 'NM'){
+            alert('관리중인 학생이 아닙니다. 다시 확인해주세요.');
+            navigate(MATCHED_STUDENT_LIST(teacherUserId));
+            return;
+        }
+        if(code === 'DBE'){
+            alert('데이터베이스 오류입니다.');
+            return;
+        }
+        if(code !== 'SU'){
+            alert('알 수 없는 에러가 발생하였습니다.');
+            navigate(MAIN_PATH());
+            return;
+        }
+
+        alert('숙제 등록을 완료하였습니다.');
+        return;
+    }
+
+    const onPostButtonClickHandler = () => {
+        if(!cookies.accessToken){
+            alert('로그인 후 이용해주세요.');
+            return;
+        }
+        if(!studentUserId || !teacherUserId){
+            alert('비정상적인 접근입니다.');
+            navigate(MAIN_PATH());
+            return;
+        }
+        if(!startDate || !endDate){
+            alert('시작날짜와 종료날짜는 비워둘 수 없습니다.');
+            return;
+        }
+        if(!homeworkContent){
+            alert('숙제 내용을 입력해주세요.');
+            return;
+        }
+        const startDateStr = startDate ? startDate.format('YYYY-MM-DD') : '';
+        const endDateStr = endDate ? endDate.format('YYYY-MM-DD') : '';
+        const requestBody : PostPatchHomeworkRequestDTO = {
+            studentId: studentUserId,
+            teacherId: teacherUserId,
+            startDate: startDateStr,
+            endDate: endDateStr,
+            content: homeworkContent
+        }
+
+        postHomeworkRequest(requestBody, cookies.accessToken).then(postHomeworkResponse);
+    }
 
 
     return (
@@ -191,7 +262,7 @@ export default function CalendarItem() {
                 </div>
 
                 <div className={'button-wrapper'}>
-                    <div className={'black-button'}>제출</div>
+                    <div className={'black-button'} onClick={onPostButtonClickHandler}>제출</div>
                 </div>
             </div>
             <div className='right-container'>

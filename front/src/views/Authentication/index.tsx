@@ -159,7 +159,10 @@ export default function Authentication() {
                 return;
             }
             const {code} = responseBody;
-            if (code === 'DBE') alert('데이터베이스 오류입니다.');
+            if (code === 'DBE') {
+                alert('데이터베이스 오류입니다.');
+                return;
+            }
             if (code === 'SF' || code === 'VF') {
                 setError(true);
                 alert('아이디 또는 비밀번호가 일치하지 않습니다.');
