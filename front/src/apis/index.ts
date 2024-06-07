@@ -60,7 +60,10 @@ import {PatchApplyRequestDTO, PostApplyTeacherRequestDTO} from "./reqeust/teache
 import PostApplyListRequestDto from "./reqeust/teacher/post-apply-list-request.dto";
 import PostApplyListResponseDto from "./response/teacher/post-apply-list-response.dto";
 import {GetHomeworkListResponseDto, HomeAnotherResponseDTO} from "./response/homework";
-import {PostPatchHomeworkRequestDTO} from "./reqeust/homework";
+import {PostPatchHomeworkRequestDto} from "./reqeust/homework";
+import PostTutoringRequestDTO from "./reqeust/tutoring/post-tutoring-request.dto";
+import PatchTutoringRequestDTO from "./reqeust/tutoring/patch-tutoring-request.dto";
+import {GetTutoringListResponseDTO, TutoringAnotherResponseDTO} from "./response/tutoring";
 
 const DOMAIN = 'http://localhost:11000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -165,14 +168,14 @@ const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}
 const GET_FAVORITE_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
 const GET_COMMENT_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/comment-list`;
 const PATCH_COMMENT_URL = () => `${API_DOMAIN}/board/comment`;
-const DELETE_COMMENT_URL = (boardNumber:number|string, commentNumber:number|string) => `${API_DOMAIN}/board/comment/${boardNumber}/${commentNumber}`;
+const DELETE_COMMENT_URL = (boardNumber: number | string, commentNumber: number | string) => `${API_DOMAIN}/board/comment/${boardNumber}/${commentNumber}`;
 const POST_BOARD_URL = () => `${API_DOMAIN}/board/write`;
 const PATCH_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`;
 const POST_COMMENT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/comment`;
 const PUT_FAVORITE_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
 const DELETE_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`
 
-export const getMatchedStudentListRequest = async (accessToken:string) => {
+export const getMatchedStudentListRequest = async (accessToken: string) => {
     const result = await axios.get(GET_MATCHED_STUDENT_LIST_URL(), authorization(accessToken))
         .then(response => {
             const responseBody: GetMatchedStudentListResponseDto = response.data;
@@ -312,7 +315,7 @@ export const getCommentListRequest = async (boardNumber: number | string) => {
     return result;
 }
 
-export const patchCommentRequest = async (requestBody:PatchCommentRequestDTO, accessToken:string) => {
+export const patchCommentRequest = async (requestBody: PatchCommentRequestDTO, accessToken: string) => {
     const result = await axios.patch(PATCH_COMMENT_URL(), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PatchCommentResponseDTO = response.data;
@@ -326,8 +329,8 @@ export const patchCommentRequest = async (requestBody:PatchCommentRequestDTO, ac
     return result;
 }
 
-export const deleteCommentRequest = async (boardNumber:number|string, commentNumber:number|string,accessToken:string) => {
-    const result =  await axios.delete(DELETE_COMMENT_URL(boardNumber,commentNumber), authorization(accessToken))
+export const deleteCommentRequest = async (boardNumber: number | string, commentNumber: number | string, accessToken: string) => {
+    const result = await axios.delete(DELETE_COMMENT_URL(boardNumber, commentNumber), authorization(accessToken))
         .then(response => {
             const responseBody: DeleteCommentResponseDTO = response.data;
             return responseBody;
@@ -740,13 +743,20 @@ export const postFaceIdSignRequest = async (requestBody: PostFaceIdSignInRequest
 }
 
 const GET_HOMEWORK_URL = () => ``;
-const GET_HOMEWORK_LIST_URL = (teacherUserId: string, studentUserId: string) => `${API_DOMAIN}/homework/${teacherUserId}/${studentUserId}/list`;
+const GET_HOMEWORK_LIST_URL = (teacherUserId: string, studentUserId: string) => `${API_DOMAIN}/homework/from-teacher/${teacherUserId}/${studentUserId}/list`;
+const GET_STUDENT_HOMEWORK_LIST_URL = (studentUserId: string) => `${API_DOMAIN}/homework/from-student/${studentUserId}/list`;
 const POST_HOMEWORK_URL = () => `${API_DOMAIN}/homework/write`;
-const PATCH_HOMEWORK_URL = (seq:number|string) => `${API_DOMAIN}/homework/update/${seq}`;
-const DELETE_HOMEWORK_URL = (seq:number|string) => `${API_DOMAIN}/homework/delete/${seq}`;
+const PATCH_HOMEWORK_URL = (seq: number | string) => `${API_DOMAIN}/homework/update/${seq}`;
+const DELETE_HOMEWORK_URL = (seq: number | string) => `${API_DOMAIN}/homework/delete/${seq}`;
+
+const GET_TUTORING_LIST_FROM_STUDENT_URL = (studentUserId: string) => `${API_DOMAIN}/tutoring/from-student/${studentUserId}/list`;
+const GET_TUTORING_LIST_FROM_TEACHER_URL = (teacherUserId: string, studentUserId: string) => `${API_DOMAIN}/tutoring/from-teacher/${teacherUserId}/${studentUserId}/list`;
+const POST_TUTORING_URL = () => `${API_DOMAIN}/tutoring/write`;
+const PATCH_TUTORING_URL = (seq: number | string) => `${API_DOMAIN}/tutoring/update/${seq}`;
+const DELETE_TUTORING_URL = (seq: number | string) => `${API_DOMAIN}/tutoring/delete/${seq}`;
 
 export const getHomeworkListRequest = async (teacherUserId: string, studentUserId: string) => {
-    const result = await axios.get(GET_HOMEWORK_LIST_URL(teacherUserId,studentUserId))
+    const result = await axios.get(GET_HOMEWORK_LIST_URL(teacherUserId, studentUserId))
         .then(response => {
             const responseBody: GetHomeworkListResponseDto = response.data;
             return responseBody;
@@ -759,7 +769,7 @@ export const getHomeworkListRequest = async (teacherUserId: string, studentUserI
     return result;
 }
 
-export const postHomeworkRequest = async (requestBody:PostPatchHomeworkRequestDTO, accessToken:string) => {
+export const postHomeworkRequest = async (requestBody: PostPatchHomeworkRequestDto, accessToken: string) => {
     const result = await axios.post(POST_HOMEWORK_URL(), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: HomeAnotherResponseDTO = response.data;
@@ -773,7 +783,7 @@ export const postHomeworkRequest = async (requestBody:PostPatchHomeworkRequestDT
     return result;
 }
 
-export const patchHomeworkRequest = async (requestBody: PostPatchHomeworkRequestDTO, seq:number|string, accessToken:string)=> {
+export const patchHomeworkRequest = async (requestBody: PostPatchHomeworkRequestDto, seq: number | string, accessToken: string) => {
     const result = await axios.patch(PATCH_HOMEWORK_URL(seq), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: HomeAnotherResponseDTO = response.data;
@@ -786,7 +796,7 @@ export const patchHomeworkRequest = async (requestBody: PostPatchHomeworkRequest
     return result;
 }
 
-export const deleteHomeworkRequest = async (seq:number|string, accessToken:string)=> {
+export const deleteHomeworkRequest = async (seq: number | string, accessToken: string) => {
     const result = await axios.delete(DELETE_HOMEWORK_URL(seq), authorization(accessToken))
         .then(response => {
             const responseBody: HomeAnotherResponseDTO = response.data;
@@ -799,4 +809,68 @@ export const deleteHomeworkRequest = async (seq:number|string, accessToken:strin
         });
 
     return result;
+}
+
+export const getTutoringListFromTeacherRequest = async (teacherUserId: string, studentUserId: string) => {
+    const result = await axios.get(GET_TUTORING_LIST_FROM_TEACHER_URL(teacherUserId, studentUserId))
+        .then(response => {
+            const responseBody: GetTutoringListResponseDTO = response.data;
+            return responseBody;
+        }).catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+export const getTutoringListFromStudentRequest = async (studentUserId: string) => {
+    const result = await axios.get(GET_TUTORING_LIST_FROM_STUDENT_URL(studentUserId))
+        .then(response => {
+            const responseBody: GetTutoringListResponseDTO = response.data;
+            return responseBody;
+        }).catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+export const postTutoringRequest = async (requestBody: PostTutoringRequestDTO, accessToken: string) => {
+    const result = await axios.post(POST_TUTORING_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: TutoringAnotherResponseDTO = response.data;
+            return responseBody;
+        }).catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+export const patchTutoringRequest = async (requestBody: PatchTutoringRequestDTO, seq: number | string, accessToken: string) => {
+    const result = await axios.patch(PATCH_TUTORING_URL(seq), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: TutoringAnotherResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+export const deleteTutoringRequest = async (seq: number | string, accessToken : string) => {
+    const result = await axios.delete(DELETE_TUTORING_URL(seq), authorization(accessToken))
+        .then(response => {
+            const responseBody: TutoringAnotherResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+
 }

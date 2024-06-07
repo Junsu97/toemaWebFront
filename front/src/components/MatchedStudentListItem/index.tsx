@@ -2,7 +2,7 @@ import MatchedStudentListItemInterface from "../../types/interface/matched-stude
 import defautltProfileImage from "../../assets/image/default-profile-image.png";
 import './style.css';
 import React, {useEffect, useState} from "react";
-import {HOMEWORK, MAIN_PATH, STUDENT_INFO, TEACHER_APPLY_LIST, TEACHER_INFO} from "../../constant";
+import {HOMEWORK, MAIN_PATH, STUDENT_INFO, TEACHER_APPLY_LIST, TEACHER_INFO, TUTORING} from "../../constant";
 import {useNavigate, useParams} from "react-router-dom";
 import {patchApplyRequest} from "../../apis";
 import {PatchApplyRequestDTO} from "../../apis/reqeust/teacher";
@@ -78,8 +78,18 @@ export default function MatchedStudentList({studentListItem} : Props){
         if(!teacherId){
             alert('비정상적인 접근입니다.');
             navigator(MAIN_PATH());
+            return;
         }
         navigator(HOMEWORK(teacherId as string,studentId));
+    }
+
+    const tutoringButtonClickHandler = () => {
+        if(!teacherId){
+            alert('비정상적인 접근입니다.');
+            navigator(MAIN_PATH());
+            return;
+        }
+        navigator(TUTORING(teacherId as string, studentId));
     }
 
 
@@ -105,7 +115,7 @@ export default function MatchedStudentList({studentListItem} : Props){
                         width: '550px',
                         height:'150px',
                     }}>
-                        <div className={'black-button'} onClick={homeworkButtonClickHandler}>숙제 관리</div><div className={'black-button'}>과외 일정</div><div className={'black-button'} onClick={handleOpenDialog}>매치 해제</div>
+                        <div className={'black-button'} onClick={homeworkButtonClickHandler}>숙제 관리</div><div className={'black-button'} onClick={tutoringButtonClickHandler}>과외 일정</div><div className={'black-button'} onClick={handleOpenDialog}>매치 해제</div>
                         {showModal && (
                             <ConfirmModal message={'학생과의 매치를 해제하시겠습니까?'} onConfirm={handleConfirm} onCancel={handleCancel}/>
                         )}

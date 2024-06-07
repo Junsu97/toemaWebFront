@@ -1,4 +1,4 @@
-import PostPatchHomeworkRequestDTO from "./post-patch-homework-request.dto";
+import PostPatchHomeworkRequestDto from "./post-patch-homework-request.dto";
 export type{
-    PostPatchHomeworkRequestDTO
+    PostPatchHomeworkRequestDto,
 }

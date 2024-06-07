@@ -1,0 +1,88 @@
+.tutoring-calendar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f0f0f0;
+    position: relative;
+}
+
+.header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.calendar-wrapper {
+    width: 60%;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.date-picker-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.start-date-header,
+.end-date-header {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.time-picker-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.time-picker {
+    width: 45%;
+}
+
+.date-text {
+    margin-top: 20px;
+    font-size: 16px;
+}
+.list-bottom-pagination-box{
+    display: flex;
+    justify-content: center;
+}
+/* style.css */
+.ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+.tutoring-item-container{
+    height:600px;
+}
+
+.ReactModal__Content {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+}
+.close-icon-wrapper{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; /* 아이콘을 오른쪽으로 정렬 */
+    align-items: center; /* 수직으로 가운데 정렬 */
+    padding-bottom: 5px;
+}
+
+

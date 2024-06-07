@@ -1,4 +1,4 @@
-export default interface PostPatchHomeworkRequestDTO {
+export default interface PostPatchHomeworkRequestDto {
     studentId: string,
     teacherId: string,
     startDate: string,

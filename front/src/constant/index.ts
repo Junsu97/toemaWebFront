@@ -15,6 +15,7 @@ export const TEACHER_INFO = (teacherUserId:String) => `/teacher/info/${teacherUs
 export const FACE_ID = () => `/face`;
 export const HOMEWORK = (teacherUserId:string, studentUserId:string) => `/homework/${teacherUserId}/${studentUserId}`;
 export const HOMEWORK_LIST = (userId:string) => `/homework/${userId}`;
+export const TUTORING = (teacherUserId:string, studentUserId:string) => `/tutoring/${teacherUserId}/${studentUserId}`;
 export const CHANGE_PASSWORD = (userId:string) => `/user/change-password/${userId}`;
 export const SEARCH_PATH = (searchWord:string) => `/search/${searchWord}`;
 export const USER_PATH = (userId : string) => `/user/${userId}`;

@@ -17,6 +17,7 @@ enum ResponseCode {
       NOT_EXISTED_HOMEWORK = "NH",
       NOT_EXISTED_MATCH = "NM",
       NOT_EXISTED_TUTORING = "NT",
+      EXIST_TUTORING = "ET",
   
       /** HTTP Status 401*/
       SIGN_IN_FAIL = "SF" ,

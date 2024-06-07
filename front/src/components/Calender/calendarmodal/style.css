@@ -1,0 +1,31 @@
+.ReactModal__Overlay .ReactModal__Overlay--after-open {
+    width:500px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.calendar-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width:500px;
+}
+
+.close-icon-wrapper{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; /* 아이콘을 오른쪽으로 정렬 */
+    align-items: center; /* 수직으로 가운데 정렬 */
+    padding-bottom: 5px;
+}

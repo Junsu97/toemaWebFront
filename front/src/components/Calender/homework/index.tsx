@@ -15,9 +15,9 @@ import isBetween from "dayjs/plugin/isBetween";
 import HomeworkList from "../../Homework";
 import { usePagination } from "../../../hooks";
 import Pagenation from "../../Pagination";
-import {PostPatchHomeworkRequestDTO} from "../../../apis/reqeust/homework";
+import {PostPatchHomeworkRequestDto} from "../../../apis/reqeust/homework";
 import {useCookies} from "react-cookie";
-import {MAIN_PATH, MATCHED_STUDENT_LIST} from "../../../constant";
+import {AUTH_PATH, HOMEWORK, MAIN_PATH, MATCHED_STUDENT_LIST} from "../../../constant";
 
 dayjs.extend(isBetween);
 
@@ -80,6 +80,7 @@ export default function CalendarItem() {
     }
 
     useEffect(() => {
+
         getHomeworkListRequest(teacherUserId as string, studentUserId as string).then(getHomeworkListResponse);
     }, []);
 
@@ -146,7 +147,7 @@ export default function CalendarItem() {
     };
 
     const postHomeworkResponse = (responseBody: HomeAnotherResponseDTO | ResponseDto | null) => {
-        if(!teacherUserId){
+        if(!teacherUserId || !studentUserId){
             return;
         }
         if (!responseBody) {
@@ -178,12 +179,14 @@ export default function CalendarItem() {
         }
 
         alert('숙제 등록을 완료하였습니다.');
+        window.location.reload();
         return;
     }
 
     const onPostButtonClickHandler = () => {
         if(!cookies.accessToken){
             alert('로그인 후 이용해주세요.');
+            navigate(AUTH_PATH());
             return;
         }
         if(!studentUserId || !teacherUserId){
@@ -201,7 +204,7 @@ export default function CalendarItem() {
         }
         const startDateStr = startDate ? startDate.format('YYYY-MM-DD') : '';
         const endDateStr = endDate ? endDate.format('YYYY-MM-DD') : '';
-        const requestBody : PostPatchHomeworkRequestDTO = {
+        const requestBody : PostPatchHomeworkRequestDto = {
             studentId: studentUserId,
             teacherId: teacherUserId,
             startDate: startDateStr,
@@ -277,9 +280,9 @@ export default function CalendarItem() {
                 {
                     hasContent &&
                     <>
-                        {/*{viewList.map((homework) => (*/}
-                        {/*    // <HomeworkList key={homework.id} {...homework} />*/}
-                        {/*))}*/}
+                        {viewList.map((homework) => (
+                            <HomeworkList key={homework.seq} homeworkListItem={homework} />
+                        ))}
                         <div className='list-bottom-pagination-box'>
                             <Pagenation
                                 currentPage={currentPage}
