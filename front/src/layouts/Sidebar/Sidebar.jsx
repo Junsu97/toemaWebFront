@@ -65,7 +65,7 @@ const Sidebar = () => {
             setNavigation(prevNavigation => [
                 ...prevNavigation,
                 {
-                    title: "숙제 확인",
+                    title: "숙제 및 과외 확인",
                     href: HOMEWORK_LIST(loginUser.userId),
                     icon: "bi bi-speedometer2",
                 }

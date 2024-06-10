@@ -748,6 +748,8 @@ const GET_STUDENT_HOMEWORK_LIST_URL = (studentUserId: string) => `${API_DOMAIN}/
 const POST_HOMEWORK_URL = () => `${API_DOMAIN}/homework/write`;
 const PATCH_HOMEWORK_URL = (seq: number | string) => `${API_DOMAIN}/homework/update/${seq}`;
 const DELETE_HOMEWORK_URL = (seq: number | string) => `${API_DOMAIN}/homework/delete/${seq}`;
+const GET_HOMEWORK_STUDENT_LIST_URL = (studentUserId: string) => `${API_DOMAIN}/homework/from-student/${studentUserId}/list`;
+
 
 const GET_TUTORING_LIST_FROM_STUDENT_URL = (studentUserId: string) => `${API_DOMAIN}/tutoring/from-student/${studentUserId}/list`;
 const GET_TUTORING_LIST_FROM_TEACHER_URL = (teacherUserId: string, studentUserId: string) => `${API_DOMAIN}/tutoring/from-teacher/${teacherUserId}/${studentUserId}/list`;
@@ -757,6 +759,20 @@ const DELETE_TUTORING_URL = (seq: number | string) => `${API_DOMAIN}/tutoring/de
 
 export const getHomeworkListRequest = async (teacherUserId: string, studentUserId: string) => {
     const result = await axios.get(GET_HOMEWORK_LIST_URL(teacherUserId, studentUserId))
+        .then(response => {
+            const responseBody: GetHomeworkListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const getHomeworkListStudentRequest = async (studentUserId: string) => {
+    const result = await axios.get(GET_HOMEWORK_STUDENT_LIST_URL(studentUserId))
         .then(response => {
             const responseBody: GetHomeworkListResponseDto = response.data;
             return responseBody;
@@ -823,6 +839,7 @@ export const getTutoringListFromTeacherRequest = async (teacherUserId: string, s
         })
     return result;
 }
+
 export const getTutoringListFromStudentRequest = async (studentUserId: string) => {
     const result = await axios.get(GET_TUTORING_LIST_FROM_STUDENT_URL(studentUserId))
         .then(response => {

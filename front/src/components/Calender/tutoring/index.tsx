@@ -233,7 +233,7 @@ export default function CalendarComponent() {
                         : homeworksForDay.length > 1 || overlappingHomeworks
                             ? '#5b627d' // Second color for overlapping homeworks
                             : undefined,
-                    borderRadius: homeworksForDay.length > 0 || overlappingHomeworks ? '50%' : undefined,
+                    // borderRadius: homeworksForDay.length > 0 || overlappingHomeworks ? '50%' : undefined,
                 }}
             />
         );

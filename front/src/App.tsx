@@ -22,7 +22,7 @@ import {
   CHANGE_PASSWORD,
   FACE_ID,
   FIND_ID,
-  FIND_PASSWROD, HOMEWORK,
+  FIND_PASSWROD, HOMEWORK, HOMEWORK_LIST,
   MAIN_PATH,
   MATCHED_STUDENT_LIST,
   SEARCH_PATH,
@@ -59,6 +59,7 @@ import MatchedStudents from "./views/Teacher/student/list";
 import StudentInfo from "./views/Teacher/student/info";
 import Homework from "./views/Homework";
 import Tutoring from "./views/Tutoring";
+import HomeworkListStudent from "./views/HomeworkList";
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -131,6 +132,7 @@ function App() {
           <Route path={TEACHER_APPLY_DETAIL(':teacherUserId',':studentUserId')} element={<ApplyDetail/>}/>
           <Route path={FACE_ID()} element={<FaceCapture/>}/>
           <Route path={HOMEWORK(':teacherUserId',':studentUserId')} element={<Homework/>}/>
+          <Route path={HOMEWORK_LIST(':studentUserId')} element={<HomeworkListStudent/>}/>
           <Route path={TUTORING(':teacherUserId', ':studentUserId')} element={<Tutoring/>}/>
           <Route path={MATCHED_STUDENT_LIST(':teacherId')} element={<MatchedStudents/>}/>
           <Route path={STUDENT_INFO(':studentId')} element={<StudentInfo/>}/>

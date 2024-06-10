@@ -140,7 +140,7 @@ export default function CalendarItem() {
                         : homeworksForDay.length > 1 || overlappingHomeworks.length > 0
                             ? '#5b627d' // Second color for overlapping homeworks
                             : undefined,
-                    borderRadius: homeworksForDay.length > 0 || overlappingHomeworks.length > 0 ? '50%' : undefined,
+                    // borderRadius: homeworksForDay.length > 0 || overlappingHomeworks.length > 0 ? '50%' : undefined,
                 }}
             />
         );
