@@ -64,6 +64,7 @@ import {PostPatchHomeworkRequestDto} from "./reqeust/homework";
 import PostTutoringRequestDTO from "./reqeust/tutoring/post-tutoring-request.dto";
 import PatchTutoringRequestDTO from "./reqeust/tutoring/patch-tutoring-request.dto";
 import {GetTutoringListResponseDTO, TutoringAnotherResponseDTO} from "./response/tutoring";
+import GetApiListResponseDTO from "./response/main/get-api-list-reponse.dto";
 
 const DOMAIN = 'http://localhost:11000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -890,4 +891,20 @@ export const deleteTutoringRequest = async (seq: number | string, accessToken : 
 
     return result;
 
+}
+
+const GET_API_DATA_LIST_URL = (grade:string) => `${API_DOMAIN}/main/main/${grade}`;
+
+export const getApiDataListRequest = async (grade:string) => {
+    const result = await axios.get(GET_API_DATA_LIST_URL(grade))
+        .then(response => {
+            const responseBody: GetApiListResponseDTO = response.data;
+            return responseBody;
+        }).catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
 }

@@ -91,6 +91,8 @@
 .list-bottom-popular-card{
     padding: 24px;
     background-color: white;
+    min-width: 350px;
+    border-radius: 5%;
 }
 .list-bottom-popular-card-container{
     display: flex;
