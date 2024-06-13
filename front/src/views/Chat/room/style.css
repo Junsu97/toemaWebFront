@@ -8,6 +8,10 @@
     border-radius: 8px;
     overflow: hidden;
 }
+.admin-message {
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.7);
+}
 
 .chat-messages {
     flex: 1;

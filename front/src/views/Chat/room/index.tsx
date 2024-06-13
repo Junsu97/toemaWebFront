@@ -86,7 +86,16 @@ export default function ChatRoom() {
             <h1>Chat Room: {roomName}</h1>
             <div className="chat-messages">
                 {messages.map((msg, index) => (
-                    <div key={index} className={`chat-message ${msg.userId === loginUser?.userId ? 'my-message' : 'other-message'}`}>
+                    <div
+                        key={index}
+                        className={`chat-message ${
+                            msg.userId === loginUser?.userId
+                                ? 'my-message'
+                                : msg.userId === '관리자'
+                                    ? 'admin-message'
+                                    : 'other-message'
+                        }`}
+                    >
                         <strong>{msg.userId}</strong>: {msg.message} <span>{msg.timestamp}</span>
                     </div>
                 ))}

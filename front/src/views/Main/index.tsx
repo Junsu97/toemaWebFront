@@ -14,6 +14,8 @@ import GetApiListResponseDTO from "../../apis/response/main/get-api-list-reponse
 import ApiListItemInterface from "../../types/interface/api-list-item.interface";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import {BOARD_DETAIL_PATH} from "../../constant";
+import {useNavigate} from "react-router-dom";
 
 // Chart.js의 필요한 스케일을 등록합니다.
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -49,7 +51,7 @@ export default function Main() {
     const [apiDataList, setDataList] = useState<ApiListItemInterface[]>([]);
     const [selectedGrade, setSelectedGrade] = useState<string>('1학년');
     const [weather, setWeather] = useState<Weather | null>(null);
-
+    const navigate = useNavigate();
     const getTop3BoardListResponse = (responseBody: GetTop3BoardListResponseDTO | ResponseDto | null) => {
         if (!responseBody) {
             alert('주간 Top3 게시글을 불러오는데 실패했습니다.');
@@ -61,7 +63,7 @@ export default function Main() {
             return;
         }
         if (code !== 'SU') {
-            alert('알 수 없는 에러가 발생하였습니다.');
+
             return;
         }
         const { top3List } = responseBody as GetTop3BoardListResponseDTO;
@@ -79,11 +81,15 @@ export default function Main() {
             return;
         }
         if (code !== 'SU') {
-            alert('알 수 없는 에러가 발생하였습니다.');
+
             return;
         }
         const { result } = responseBody as GetApiListResponseDTO;
         setDataList(result.data);
+    }
+
+    const top3ListClickHandler = (boardNumber : string|number) =>{
+        navigate(BOARD_DETAIL_PATH(boardNumber));
     }
 
     const getWeather = async (lat: number, lon: number) => {
@@ -172,7 +178,7 @@ export default function Main() {
                 <div className="sihyun">
                     <div className="sihyun-header">주간 Top3 게시글</div>
                     {top3BoardList.map((board) => (
-                        <div key={board.boardNumber} className="board-card">
+                        <div key={board.boardNumber} className="board-card" onClick={() => top3ListClickHandler(board.boardNumber)}>
                             <div className="title">{board.title}</div>
                             <div className="content">{board.content}</div>
                             <div className="meta">
