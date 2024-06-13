@@ -29,7 +29,7 @@ export default function ChatRoom() {
 
         const token = cookies.accessToken;
 
-        const wsUrl = `ws://localhost:11000/ws/${encodeURIComponent(roomName)}/${encodeURIComponent(loginUser.userId)}?token=${token}`;
+        const wsUrl = `wss://api.test-poly.shop/ws/${encodeURIComponent(roomName)}/${encodeURIComponent(loginUser.userId)}?token=${token}`;
 
         const websocket = new WebSocket(wsUrl);
         setWs(websocket);

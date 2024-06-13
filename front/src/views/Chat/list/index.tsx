@@ -30,7 +30,7 @@ export default function ChatList() {
         try {
             const token = cookies.accessToken;
             const response = await axios.get<string[]>(
-                "http://localhost:11000/roomList",
+                "https://api.test-poly.shop/roomList",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

@@ -69,7 +69,7 @@ import DeleteUserResponseDTO from "./response/user/delete-user-response.dto";
 import {PostChatRoomRequestDTO} from "./reqeust/chat";
 import {PostChatRoomResponseDTO} from "./response/chat";
 
-const DOMAIN = 'http://localhost:11000';
+const DOMAIN = 'https://api.test-poly.shop';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const authorization = (accessToken: string) => {
