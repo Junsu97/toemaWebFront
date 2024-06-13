@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
 import {useLoginUserStore} from "../../../stores";
+import {TextareaAutosize} from "@mui/material";
 import './style.css';
 import loginUserStore from "../../../stores/login-user.store";
 interface ChatMessage {
@@ -17,7 +18,7 @@ export default function ChatRoom() {
     const [ws, setWs] = useState<WebSocket | null>(null);
     const [message, setMessage] = useState<string>("");
     const {loginUser} = loginUserStore();
-
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     useEffect(() => {
         if (!roomName || !cookies.accessToken) {
             alert('비정상적인 접근입니다.');
@@ -69,12 +70,13 @@ export default function ChatRoom() {
         }
     };
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(event.target.value);
     };
 
-    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter") {
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault(); // Prevents newline character
             sendMessage();
         }
     };
@@ -90,12 +92,16 @@ export default function ChatRoom() {
                 ))}
             </div>
             <div className="chat-input">
-                <input
-                    type="text"
-                    value={message}
+                <TextareaAutosize
+                    minRows={3}
+                    maxRows={3}
+                    aria-valuetext={'메시지를 입력하세요'}
+                    placeholder={'메시지를 입력하세요...'}
                     onChange={handleInputChange}
                     onKeyPress={handleKeyPress}
-                    placeholder="메시지를 입력하세요..."
+                    value={message}
+                    style={{ width: '100%', resize: 'none', overflow:'auto' }}
+                    ref={textareaRef}
                 />
                 <button onClick={sendMessage}>전송</button>
             </div>
