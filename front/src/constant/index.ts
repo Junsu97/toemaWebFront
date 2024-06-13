@@ -25,4 +25,6 @@ export const BOARD_DETAIL_PATH = (boardNumber : string | number)  => `/board/det
 export const BOARD_WRITE_PATH = () => '/board/write'
 export const BOARD_LIST = () => '/board/list'
 export const BOARD_UPDATE_PATH = (boardNumber: string | number) => `/board/update/${boardNumber}`;
+export const CHAT_ROOM = (roomName : string) => `/chat/chatRoom/${roomName}`;
+export const CHAT_LIST = () => '/chat/chatList';
 export const NOT_FOUND_PATH = () => '/404';

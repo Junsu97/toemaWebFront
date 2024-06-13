@@ -5,7 +5,7 @@ import probg from "assets/image/bg/download.jpg";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useLoginUserStore} from 'stores';
 import defautltProfileImage from 'assets/image/default-profile-image.png'
-import {BOARD_LIST, HOMEWORK_LIST, MATCHED_STUDENT_LIST, TEACHER_APPLY_LIST, TEACHER_LIST} from "constant";
+import {BOARD_LIST, CHAT_LIST, HOMEWORK_LIST, MATCHED_STUDENT_LIST, TEACHER_APPLY_LIST, TEACHER_LIST} from "constant";
 import React, {useState, useEffect} from "react";
 
 
@@ -24,6 +24,11 @@ const defaultNavigation = [
         title: "신청 내역",
         href: TEACHER_APPLY_LIST(),
         icon: "bi bi-patch-check",
+    },
+    {
+        title: "채팅",
+        href: CHAT_LIST(),
+        icon: "bi bi-bell",
     }
 
 ];

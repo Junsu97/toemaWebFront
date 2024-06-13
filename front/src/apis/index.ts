@@ -65,6 +65,9 @@ import PostTutoringRequestDTO from "./reqeust/tutoring/post-tutoring-request.dto
 import PatchTutoringRequestDTO from "./reqeust/tutoring/patch-tutoring-request.dto";
 import {GetTutoringListResponseDTO, TutoringAnotherResponseDTO} from "./response/tutoring";
 import GetApiListResponseDTO from "./response/main/get-api-list-reponse.dto";
+import DeleteUserResponseDTO from "./response/user/delete-user-response.dto";
+import {PostChatRoomRequestDTO} from "./reqeust/chat";
+import {PostChatRoomResponseDTO} from "./response/chat";
 
 const DOMAIN = 'http://localhost:11000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -165,6 +168,7 @@ const GET_TEACHER_LIST_URL = (...subjects: (string | null)[]) => {
 const GET_MATCHED_STUDENT_LIST_URL = () => `${API_DOMAIN}/teacher/getStudentList`;
 
 const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/board/user-board-list/${userId}`;
+const DELETE_USER_URL = (userType : string) => `${API_DOMAIN}/user/delete/${userType}`;
 const INCREASE_VIEW_COUNT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
 const GET_FAVORITE_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
 const GET_COMMENT_LIST_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/comment-list`;
@@ -334,6 +338,20 @@ export const deleteCommentRequest = async (boardNumber: number | string, comment
     const result = await axios.delete(DELETE_COMMENT_URL(boardNumber, commentNumber), authorization(accessToken))
         .then(response => {
             const responseBody: DeleteCommentResponseDTO = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.reponse) return null;
+            const reqeustBody: ResponseDto = error.reponse.data;
+            return reqeustBody;
+        })
+    return result;
+}
+
+export const deleteUserRequest = async (userType: string, accessToken : string) => {
+    const result = await axios.delete(DELETE_USER_URL(userType), authorization(accessToken))
+        .then(response => {
+            const responseBody: DeleteUserResponseDTO = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -900,6 +918,22 @@ export const getApiDataListRequest = async (grade:string) => {
         .then(response => {
             const responseBody: GetApiListResponseDTO = response.data;
             return responseBody;
+        }).catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+
+    return result;
+}
+
+const POST_CHATROOM_URL = () => `${API_DOMAIN}/createRoom`;
+
+export const postChatRoomRequest = async (requestBody : PostChatRoomRequestDTO, accessToken: string) => {
+    const result = await axios.post(POST_CHATROOM_URL(),requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody : PostChatRoomResponseDTO = response.data;
+            return response;
         }).catch(error => {
             if (!error.response) return null;
             const responseBody: ResponseDto = error.response.data;
