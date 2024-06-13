@@ -215,7 +215,7 @@ export const getBoardRequest = async (boardNumber: number | string) => {
         })
         .catch(error => {
             if (!error.response) return null;
-            const responseBody: ResponseDto = error.reponse.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
     return result;
@@ -229,7 +229,7 @@ export const getLatestBoardListRequest = async () => {
         })
         .catch(error => {
             if (!error.response) return null;
-            const responseBody: ResponseDto = error.reponse.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
     return result;
@@ -243,7 +243,7 @@ export const getTop3BoardListRequest = async () => {
         })
         .catch(error => {
             if (!error.response) return null;
-            const responseBody: ResponseDto = error.reponse.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
         })
     return result;
@@ -300,8 +300,8 @@ export const getFavoriteListReqeust = async (boardNumber: number | string) => {
             return reqeustBody;
         })
         .catch(error => {
-            if (!error.reponse) return null;
-            const reqeustBody: ResponseDto = error.reponse.data;
+            if (!error.response) return null;
+            const reqeustBody: ResponseDto = error.response.data;
             return reqeustBody;
         })
     return result;
@@ -313,8 +313,8 @@ export const getCommentListRequest = async (boardNumber: number | string) => {
             return reqeustBody;
         })
         .catch(error => {
-            if (!error.reponse) return null;
-            const reqeustBody: ResponseDto = error.reponse.data;
+            if (!error.response) return null;
+            const reqeustBody: ResponseDto = error.response.data;
             return reqeustBody;
         })
     return result;
@@ -327,8 +327,8 @@ export const patchCommentRequest = async (requestBody: PatchCommentRequestDTO, a
             return responseBody;
         })
         .catch(error => {
-            if (!error.reponse) return null;
-            const reqeustBody: ResponseDto = error.reponse.data;
+            if (!error.response) return null;
+            const reqeustBody: ResponseDto = error.response.data;
             return reqeustBody;
         })
     return result;
@@ -341,8 +341,8 @@ export const deleteCommentRequest = async (boardNumber: number | string, comment
             return responseBody;
         })
         .catch(error => {
-            if (!error.reponse) return null;
-            const reqeustBody: ResponseDto = error.reponse.data;
+            if (!error.response) return null;
+            const reqeustBody: ResponseDto = error.response.data;
             return reqeustBody;
         })
     return result;
@@ -355,8 +355,8 @@ export const deleteUserRequest = async (userType: string, accessToken : string) 
             return responseBody;
         })
         .catch(error => {
-            if (!error.reponse) return null;
-            const reqeustBody: ResponseDto = error.reponse.data;
+            if (!error.response) return null;
+            const reqeustBody: ResponseDto = error.response.data;
             return reqeustBody;
         })
     return result;

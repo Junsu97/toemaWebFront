@@ -101,7 +101,7 @@ export default function ChatList() {
                     <p>개설된 채팅방이 없습니다.</p>
                 </div>
             )}
-            <div className="black-button" onClick={createRoomClickHandler}>
+            <div className="chat-black-button" onClick={createRoomClickHandler}>
                 새로운 채팅방 만들기
             </div>
         </div>
