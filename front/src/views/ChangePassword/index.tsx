@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { USER_PATH } from 'constant';
+import {AUTH_PATH, USER_PATH} from 'constant';
 import { useNavigate } from 'react-router-dom';
 import { ResponseDto } from 'apis/response';
 import './style.css';
@@ -33,11 +33,19 @@ export default function ChangePassword() {
     // state : 인증 상태
     const [isCheckedPassword, setIsCheckedPassword] = useState<boolean>(false);
     // state : 
-
+    const [isMine, setIsMine] = useState<boolean>(false);
+    const navigate = useNavigate();
     // effect : user Id path variable 변경시 실행 할 함수
     useEffect(() => {
-        if (!userId || !loginUser || !cookies.accessToken || loginUser.userId !== userId) setView('unAuth');
+        if (!userId || !loginUser || !cookies.accessToken || loginUser.userId !== userId) {
+            navigate(AUTH_PATH());
+            setView('unAuth');
+            return;
+        }
         if (userId === loginUser?.userId) setView('auth');
+        if(view === 'auth'){
+            setIsMine(true);
+        }
     })
     // component : 비밀번호 확인 컴포넌트
     const CheckPassword = () => {
@@ -45,6 +53,7 @@ export default function ChangePassword() {
         const [password, setPassword] = useState<string>('');
         // state : password ref 상태
         const passwordInputRef = useRef<HTMLInputElement | null>(null);
+
 
         // function : post check password response 처리 함수
         const postCheckPasswordResponse = (responseBody: PostCheckPasswordResponseDTO | ResponseDto | null) => {
@@ -82,55 +91,60 @@ export default function ChangePassword() {
 
         // render : 비밀번호 확인 컴포넌트 렌더링
         return (
-            <ThemeProvider theme={defaultTheme}>
-                <Container component="main" maxWidth="xs" sx={{ minWidth: '600px' }}>
-                    <CssBaseline />
-                    <Box
-                        sx={{
-                            marginTop: 8,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: 'black' }}>
-                        </Avatar>
-                        <Typography component="h1" variant="h5">
-                            비밀번호 확인
-                        </Typography>
-                        <Box component="div" sx={{ mt: 3, width: '450px' }}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    type="password"
-                                    required
+            isMine ? (
+                <ThemeProvider theme={defaultTheme}>
+                    <Container component="main" maxWidth="xs" sx={{ minWidth: '600px' }}>
+                        <CssBaseline />
+                        <Box
+                            sx={{
+                                marginTop: 8,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Avatar sx={{ m: 1, bgcolor: 'black' }}>
+                            </Avatar>
+                            <Typography component="h1" variant="h5">
+                                비밀번호 확인
+                            </Typography>
+                            <Box component="div" sx={{ mt: 3, width: '450px' }}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        type="password"
+                                        required
+                                        fullWidth
+                                        id="password"
+                                        label="비밀번호 확인"
+                                        name="password"
+                                        autoComplete="password"
+                                        value={password}
+                                        ref={passwordInputRef}
+                                        onChange={onPasswordChangeHandler}
+                                    />
+                                </Grid>
+                                <Button
+                                    type="button"
                                     fullWidth
-                                    id="password"
-                                    label="비밀번호 확인"
-                                    name="password"
-                                    autoComplete="password"
-                                    value={password}
-                                    ref={passwordInputRef}
-                                    onChange={onPasswordChangeHandler}
-                                />
-                            </Grid>
-                            <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                sx={{
-                                    mt: 3, mb: 2, backgroundColor: 'black', '&:hover': {
-                                        backgroundColor: 'rgba(0,0,0,0.7)'
-                                    }
-                                }}
-                                onClick={onPasswordCheckButtonClickHandler}
-                            >
-                                {'비밀번호 확인'}
-                            </Button>
+                                    variant="contained"
+                                    sx={{
+                                        mt: 3, mb: 2, backgroundColor: 'black', '&:hover': {
+                                            backgroundColor: 'rgba(0,0,0,0.7)'
+                                        }
+                                    }}
+                                    onClick={onPasswordCheckButtonClickHandler}
+                                >
+                                    {'비밀번호 확인'}
+                                </Button>
+                            </Box>
                         </Box>
-                    </Box>
-                </Container>
+                    </Container>
+                </ThemeProvider>
+            ) : (
+                <div></div>
+            )
 
-            </ThemeProvider>
+
         )
     }
 

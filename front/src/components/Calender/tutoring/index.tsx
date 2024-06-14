@@ -205,6 +205,11 @@ export default function CalendarComponent() {
     };
 
     useEffect(() => {
+        if(!loginUser || !cookies.accessToken){
+            alert('비정상적인 접근입니다.');
+            navigate(AUTH_PATH());
+            return
+        }
         getTutoringListFromTeacherRequest(teacherUserId as string, studentUserId as string).then(getTutoringListFromTeacherResponse);
     }, []);
 

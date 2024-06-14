@@ -20,19 +20,11 @@ export default function Homework() {
         if(!loginUser){
             return;
         }
-        if(!cookies.accessToken){
-            alert('로그인 후 이용해주세요.');
-            navigate(AUTH_PATH());
-            return;
-        }
         if(!teacherUserId || !studentUserId || teacherUserId === '' || studentUserId === ''){
             alert('비정상적인 접근입니다.');
-            alert(loginUser.userId + '  ' + teacherUserId);
             navigate(MAIN_PATH());
             return;
         }
-
-
         if(loginUser.userId !== teacherUserId || loginUser.userType !== 'TEACHER'){
             alert('비정상적인 접근입니다.')
 

@@ -805,7 +805,7 @@ export default function Authentication() {
             }
 
 
-            if (userType === 'Teacher') {
+            if (userType === 'TEACHER') {
                 const hasSchool = school.trim().length > 0;
                 if (!hasSchool) {
                     setSchoolError(true);

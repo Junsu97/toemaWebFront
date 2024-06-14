@@ -19,6 +19,7 @@ export default function ApplyDetail() {
     const [buttonMsg, setButtonMsg] = useState<string>('');
     const {loginUser} = loginUserStore();
     const [cookies, setCookies] = useCookies();
+    const [isWriter, setIsWriter] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -114,6 +115,9 @@ export default function ApplyDetail() {
             navigate(MAIN_PATH());
             return;
         }
+        if(loginUser.userId === teacherUserId || loginUser.userId === studentUserId){
+            setIsWriter(true);
+        }
         if (loginUser.userType === 'STUDENT' && loginUser.userId === studentUserId) {
             setButtonTag(true);
             setButtonMessage('신청 취소');
@@ -123,6 +127,8 @@ export default function ApplyDetail() {
             setButtonMsg('승인하기');
             setButtonTag(false);
         }
+
+
         getApplyInfoRequest(teacherUserId, studentUserId).then(getApplyInfoResponse);
 
         if(status === '거절됨' || loginUser.userType === 'STUDENT'){
@@ -133,38 +139,42 @@ export default function ApplyDetail() {
         }
     }, []);
     return (
-        <div id='wrapper'>
-            <div className="side_wrapper">
-                <section className="about-dev">
-                    <header className="profile-card_header">
-                        <div className="profile-card_header-container">
-                            <h1>{teacherUserId}<span>{studentUserId}</span></h1>
-                        </div>
-                    </header>
-                    <div className="profile-card_about">
-                        <h2>신청 메시지</h2>
-                        <p>{content}</p>
-                        <footer className="profile-card_footer">
-                            <div className="social-row">
-                                <div className="heart-icon" title="No Health Issues">
-                                    {/* SVG content here */}
-                                </div>
-                                <div className="paw-icon" title="Gets Along Well With Other Animals">
-                                    {/* SVG content here */}
-                                </div>
-                            </div>
-                            <p>
-
-                                <a className="back-to-profile" onClick={updateButtonClickHandler}>{buttonMsg}</a>
-                                {isShowButton &&
-                                    <a className="back-to-profile" onClick={cancelButtonClickHandler}>{buttonMessage}</a>
-                                }
-
-                            </p>
-                        </footer>
+        <div id='wrapper'>{isWriter ? <div className="side_wrapper">
+            <section className="about-dev">
+                <header className="profile-card_header">
+                    <div className="profile-card_header-container">
+                        <h1>{teacherUserId}<span>{studentUserId}</span></h1>
                     </div>
-                </section>
+                </header>
+                <div className="profile-card_about">
+                    <h2>신청 메시지</h2>
+                    <p>{content}</p>
+                    <footer className="profile-card_footer">
+                        <div className="social-row">
+                            <div className="heart-icon" title="No Health Issues">
+                                {/* SVG content here */}
+                            </div>
+                            <div className="paw-icon" title="Gets Along Well With Other Animals">
+                                {/* SVG content here */}
+                            </div>
+                        </div>
+                        <p>
+
+                            <a className="back-to-profile" onClick={updateButtonClickHandler}>{buttonMsg}</a>
+                            {isShowButton &&
+                                <a className="back-to-profile" onClick={cancelButtonClickHandler}>{buttonMessage}</a>
+                            }
+
+                        </p>
+                    </footer>
+                </div>
+            </section>
+        </div>:
+            <div>
+
             </div>
+        }
+
         </div>
     )
 }

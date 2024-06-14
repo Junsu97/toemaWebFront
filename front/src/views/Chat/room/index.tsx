@@ -1,10 +1,11 @@
 import React, {useEffect, useRef, useState} from "react";
 import { useCookies } from "react-cookie";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useLoginUserStore} from "../../../stores";
 import {TextareaAutosize} from "@mui/material";
 import './style.css';
 import loginUserStore from "../../../stores/login-user.store";
+import {AUTH_PATH} from "../../../constant";
 interface ChatMessage {
     userId: string;
     message: string;
@@ -19,15 +20,19 @@ export default function ChatRoom() {
     const [message, setMessage] = useState<string>("");
     const {loginUser} = loginUserStore();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const navigate = useNavigate();
     useEffect(() => {
         if (!roomName || !cookies.accessToken) {
             alert('비정상적인 접근입니다.');
-            return;
-        }
-        if (!loginUser) {
-            return;
         }
 
+        if(!cookies.accessToken || !loginUser){
+            navigate(AUTH_PATH());
+            return;
+        }
+        if (!loginUser || !roomName) {
+            return;
+        }
         const token = cookies.accessToken;
 
         const wsUrl = `wss://api.test-poly.shop/ws/${encodeURIComponent(roomName)}/${encodeURIComponent(loginUser.userId)}?token=${token}`;

@@ -51,7 +51,11 @@ export default function FaceCapture() {
 
     useEffect(() => {
         let stream: MediaStream | null = null;
-
+        if(!loginUser || cookies.accessToken){
+            alert('비정상적인 접근입니다.');
+            navigate(AUTH_PATH());
+            return;
+        }
         const startVideo = async () => {
             try {
                 await Promise.all([

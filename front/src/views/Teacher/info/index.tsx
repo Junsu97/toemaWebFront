@@ -51,6 +51,11 @@ export default function TeacherInfo() {
         setDesc(desc);
     }
     useEffect(() => {
+        if(!loginUser || !cookies.accessToken){
+            alert('비정상적인 접근입니다.');
+            navigate(AUTH_PATH());
+            return;
+        }
         if(!teacherUserId){
             alert('비정상적인 접근입니다.');
             navigate(TEACHER_LIST());

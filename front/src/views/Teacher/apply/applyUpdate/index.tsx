@@ -1,7 +1,7 @@
-import React, {ChangeEvent, useRef, useState} from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {PatchApplyResponseDTO} from "../../../../apis/response/teacher";
 import {ResponseDto} from "../../../../apis/response";
-import {TEACHER_APPLY_LIST} from "../../../../constant";
+import {AUTH_PATH, TEACHER_APPLY_LIST} from "../../../../constant";
 import {PatchApplyRequestDTO} from "../../../../apis/reqeust/teacher";
 import {useCookies} from "react-cookie";
 import {useNavigate, useParams} from "react-router-dom";
@@ -22,6 +22,15 @@ export default function ApplyUpdate(){
         contentRef.current.style.height = 'auto';
         contentRef.current.style.height = `${contentRef.current?.scrollHeight}px`;
     }
+
+    useEffect(() => {
+        if(!cookies.accessToken || !loginUser || loginUser.userId !== studentUserId || loginUser.userType === 'TEACHER'){
+            alert('비정상적인 접근입니다.');
+            navigate(AUTH_PATH());
+            return;
+        }
+    }, []);
+
     const patchApplyResponse = (responseBody: PatchApplyResponseDTO | ResponseDto | null) => {
         if(!responseBody){
             alert('서버로부터 데이터를 불러올 수 없습니다.');

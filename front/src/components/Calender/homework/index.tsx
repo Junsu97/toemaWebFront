@@ -80,7 +80,11 @@ export default function CalendarItem() {
     }
 
     useEffect(() => {
-
+        if(!cookies.accessToken){
+            alert('로그인 후 이용해주세요.');
+            navigate(AUTH_PATH());
+            return;
+        }
         getHomeworkListRequest(teacherUserId as string, studentUserId as string).then(getHomeworkListResponse);
     }, []);
 
