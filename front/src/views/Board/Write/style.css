@@ -10,7 +10,7 @@
 .board-write-container{
     padding: 100px 24px;
     width: 75%;
-    min-height: 1440px;
+    min-height: 900px;
     background-color: white;
 }
 
@@ -57,17 +57,27 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: center; /* Horizontally center the image */
+    align-items: center; /* Vertically center the image */
     gap: 20px;
 }
-.board-write-image-box{
-    width: 100%;
+.board-write-image-box {
+    max-width: 1000px;
+    max-height: 1000px;
     position: relative;
+    overflow: hidden;
+    display: flex; /* Add flexbox for centering */
+    justify-content: center; /* Horizontally center the image */
+    align-items: center; /* Vertically center the image */
 }
-.board-write-image{
-    width: 100%;
+
+.board-write-image {
     max-width: 100%;
-    height: auto;
+    max-height: 100%;
+    object-fit: contain; /* Ensures the image scales down to fit within its container */
+    object-position: center; /* Center the image within its container */
 }
+
 
 .image-close{
     position: absolute;

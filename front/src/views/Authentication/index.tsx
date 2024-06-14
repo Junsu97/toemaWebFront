@@ -710,8 +710,9 @@ export default function Authentication() {
                 setPage(1);
             }
 
-            const hasNickname = nickname.length !== 0;
-            if (!hasNickname) {
+            const nicknamePattern = /^[가-힣a-zA-Z0-9]{2,10}$/;
+            const isNicknamePattern = nicknamePattern.test(nickname);
+            if (!isNicknamePattern) {
                 setNickNameError(true);
                 setNicknameErrorMessage('닉네임을 입력해주세요.');
                 setPage(1);
@@ -734,9 +735,8 @@ export default function Authentication() {
                 if (!isUserIdPattern || !isUserIdLengthValid || !isEmailPattern || !isPasswordPattern || !isEqualPassword) return;
             }
             if (page === 2) {
-                if (!hasNickname || !telNumberPattern || !hasAddress) return;
+                if (!isNicknamePattern || !telNumberPattern || !hasAddress) return;
             }
-
 
             if (page < 3) {
                 setPage(page + 1 as 1 | 2 | 3);
@@ -749,44 +749,51 @@ export default function Authentication() {
             const isUserIdLengthValid = userId.length >= 6 && userId.length <= 12;
             console.log("회원가입 버튼 클릭");
 
-            const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
+            const emailPattern = /^[a-zA-Z0-9._%+-]{6,13}@[a-zA-Z0-9.-]{5,13}\.[a-zA-Z]{2,}$/;
             const isEmailPattern = emailPattern.test(email);
             if (!isUserIdPattern || !isUserIdLengthValid) {
                 setUserIdError(true);
                 setUserIdErrorMessage('아이디 형식이 잘못 되었습니다.\n아이디는 영어 소문자 + 숫자 조합의 6~12글자입니다.');
                 setPage(1);
+                return;  // 함수 종료
             }
             if (!isEmailPattern) {
                 setEmailError(true);
                 setEmailErrorMessage('이메일 주소 포멧이 맞지 않습니다.');
                 setPage(1);
+                return;  // 함수 종료
             }
             const isPasswordPattern = password.length >= 8;
             if (!isPasswordPattern) {
                 setPasswordError(true);
                 setpasswordErrorMessage('비밀번호는 8자 이상 입력해주세요.');
                 setPage(1);
+                return;  // 함수 종료
             }
 
-            const isEqualPassword = password == passwordCheck;
+            const isEqualPassword = password === passwordCheck;
             if (!isEqualPassword) {
                 setPasswordCheckError(true);
                 setPasswordCheckErrorMessage('비밀번호가 일치하지 않습니다.');
                 setPage(1);
+                return;  // 함수 종료
             }
 
-            const hasNickname = nickname.length !== 0;
-            if (!hasNickname) {
+            const nicknamePattern = /^[가-힣a-zA-Z0-9]{2,10}$/;
+            const isNicknamePattern = nicknamePattern.test(nickname);
+            if (!isNicknamePattern) {
                 setNickNameError(true);
                 setNicknameErrorMessage('닉네임을 입력해주세요.');
                 setPage(2);
+                return;  // 함수 종료
             }
             const telNumberPattern = /^01([0|1|6|7|8|9]?)?([0-9]{3,4})?([0-9]{4})$/;
             const isTelNumberPattern = telNumberPattern.test(telNumber);
             if (!isTelNumberPattern) {
                 setTelNumberError(true);
-                setTelNumberErrorMessage('숫자만 입력해주세요');
+                setTelNumberErrorMessage('01로 시작하는 숫자만 10~11글자 입력해주세요.');
                 setPage(2);
+                return;  // 함수 종료
             }
 
             const hasAddress = addr.trim().length > 0;
@@ -794,6 +801,7 @@ export default function Authentication() {
                 setAddrError(true);
                 setAddrErrorMessage('주소를 입력해주세요.');
                 setPage(2);
+                return;  // 함수 종료
             }
 
             const userNamePattern = /^[가-힣]{2,6}$/;
@@ -802,32 +810,23 @@ export default function Authentication() {
             if (!isUserNamePattern) {
                 setUserNameError(true);
                 setUserNameErrorMessage('2-6글자의 한글만 입력해주세요.');
+                return;  // 함수 종료
             }
-
 
             if (userType === 'TEACHER') {
                 const hasSchool = school.trim().length > 0;
                 if (!hasSchool) {
                     setSchoolError(true);
                     setSchoolErrorMessage('선생님 회원가입은 학교명 필수 사항입니다.');
+                    return;  // 함수 종료
                 }
             }
 
-            if (!agreedPersonal) setAgreedPersonalError(true);
-            if (!isUserIdPattern || !isUserIdLengthValid || !isEmailPattern || !isPasswordPattern || !isEqualPassword) {
-                setPage(1);
-                return;
-            }
-            if (!hasNickname || !telNumberPattern || !hasAddress) {
-                setPage(2);
-                return;
-            }
-
-            if (!isUserNamePattern) return;
             if (!agreedPersonal) {
+                setAgreedPersonalError(true);
                 alert('개인정보 수집에 동의해주세요.');
                 setPage(3);
-                return;
+                return;  // 함수 종료
             }
 
             const requestBody: SignUpRequestDTO = {
@@ -846,6 +845,7 @@ export default function Authentication() {
 
             signUpRequest(requestBody).then(signUpResponse);
         }
+
 
         // event handler : 로그인 링크 클릭 이벤트 처리
         const onSignInLinkClickHandler = () => {

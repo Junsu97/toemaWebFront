@@ -108,18 +108,18 @@ export default function TeacherApply() {
     }
 
     return (
-        <div id='board-write-wrapper'>
-            <div className='board-write-container'>
-                <div className='board-write-box'>
-                    <div className='board-write-title-box'>
-                        <div className='board-write-title-textarea'>선생님 신청하기</div>
+        <div id='homework-write-wrapper'>
+            <div className='homework-write-container'>
+                <div className='homework-write-box'>
+                    <div className='homework-write-title-box'>
+                        <div className='homework-write-title-textarea'>선생님 신청하기</div>
                         <div style={{marginLeft: '85%'}} className={'black-button'}
                              onClick={onApplyButtonClickHandler}>신청하기
                         </div>
                     </div>
                     <div className='divider'></div>
-                    <div className='board-write-content-box'>
-                        <textarea ref={contentRef} className='board-write-content-textarea'
+                    <div className='homework-write-content-box'>
+                        <textarea ref={contentRef} className='homework-write-content-textarea'
                                   placeholder='선생님께 하고싶은 말을 적어주세요.' value={content} onChange={onContentChangeHandler}/>
 
                     </div>
