@@ -278,7 +278,7 @@ export default function HomeworkTutoring() {
                         ) : (
                             <p>No tutoring</p>
                         )}
-                        <button onClick={closeModal}>Close</button>
+                        <button className={'black-button'} onClick={closeModal}>Close</button>
                     </div>
                 )}
             </Modal>

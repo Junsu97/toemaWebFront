@@ -1,20 +1,25 @@
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* 필요한 경우 레이어 우선순위를 높입니다 */
+    background-color: white; /* 모달 배경 색상 */
+    padding: 20px; /* 모달 내부 여백 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    border-radius: 8px; /* 모달 테두리 둥글게 */
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
+    z-index: 999; /* 모달보다 뒤에 위치 */
 }
 
-.modal {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-}
 
 .close {
     float: right;

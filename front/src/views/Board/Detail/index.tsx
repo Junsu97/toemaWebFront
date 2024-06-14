@@ -157,7 +157,7 @@ export default function BoardDetail() {
           <div className='board-detail-top-sub-box'>
             <div className='board-detail-write-info-box'>
               <div className='board-detail-writer-profile-image' style={{ backgroundImage: `url(${board.writerProfileImage ? board.writerProfileImage : defaultProfileImage})` }}></div>
-              <div className='board-detail-writer-nickname' onClick={onNicknameClickHandler}>{board.writerNickname}</div>
+              <div className='board-detail-writer-nickname' onClick={onNicknameClickHandler}>{board.writerId}</div>
               <div className='board-detail-info-divider'>{'\|'}</div>
               <div className='board-detail-write-date'>{getWriteDatetimeFormat()}</div>
             </div>
@@ -374,7 +374,6 @@ export default function BoardDetail() {
       const requestBody: PatchCommentRequestDTO = {boardNumber,commentNumber,content}
       patchCommentRequest(requestBody, cookies.accessToken).then(patchCommentResponse);
     };
-
 
 
     // render : 게시물 상세 하단 컴포넌트 렌더링

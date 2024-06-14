@@ -7,7 +7,7 @@ import loginUserStore from "../../stores/login-user.store";
 import {deleteCommentRequest} from "../../apis";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
-import {AUTH_PATH, BOARD_DETAIL_PATH} from "../../constant";
+import {AUTH_PATH, BOARD_DETAIL_PATH, USER_PATH} from "../../constant";
 import {DeleteCommentResponseDTO} from "../../apis/response/board";
 import {ResponseDto} from "../../apis/response";
 
@@ -45,6 +45,7 @@ export default function CommentItem({ commentListItem, onEditButtonClick }: Prop
     const onUpdateButtonClickHandler = () => {
         onEditButtonClick(commentListItem); // Invoke callback with the comment details
     }
+
 
     const deleteCommentResponse = (responseBody: DeleteCommentResponseDTO | ResponseDto | null) => {
         if(!responseBody){
@@ -88,7 +89,7 @@ export default function CommentItem({ commentListItem, onEditButtonClick }: Prop
                     <div className='comment-list-item-profile-image'
                          style={{ backgroundImage: `url(${profileImage ? profileImage : defatultProfileImage})` }}></div>
                 </div>
-                <div className='comment-list-item-nickname'>{nickname}</div>
+                <div className='comment-list-item-nickname' >{nickname}</div>
                 <div className='comment-list-item-divider'>{`\|`}</div>
                 <div className='comment-list-item-time'>{getElapsedTime()}</div>
                 {isWriter &&

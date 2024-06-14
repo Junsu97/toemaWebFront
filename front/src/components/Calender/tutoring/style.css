@@ -1,3 +1,4 @@
+/* 기존 CSS */
 .tutoring-calendar-container {
     display: flex;
     justify-content: center;
@@ -51,19 +52,18 @@
     margin-top: 20px;
     font-size: 16px;
 }
-.list-bottom-pagination-box{
+
+.list-bottom-pagination-box {
     display: flex;
     justify-content: center;
 }
-/* style.css */
-.ReactModal__Overlay {
+
+/* 모달의 고유한 클래스 추가 */
+.custom-modal-overlay {
     background-color: rgba(0, 0, 0, 0.75) !important;
 }
-.tutoring-item-container{
-    height:600px;
-}
 
-.ReactModal__Content {
+.custom-modal-content {
     top: 50%;
     left: 50%;
     right: auto;
@@ -74,15 +74,14 @@
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 90%;
+    width: 800px; /* 필요에 따라 조정 가능 */
+    height: 600px; /* 필요에 따라 조정 가능 */
 }
-.close-icon-wrapper{
+
+.close-icon-wrapper {
     width: 100%;
     display: flex;
     justify-content: flex-end; /* 아이콘을 오른쪽으로 정렬 */
     align-items: center; /* 수직으로 가운데 정렬 */
     padding-bottom: 5px;
 }
-
-

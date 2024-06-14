@@ -1,28 +1,28 @@
-import React, {useEffect, useState} from 'react';
-import {DateCalendar, LocalizationProvider, PickersDay, PickersDayProps, TimePicker} from '@mui/x-date-pickers';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, {Dayjs} from 'dayjs';
-import {styled} from '@mui/material/styles';
+import React, { useEffect, useState } from 'react';
+import { DateCalendar, LocalizationProvider, PickersDay, PickersDayProps, TimePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import { styled } from '@mui/material/styles';
 import './style.css';
-import {FormControl, Radio, RadioGroup} from '@mui/material';
+import { FormControl, Radio, RadioGroup } from '@mui/material';
 import FormLabel from '@mui/material/FormLabel';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Modal from 'react-modal';
 import TutoringListItemInterface from "../../../types/interface/tutoring-list-item.interface";
-import {getTutoringListFromTeacherRequest, postTutoringRequest} from "../../../apis";
+import { getTutoringListFromTeacherRequest, postTutoringRequest } from "../../../apis";
 import PostTutoringRequestDTO from "../../../apis/reqeust/tutoring/post-tutoring-request.dto";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import loginUserStore from "../../../stores/login-user.store";
-import {AUTH_PATH, MAIN_PATH, MATCHED_STUDENT_LIST} from "../../../constant";
-import {GetTutoringListResponseDTO, TutoringAnotherResponseDTO} from "../../../apis/response/tutoring";
-import {ResponseDto} from "../../../apis/response";
-import {useCookies} from "react-cookie";
+import { AUTH_PATH, MAIN_PATH, MATCHED_STUDENT_LIST } from "../../../constant";
+import { GetTutoringListResponseDTO, TutoringAnotherResponseDTO } from "../../../apis/response/tutoring";
+import { ResponseDto } from "../../../apis/response";
+import { useCookies } from "react-cookie";
 import TutoringItem from "../../TutoringItem";
-import Pagenation from "../../Pagination";
-import {usePagination} from "../../../hooks";
+import Pagination from "../../Pagination";
+import { usePagination } from "../../../hooks";
 import HomeworkListItemInterface from "../../../types/interface/homework-list-item.interface";
 
-const StyledDateCalendar = styled(DateCalendar)(({theme}) => ({
+const StyledDateCalendar = styled(DateCalendar)(({ theme }) => ({
     '.MuiDayCalendar-header > span:first-of-type': {
         color: 'red',
     },
@@ -43,20 +43,20 @@ export default function CalendarComponent() {
     const [tutoringList, setTutoringList] = useState<TutoringListItemInterface[]>([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [subject, setSubject] = useState('국어');
-    const {loginUser} = loginUserStore();
+    const { loginUser } = loginUserStore();
     const [cookies] = useCookies();
     const disableEndTime = startTime;
-    const {teacherUserId, studentUserId} = useParams();
+    const { teacherUserId, studentUserId } = useParams();
     const {
         currentPage, currentSection, viewList, viewPageList, totalSection,
         setCurrentPage, setCurrentSection, setTotalList
     } = usePagination<TutoringListItemInterface>(3);
 
     const navigate = useNavigate();
+
     const handleDateChange = (date: Dayjs | null) => {
         setSelectedDate(date);
         if (date) {
-            // 선택한 날짜의 tutoringList가 존재하면 모달을 열기
             const selectedDateTutoringList = tutoringList.filter(tutoring => dayjs(tutoring.tutoringDate).isSame(date, 'day'));
             if (selectedDateTutoringList.length > 0) {
                 setModalIsOpen(true);
@@ -68,7 +68,6 @@ export default function CalendarComponent() {
         setStartTime(newTime);
         if (newTime) {
             setFormattedStartTime(dayjs(newTime).format('HH:mm'));
-            // 만약 마감 시간이 시작 시간보다 이전이면 마감 시간을 초기화합니다.
             if (endTime && newTime.isAfter(endTime)) {
                 setEndTime(null);
                 setFormattedEndTime('');
@@ -105,7 +104,7 @@ export default function CalendarComponent() {
             alert('서버로부터 데이터를 불러올 수 없습니다.');
             return;
         }
-        const {code} = responseBody;
+        const { code } = responseBody;
         if (code === 'VF') {
             alert('비정상적인 접근입니다.');
             return;
@@ -160,8 +159,6 @@ export default function CalendarComponent() {
             alert('마감 시간은 시작 시간보다 과거일 수 없습니다.');
             return;
         } else {
-            // 일정 잡기 로직 추가
-
             if (teacherUserId !== loginUser.userId) {
                 alert('비정상적인 접근입니다.');
                 return;
@@ -185,7 +182,7 @@ export default function CalendarComponent() {
             alert('서버로부터 데이터를 불러올 수 없습니다.');
             return;
         }
-        const {code} = responseBody;
+        const { code } = responseBody;
         if (code === 'NU' || code === 'NM') {
             alert('잘못된 요청입니다.');
             return;
@@ -202,7 +199,7 @@ export default function CalendarComponent() {
             return;
         }
 
-        const {tutoringList} = responseBody as GetTutoringListResponseDTO;
+        const { tutoringList } = responseBody as GetTutoringListResponseDTO;
         setTotalList(tutoringList);
         setTutoringList(tutoringList);
     };
@@ -212,15 +209,13 @@ export default function CalendarComponent() {
     }, []);
 
     const renderDay = (props: PickersDayProps<Dayjs>) => {
-        const {day, ...DayComponentProps} = props;
+        const { day, ...DayComponentProps } = props;
         const formattedDay = day.format('YYYY-MM-DD');
 
-        // Find all homeworks for the day
         const homeworksForDay = tutoringList.filter(tt =>
             day.isSame(tt.tutoringDate, 'day')
         );
 
-        // Check if there are overlapping homeworks
         const overlappingHomeworks = homeworksForDay.length > 1;
 
         return (
@@ -229,11 +224,10 @@ export default function CalendarComponent() {
                 day={day}
                 style={{
                     backgroundColor: homeworksForDay.length === 1
-                        ? '#adc8e6' // First color for single homework
+                        ? '#adc8e6'
                         : homeworksForDay.length > 1 || overlappingHomeworks
-                            ? '#5b627d' // Second color for overlapping homeworks
+                            ? '#5b627d'
                             : undefined,
-                    // borderRadius: homeworksForDay.length > 0 || overlappingHomeworks ? '50%' : undefined,
                 }}
             />
         );
@@ -243,11 +237,11 @@ export default function CalendarComponent() {
         <div className="tutoring-calendar-container">
             <div className="header">과외 일정 관리</div>
             <div className="calendar-wrapper">
-                <LocalizationProvider dateAdapter={AdapterDayjs} dateFormats={{monthShort: 'M'}}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} dateFormats={{ monthShort: 'M' }}>
                     <StyledDateCalendar
                         value={selectedDate}
                         onChange={handleDateChange}
-                        slots={{day: renderDay}}
+                        slots={{ day: renderDay }}
                     />
                     <div className="date-picker-container">
                         <div className="start-date-header">시작 시간</div>
@@ -285,11 +279,11 @@ export default function CalendarComponent() {
                         value={subject}
                         onChange={handleSubjectChange}
                     >
-                        <FormControlLabel value="국어" control={<Radio/>} label="국어"/>
-                        <FormControlLabel value="수학" control={<Radio/>} label="수학"/>
-                        <FormControlLabel value="사회" control={<Radio/>} label="사회"/>
-                        <FormControlLabel value="과학" control={<Radio/>} label="과학"/>
-                        <FormControlLabel value="영어" control={<Radio/>} label="영어"/>
+                        <FormControlLabel value="국어" control={<Radio />} label="국어" />
+                        <FormControlLabel value="수학" control={<Radio />} label="수학" />
+                        <FormControlLabel value="사회" control={<Radio />} label="사회" />
+                        <FormControlLabel value="과학" control={<Radio />} label="과학" />
+                        <FormControlLabel value="영어" control={<Radio />} label="영어" />
                     </RadioGroup>
                 </FormControl>
                 <div>
@@ -301,48 +295,33 @@ export default function CalendarComponent() {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="Tutoring List"
-                style={{
-                    overlay: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    },
-                    content: {
-                        top: '50%',
-                        left: '50%',
-                        right: 'auto',
-                        bottom: 'auto',
-                        marginRight: '-50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: '800px', // 필요에 따라 조정 가능
-                        height: '600px' // 필요에 따라 조정 가능
-                    },
-                }}
+                className="custom-modal-content"
+                overlayClassName="custom-modal-overlay"
             >
                 <div className={'modal-flex-box'}>
                     <h2>과외 일정</h2>
                     <div className={'close-icon-wrapper'}>
-                        <div className={'icon close-icon'} style={{width: '30px', height: '30px', cursor: 'pointer'}}
+                        <div className={'icon close-icon'} style={{ width: '30px', height: '30px', cursor: 'pointer' }}
                              onClick={closeModal}></div>
                     </div>
                     <div className={'tutoring-item-container'}>
-                    {tutoringList
-                        .filter(tutoring => dayjs(tutoring.tutoringDate).isSame(selectedDate, 'day'))
-                        .map((tutoring, index) => (
-                            <TutoringItem key={tutoring.seq} tutoringList={tutoring}></TutoringItem>
-
-                        ))}
+                        {tutoringList
+                            .filter(tutoring => dayjs(tutoring.tutoringDate).isSame(selectedDate, 'day'))
+                            .map((tutoring, index) => (
+                                <TutoringItem key={tutoring.seq} tutoringList={tutoring}></TutoringItem>
+                            ))}
                     </div>
                 </div>
                 <div className='list-bottom-pagination-box'>
-                    <Pagenation
+                    <Pagination
                         currentPage={currentPage}
                         currentSection={currentSection}
                         setCurrentPage={setCurrentPage}
                         setCurrentSection={setCurrentSection}
                         viewPageList={viewPageList}
-                        totalSection={totalSection}/>
+                        totalSection={totalSection} />
                 </div>
             </Modal>
-
         </div>
     );
 }

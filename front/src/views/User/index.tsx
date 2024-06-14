@@ -247,7 +247,7 @@ export default function UserPage() {
             setCurrentPage, setCurrentSection, setTotalList
         } = usePagination<BoardListDTO>(5);
         const accessToken = cookies.accessToken;
-
+        const [isUserDeleted, setIsUserDeleted] = useState(false);
         // function :  get user board list response 처리 함수
         const getUserBoardListResponse = (responseBody: GetUserBoardListResponseDTO | ResponseDto | null) => {
             if (!responseBody) return;
@@ -322,8 +322,8 @@ export default function UserPage() {
             if (!responseBody) return;
             const {code} = responseBody;
             if (code === 'NU') {
-                alert('존재하지 않는 유저입니다.');
                 navigate(MAIN_PATH());
+                alert('존재하지 않는 유저입니다.');
                 return;
             }
             if (code === 'DBE') {
@@ -337,6 +337,7 @@ export default function UserPage() {
 
             alert('탈퇴되었습니다.');
             setCookies('accessToken', '', {path: AUTH_PATH(), expires: new Date()});
+            setIsUserDeleted(true);
             navigate(AUTH_PATH());
             return;
         }
@@ -353,6 +354,7 @@ export default function UserPage() {
                 if (result.isConfirmed) {
                     deleteUserRequest(loginUser.userType, cookies.accessToken)
                         .then(deleteUserResponse);
+                    return;
                 }
             });
 
@@ -361,6 +363,8 @@ export default function UserPage() {
 
         // effect : userid path variable이 변경될 때마다 실행될 함수
         useEffect(() => {
+            if(isUserDeleted) return;
+
             if (!userId) {
                 alert('잘못된 접근입니다.');
                 navigate(MAIN_PATH());
@@ -371,7 +375,7 @@ export default function UserPage() {
                 getUserBoardListRequest(userId).then(getUserBoardListResponse);
             }
 
-        }, [userId])
+        }, [userId, isUserDeleted])
 
         // render : 유저 화면 하단 컴포넌트 렌더링
         return (

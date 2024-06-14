@@ -13,7 +13,7 @@ export default function ApplyDetail() {
     const {teacherUserId, studentUserId} = useParams();
     const [content, setContent] = useState<string>('');
     const [status , setStatus] = useState<string>('');
-    const [isShowButton, setShowButton] = useState<boolean>(false);
+    const [isShowButton, setShowButton] = useState<boolean>(true);
     const [buttonTag, setButtonTag] = useState<boolean>(false);
     const [buttonMessage, setButtonMessage] = useState<string>('신청 취소');
     const [buttonMsg, setButtonMsg] = useState<string>('');

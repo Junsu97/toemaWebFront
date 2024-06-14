@@ -55,6 +55,7 @@ export default function Header() {
   const [isTeacherPage, setTeacherPage] = useState<boolean>(false);
   const [isHomeworkPage, setHomeworkPage] = useState<boolean>(false);
   const [isTutoringPage, setTutoringPage] = useState<boolean>(false);
+  const [isChatPage, setChatPage] = useState<boolean>(false);
 
   let isTeacher = false;
 
@@ -274,7 +275,8 @@ export default function Header() {
     setHomeworkPage(isHomeworkPage);
     const isTutoringPage = pathname.startsWith('/tutoring');
     setTutoringPage(isTutoringPage);
-
+    const isChatPage = pathname.startsWith('/chat');
+    setChatPage(isChatPage);
   }, [pathname]);
   // effect : login user가 변경될 때 마다 실행 될 함수
   useEffect(() => {
@@ -302,7 +304,7 @@ export default function Header() {
           {(
             <>
               {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && <SearchButton />}
-              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardListPage || isTeacherPageList || isTeacherPage || isHomeworkPage || isTutoringPage ) && <LoginMyPageButton />}
+              {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardListPage || isTeacherPageList || isTeacherPage || isHomeworkPage || isTutoringPage || isChatPage) && <LoginMyPageButton />}
               {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
             </>
           )}

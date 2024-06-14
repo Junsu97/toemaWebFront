@@ -398,8 +398,10 @@ export default function Authentication() {
                         <div className='black-large-full-button' onClick={onSignInButtonClickHandler}>{'로그인'}</div>
                         <div className='black-large-full-button'
                              onClick={onFaceIdSignInButtonClickHandler}>{'Face ID 로그인'}</div>
+
                         <Modal onOpen={changeDetectState} onClose={stopVideoAndDetection} open={modalOpen}
                                videoRef={videoRef} canvasRef={canvasRef}></Modal>
+
                         <div className='auth-description-box'>
                             <div className='auth-description'>
                                 {'신규 사용자이신가요? '}
