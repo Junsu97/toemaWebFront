@@ -24,6 +24,7 @@ export const BOARD_PATH = () => '/board'
 export const BOARD_DETAIL_PATH = (boardNumber : string | number)  => `/board/detail/${boardNumber}`;
 export const BOARD_WRITE_PATH = () => '/board/write'
 export const BOARD_LIST = () => '/board/list'
+export const LIKE_LIST = (userId:string) => `/like-board/list/${userId}`
 export const BOARD_UPDATE_PATH = (boardNumber: string | number) => `/board/update/${boardNumber}`;
 export const CHAT_ROOM = (roomName : string) => `/chat/chatRoom/${roomName}`;
 export const CHAT_LIST = () => '/chat/chatList';

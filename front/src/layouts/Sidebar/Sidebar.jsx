@@ -5,7 +5,15 @@ import probg from "assets/image/bg/download.jpg";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useLoginUserStore} from 'stores';
 import defautltProfileImage from 'assets/image/default-profile-image.png'
-import {BOARD_LIST, CHAT_LIST, HOMEWORK_LIST, MATCHED_STUDENT_LIST, TEACHER_APPLY_LIST, TEACHER_LIST} from "constant";
+import {
+    BOARD_LIST,
+    CHAT_LIST,
+    HOMEWORK_LIST,
+    LIKE_LIST,
+    MATCHED_STUDENT_LIST,
+    TEACHER_APPLY_LIST,
+    TEACHER_LIST
+} from "constant";
 import React, {useState, useEffect} from "react";
 
 
@@ -57,6 +65,14 @@ const Sidebar = () => {
         if(!loginUser){
             return;
         }
+        setNavigation(prevNavigation => [
+            ...prevNavigation,
+            {
+                title: "좋아요 목록",
+                href: LIKE_LIST(loginUser.userId), // 동적으로 생성된 URL 사용
+                icon: "bi bi-heart",
+            }
+        ]);
         if (loginUser.userType === 'TEACHER') {
             setNavigation(prevNavigation => [
                 ...prevNavigation,

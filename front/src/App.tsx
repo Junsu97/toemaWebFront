@@ -22,7 +22,7 @@ import {
     CHANGE_PASSWORD, CHAT_LIST, CHAT_ROOM,
     FACE_ID,
     FIND_ID,
-    FIND_PASSWROD, HOMEWORK, HOMEWORK_LIST,
+    FIND_PASSWROD, HOMEWORK, HOMEWORK_LIST, LIKE_LIST,
     MAIN_PATH,
     MATCHED_STUDENT_LIST,
     SEARCH_PATH,
@@ -63,6 +63,7 @@ import HomeworkListStudent from "./views/HomeworkList";
 import Chatting from "./views/Chat/list";
 import ChatList from "./views/Chat/list";
 import ChatRoom from "./views/Chat/room";
+import LikeList from "./views/Board/LikeList";
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -147,6 +148,7 @@ function App() {
                     <Route path={USER_UPDATE_PATH(':userId')} element={<UserInfoUpdatePage/>}/>
                     <Route path={TEACHER_APPLY(':userId')} element={<TeacherApply/>}/>
                     <Route path={TEACHER_APPLY_LIST()} element={<ApplyList/>}/>
+                    <Route path={LIKE_LIST(':userId')} element={<LikeList/>}/>
                     <Route path={BOARD_PATH()}>
                         <Route path={BOARD_LIST()} element={<BoardList/>}></Route>
                         <Route path={BOARD_WRITE_PATH()} element={<BoardWrite/>}/>

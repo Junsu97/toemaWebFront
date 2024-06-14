@@ -32,7 +32,7 @@ import {
     GetLatesttBoardListResponseDTO,
     GetTop3BoardListResponseDTO,
     GetSearchBoardListResonseDTO,
-    GetUserBoardListResponseDTO, PatchCommentResponseDTO, DeleteCommentResponseDTO
+    GetUserBoardListResponseDTO, PatchCommentResponseDTO, DeleteCommentResponseDTO, GetLikeBoardListResponseDTO
 } from './response/board';
 import {GetPopularListResponseDTO, GetRelationListResponseDTO} from './response/search';
 import {
@@ -147,6 +147,7 @@ export const signUpRequest = async (reqeustBody: SignUpRequestDTO) => {
 }
 const GET_BOARD_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}`;
 const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/board/latest-list`;
+const GET_LIKE_BOARD_LIST_URL = (userId:string) => `${API_DOMAIN}/board/like-test/${userId}`;
 const GET_TOP_3_BOARD_LIST_URL = () => `${API_DOMAIN}/board/top-3`;
 const GET_SEARCH_BOARD_LIST_URL = (searchWord: string, preSearchWord: string | null) => {
     if (preSearchWord) {
@@ -229,6 +230,20 @@ export const getLatestBoardListRequest = async () => {
             return responseBody;
         })
         .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+
+export const getLikeBoardListRequest = async (userId: string) => {
+    const result = await axios.get(GET_LIKE_BOARD_LIST_URL(userId))
+        .then(response => {
+            const responseBody : GetLikeBoardListResponseDTO = response.data;
+            return responseBody;
+        }) .catch(error => {
             if (!error.response) return null;
             const responseBody: ResponseDto = error.response.data;
             return responseBody;

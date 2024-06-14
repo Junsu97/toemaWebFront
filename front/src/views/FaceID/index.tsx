@@ -51,7 +51,7 @@ export default function FaceCapture() {
 
     useEffect(() => {
         let stream: MediaStream | null = null;
-        if(!loginUser || cookies.accessToken){
+        if(!loginUser || !cookies.accessToken){
             alert('비정상적인 접근입니다.');
             navigate(AUTH_PATH());
             return;
@@ -111,7 +111,6 @@ export default function FaceCapture() {
                 return;
             }, 1000);
         } else if (accumulatedDetections.length >= 5) {
-            if (!loginUser) return;
             const averageAccuracy = accumulatedDetections.reduce((acc, detection) => acc + detection.detection.score, 0) / accumulatedDetections.length;
 
             const numLandmarks = accumulatedDetections[0].landmarks.positions.length;
@@ -124,7 +123,7 @@ export default function FaceCapture() {
                     }, { x: 0, y: 0 });
                 })
             };
-
+            if(!loginUser)return;
             const requestBody: PostFaceIdRequestDTO = {
                 userId: loginUser.userId,
                 accuracy: averageAccuracy,

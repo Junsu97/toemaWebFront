@@ -12,7 +12,7 @@ import loginUserStore from "../../../../stores/login-user.store";
 export default function ApplyDetail() {
     const {teacherUserId, studentUserId} = useParams();
     const [content, setContent] = useState<string>('');
-    const [status , setStatus] = useState<string>('');
+    const [status, setStatus] = useState<string>('');
     const [isShowButton, setShowButton] = useState<boolean>(true);
     const [buttonTag, setButtonTag] = useState<boolean>(false);
     const [buttonMessage, setButtonMessage] = useState<string>('신청 취소');
@@ -20,6 +20,7 @@ export default function ApplyDetail() {
     const {loginUser} = loginUserStore();
     const [cookies, setCookies] = useCookies();
     const [isWriter, setIsWriter] = useState<boolean>(false);
+    const [isCancel, setCancel] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -72,6 +73,7 @@ export default function ApplyDetail() {
         navigate(TEACHER_APPLY_LIST());
         return;
     }
+
     const updateButtonClickHandler = () => {
         if (!loginUser) {
             alert('로그인 후 이용해주세요;');
@@ -79,9 +81,11 @@ export default function ApplyDetail() {
             return;
         }
 
-        if(buttonTag){
+        if (loginUser.userType === 'STUDENT') {
             navigate(TEACHER_APPLY_UPDATE(teacherUserId as string, studentUserId as string));
-        }else{
+            return;
+        } else {
+            const status = loginUser.userType === 'TEACHER'? '승인됨' : '신청됨';
             const requestBody: PatchApplyRequestDTO = {
                 studentId: studentUserId as string,
                 teacherId: teacherUserId as string,
@@ -99,82 +103,117 @@ export default function ApplyDetail() {
             navigate(AUTH_PATH());
             return;
         }
+        const status = loginUser.userType === 'TEACHER' ? '거절됨' : '취소됨'
         const requestBody: PatchApplyRequestDTO = {
             studentId: studentUserId as string,
             teacherId: teacherUserId as string,
             content: content,
-            status: '거절됨',
+            status: status,
             userType: loginUser.userType
         }
         patchApplyRequest(requestBody, cookies.accessToken).then(patchApplyResponse);
     }
 
     useEffect(() => {
-        if (!teacherUserId || !studentUserId || !cookies.accessToken || !loginUser) {
+        if (!teacherUserId || !studentUserId || !loginUser) {
             alert('비정상적인 접근입니다.');
             navigate(MAIN_PATH());
             return;
         }
-        if(loginUser.userId === teacherUserId || loginUser.userId === studentUserId){
+        if (loginUser.userId === teacherUserId || loginUser.userId === studentUserId) {
             setIsWriter(true);
         }
-        if (loginUser.userType === 'STUDENT' && loginUser.userId === studentUserId) {
-            setButtonTag(true);
-            setButtonMessage('신청 취소');
-            setButtonMsg('수정하기')
-        } else {
-            setButtonMessage('거절하기');
-            setButtonMsg('승인하기');
-            setButtonTag(false);
-        }
-
 
         getApplyInfoRequest(teacherUserId, studentUserId).then(getApplyInfoResponse);
 
-        if(status === '거절됨' || loginUser.userType === 'STUDENT'){
+        if (loginUser.userType === 'TEACHER' || status === '취소됨') {
+            setCancel(true);
+        }
+        if (status === '거절됨' || loginUser.userType === 'STUDENT') {
             setButtonMsg('다시 신청하기');
         }
-        if(status === '거절됨'){
+        if (status === '거절됨' || status === '취소됨') {
             setShowButton(false);
         }
+
     }, []);
-    return (
-        <div id='wrapper'>{isWriter ? <div className="side_wrapper">
-            <section className="about-dev">
-                <header className="profile-card_header">
-                    <div className="profile-card_header-container">
-                        <h1>{teacherUserId}<span>{studentUserId}</span></h1>
-                    </div>
-                </header>
-                <div className="profile-card_about">
-                    <h2>신청 메시지</h2>
-                    <p>{content}</p>
-                    <footer className="profile-card_footer">
-                        <div className="social-row">
-                            <div className="heart-icon" title="No Health Issues">
-                                {/* SVG content here */}
-                            </div>
-                            <div className="paw-icon" title="Gets Along Well With Other Animals">
-                                {/* SVG content here */}
-                            </div>
-                        </div>
-                        <p>
 
-                            <a className="back-to-profile" onClick={updateButtonClickHandler}>{buttonMsg}</a>
-                            {isShowButton &&
-                                <a className="back-to-profile" onClick={cancelButtonClickHandler}>{buttonMessage}</a>
-                            }
-
-                        </p>
-                    </footer>
-                </div>
-            </section>
-        </div>:
-            <div>
-
-            </div>
+    useEffect(() => {
+        if(!loginUser)return;
+        if (status === '취소됨') {
+            if (loginUser.userType === 'STUDENT') {
+                setShowButton(true);
+                setButtonMsg('다시 신청하기');
+                setButtonMessage('신청 취소');
+            } else {
+                setShowButton(false);
+            }
+        } else if (status === '거절됨') {
+            if (loginUser.userType === 'STUDENT') {
+                setShowButton(true);
+                setButtonMsg('다시 신청하기');
+                setButtonMessage('신청 취소');
+            } else if (loginUser.userType === 'TEACHER') {
+                setShowButton(true);
+                setButtonMsg('승인하기');
+                setButtonMessage('승인하기');
+            }
+        } else if (status === '신청됨') {
+            if (loginUser.userType === 'STUDENT') {
+                setShowButton(true);
+                setButtonMsg('수정하기');
+                setButtonMessage('신청 취소');
+            } else if (loginUser.userType === 'TEACHER') {
+                setShowButton(true);
+                setButtonMsg('승인하기');
+                setButtonMessage('거절하기');
+            }
+        } else if(status === '승인됨'){
+            if (loginUser.userType === 'STUDENT') {
+                setShowButton(false);
+                setButtonMsg('신청 취소');
+                setButtonMessage('');
+            }
         }
+    }, [status, loginUser]);
 
+    return (
+        <div id='wrapper'>
+            {isWriter ? (
+                <div className="side_wrapper">
+                    <section className="about-dev">
+                        <header className="profile-card_header">
+                            <div className="profile-card_header-container">
+                                <h1>{teacherUserId}<span>{studentUserId}</span></h1>
+                            </div>
+                        </header>
+                        <div className="profile-card_about">
+                            <h2>신청 메시지</h2>
+                            <p>{content}</p>
+                            <footer className="profile-card_footer">
+                                <div className="social-row">
+                                    <div className="heart-icon" title="No Health Issues">
+                                        {/* SVG content here */}
+                                    </div>
+                                    <div className="paw-icon" title="Gets Along Well With Other Animals">
+                                        {/* SVG content here */}
+                                    </div>
+                                </div>
+                                <p>
+                                    {!isCancel && (
+                                        <a className="back-to-profile" onClick={updateButtonClickHandler}>{buttonMsg}</a>
+                                    )}
+                                    {isShowButton && (
+                                        <a className="back-to-profile" onClick={cancelButtonClickHandler}>{buttonMessage}</a>
+                                    )}
+                                </p>
+                            </footer>
+                        </div>
+                    </section>
+                </div>
+            ) : (
+                <div></div>
+            )}
         </div>
     )
 }
