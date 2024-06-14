@@ -56,7 +56,7 @@ export default function UserPage() {
             if (!responseBody) return;
             const {code} = responseBody;
             if (code === 'NU') {
-                alert('존재하지 않는 유저입니다.');
+                // alert('존재하지 않는 유저입니다.');
                 return;
             }
             if (code === 'DBE') {
@@ -322,8 +322,7 @@ export default function UserPage() {
             if (!responseBody) return;
             const {code} = responseBody;
             if (code === 'NU') {
-                navigate(MAIN_PATH());
-                alert('존재하지 않는 유저입니다.');
+
                 return;
             }
             if (code === 'DBE') {
