@@ -7,7 +7,7 @@ import { useCookies } from 'react-cookie';
 import { getBoardRequest } from 'apis';
 import { GetBoardResponseDTO } from 'apis/response/board';
 import { ResponseDto } from 'apis/response';
-import { converUrlsToFile } from 'utils';
+import { convertUrlsToFile } from 'utils';
 
 // component : 게시물 수정 화면 컴포넌트
 export default function BoardWrite() {
@@ -25,7 +25,7 @@ export default function BoardWrite() {
   // state: 게시물 상태 
   const { title, setTitle } = useBoardStore();
   const { content, setContent } = useBoardStore();
-  const { boardImageFileList, setBoardImageFileList } = useBoardStore();
+  const { boardImageFileList, setBoardImageFileList, resetBoard } = useBoardStore();
 
   // state : 로그인 유저 상태
   const { loginUser } = useLoginUserStore();
@@ -51,7 +51,7 @@ export default function BoardWrite() {
     const {title, content, boardImageList, writerId} = responseBody as GetBoardResponseDTO;
     setTitle(title);
     setContent(content);
-    converUrlsToFile(boardImageList).then(boardImageFileList => setBoardImageFileList(boardImageFileList));
+    convertUrlsToFile(boardImageList).then(boardImageFileList => setBoardImageFileList(boardImageFileList));
     setImageUrls(boardImageList);
     console.log(loginUser);
     if(!loginUser){
@@ -126,6 +126,15 @@ export default function BoardWrite() {
     }
     if (!boardNumber) return;
     getBoardRequest(boardNumber).then(getBoardResponse);
+
+    const handleBeforeUnload = (event:BeforeUnloadEvent) => {
+      resetBoard();
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return() => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
   }, [boardNumber]);
 
 

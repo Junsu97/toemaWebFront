@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import { useBoardStore, useLoginUserStore } from 'stores';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import { AUTH_PATH, BOARD_LIST, BOARD_PATH, MAIN_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
 
@@ -30,6 +30,7 @@ export default function BoardWrite() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   // function : 네비게이트 함수
   const navigator = useNavigate();
+  const location = useLocation();
 
   // event handler : 제목 변경 이벤트 처리
   const onTitleChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -88,14 +89,29 @@ export default function BoardWrite() {
     if(loginUser?.userType==='TEACHER'){
       alert('공부인증 게시글은 학생회원만 작성할 수 있습니다.');
       navigator(BOARD_LIST());
+      return;
     }
     if(!accessToken){
       alert('로그인 후 이용해주세요.');
       navigator(AUTH_PATH());
+      return;
     }
     resetBoard();
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      resetBoard();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      resetBoard();
+    }
+  }, [location, resetBoard]);
 
   // render : 게시물 작성 화면 컴포넌트 렌더링
   return (
