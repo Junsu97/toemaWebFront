@@ -125,11 +125,16 @@ export default function ApplyDetail() {
         }
 
         getApplyInfoRequest(teacherUserId, studentUserId).then(getApplyInfoResponse);
-
-        if (loginUser.userType === 'TEACHER' || status === '취소됨') {
-            setCancel(true);
+        if(loginUser.userType === 'TEACHER' && status === '신청됨'){
+            setCancel(false);
         }
-        if (status === '거절됨' || loginUser.userType === 'STUDENT') {
+
+        if (loginUser.userType === 'TEACHER' && status === '취소됨') {
+            setCancel(true);
+            setShowButton(false);
+            return;
+        }
+        if (status === '거절됨' && loginUser.userType === 'STUDENT') {
             setButtonMsg('다시 신청하기');
         }
         if (status === '거절됨' || status === '취소됨') {
@@ -140,11 +145,16 @@ export default function ApplyDetail() {
 
     useEffect(() => {
         if(!loginUser)return;
+
+        if (status === '거절됨' || status === '취소됨') {
+            setShowButton(false);
+        }
         if (status === '취소됨') {
             if (loginUser.userType === 'STUDENT') {
-                setShowButton(true);
+                setShowButton(false);
                 setButtonMsg('다시 신청하기');
-                setButtonMessage('신청 취소');
+                return;
+                // setButtonMessage('신청 취소');
             } else {
                 setShowButton(false);
             }
@@ -154,7 +164,7 @@ export default function ApplyDetail() {
                 setButtonMsg('다시 신청하기');
                 setButtonMessage('신청 취소');
             } else if (loginUser.userType === 'TEACHER') {
-                setShowButton(true);
+                setShowButton(false);
                 setButtonMsg('승인하기');
                 setButtonMessage('승인하기');
             }
@@ -170,9 +180,15 @@ export default function ApplyDetail() {
             }
         } else if(status === '승인됨'){
             if (loginUser.userType === 'STUDENT') {
-                setShowButton(false);
+                setShowButton(true);
+                setCancel(true)
                 setButtonMsg('신청 취소');
-                setButtonMessage('');
+                setButtonMessage('신청 취소');
+            }else if(loginUser.userType === 'TEACHER'){
+                setCancel(true);
+                setShowButton(true);
+                // setButtonMsg('해지하기');
+                setButtonMessage('해지하기')
             }
         }
     }, [status, loginUser]);

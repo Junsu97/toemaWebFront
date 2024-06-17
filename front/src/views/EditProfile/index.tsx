@@ -6,21 +6,20 @@ import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import {styled} from '@mui/system';
-import {Button, Card, TextareaAutosize} from '@mui/material';
+import {Button,  TextareaAutosize} from '@mui/material';
 import {useLoginUserStore} from 'stores';
 import {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from 'react';
 import InputBox from 'components/inputBox';
 import {Address, useDaumPostcodePopup} from 'react-daum-postcode';
-import {GetUserResponseDTO, PatchUserResponseDTO, PostMailResponseDTO} from 'apis/response/user';
+import {PatchUserResponseDTO, PostMailResponseDTO} from 'apis/response/user';
 import {useNavigate, useParams} from 'react-router-dom';
 import {AUTH_PATH, MAIN_PATH, USER_PATH} from 'constant';
 import {getTeacherSubjectRequest, patchUserRequest, postMailReceiveRequest, postMailSendRequest} from 'apis';
 import {PatchUserRequestDTO, PostMailReceiveRequestDTO, PostMailSendRequestDTO} from 'apis/reqeust/user';
 import {ResponseDto} from 'apis/response';
-import {Cookie, Timer} from '@mui/icons-material';
+import { Timer} from '@mui/icons-material';
 import {useCookies} from 'react-cookie';
 import TimerComponent from 'components/Timer';
-import {isDisabled} from "@testing-library/user-event/dist/utils";
 import {GetTeacherSubjectResponseDto} from "../../apis/response/user";
 
 const FormGrid = styled(Grid)(() => ({
@@ -138,7 +137,7 @@ export default function UserInfoUpdatePage() {
         // function :  다음 주소 검색 팝업 오픈 함수
         const open = useDaumPostcodePopup();
 
-        // function : post mail receive response 처리 
+        // function : post mail receive response 처리
         const postMailReceiveResponse = (responseBody: PostMailResponseDTO | ResponseDto | null) => {
             if (!responseBody) return;
             const {code} = responseBody;
@@ -361,7 +360,7 @@ export default function UserInfoUpdatePage() {
                             readOnly
                             sx={{backgroundColor: 'rgba(0,0,0,0.05)'}}
                         />
-                        {loginUser?.emailAuth === false &&
+                        {!isSchoolAuth &&
                             <>
                                 < Button
                                     type="button"
@@ -465,27 +464,27 @@ export default function UserInfoUpdatePage() {
                                 display: 'flex',
                                 justifyContent: 'center'
                             }}>
-                                <div style={{alignItems: 'center', justifyContent: 'space-evenly', width: '50%'}}>
-                                    <FormControlLabel control={<Checkbox value={korean} name={'korean'}
-                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                <div style={{ alignItems: 'center', justifyContent: 'space-evenly', width: '50%' }}>
+                                    <FormControlLabel control={<Checkbox checked={korean} name={'korean'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler} />}
                                                       label={'국어'}
-                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
-                                    <FormControlLabel control={<Checkbox value={math} name={'math'}
-                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      sx={{ width: '130px', minWidth: '130px', maxWidth: '130px' }} />
+                                    <FormControlLabel control={<Checkbox checked={math} name={'math'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler} />}
                                                       label={'수학'}
-                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
-                                    <FormControlLabel control={<Checkbox value={social} name={'social'}
-                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      sx={{ width: '130px', minWidth: '130px', maxWidth: '130px' }} />
+                                    <FormControlLabel control={<Checkbox checked={social} name={'social'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler} />}
                                                       label={'사회'}
-                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
-                                    <FormControlLabel control={<Checkbox value={science} name={'science'}
-                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      sx={{ width: '130px', minWidth: '130px', maxWidth: '130px' }} />
+                                    <FormControlLabel control={<Checkbox checked={science} name={'science'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler} />}
                                                       label={'과학'}
-                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
-                                    <FormControlLabel control={<Checkbox value={english} name={'english'}
-                                                                         onChange={onSubjectCheckBoxChangeHandler}/>}
+                                                      sx={{ width: '130px', minWidth: '130px', maxWidth: '130px' }} />
+                                    <FormControlLabel control={<Checkbox checked={english} name={'english'}
+                                                                         onChange={onSubjectCheckBoxChangeHandler} />}
                                                       label={'영어'}
-                                                      sx={{width: '130px', minWidth: '130px', maxWidth: '130px'}}/>
+                                                      sx={{ width: '130px', minWidth: '130px', maxWidth: '130px' }} />
                                 </div>
                             </div>
                             <div style={{
@@ -494,14 +493,13 @@ export default function UserInfoUpdatePage() {
                                 display: 'flex',
                                 justifyContent: 'center'
                             }}>
-                                <div style={{alignItems: 'center', justifyContent: 'space-evenly', width: '80%'}}>
+                                <div style={{ alignItems: 'center', justifyContent: 'space-evenly', width: '80%' }}>
                                     <TextareaAutosize ref={descRef} onChange={onDescChangeHandler} value={desc}
                                                       minRows={3} placeholder={'선생님의 자기소개 글을 작성해주세요.'}
-                                                      style={{width: '100%', resize: 'none'}}/>
+                                                      style={{ width: '100%', resize: 'none' }} />
                                 </div>
                             </div>
                         </>
-
                     }
 
                     <Button

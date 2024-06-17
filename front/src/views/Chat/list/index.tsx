@@ -59,6 +59,9 @@ export default function ChatList() {
                 if (!regex.test(value)) {
                     return "특수 문자는 사용할 수 없습니다!";
                 }
+                if(value.length > 16){
+                    return "채팅방 이름은 16글자 이하로 입력해주세요.";
+                }
                 return null;
             },
         });

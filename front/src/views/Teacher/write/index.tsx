@@ -3,7 +3,7 @@ import {useLoginUserStore} from "../../../stores";
 import {useCookies} from "react-cookie";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import './style.css';
-import {AUTH_PATH, TEACHER_APPLY_LIST, TEACHER_LIST} from "../../../constant";
+import {AUTH_PATH, MAIN_PATH, TEACHER_APPLY_LIST, TEACHER_LIST} from "../../../constant";
 import PostApplyTeacherRequestDTO from "../../../apis/reqeust/teacher/post-apply-teacher-request.dto";
 import {getApplyBeforeRequest, postApplyTeacherRequest} from "../../../apis";
 import {GetApplyBeforeResponseDTO, PostApplyTeacherResponseDTO} from "../../../apis/response/teacher";
@@ -21,6 +21,12 @@ export default function TeacherApply() {
         if (!loginUser || !cookies.accessToken) {
             alert('로그인 후 이용해주세요.');
             navigator(AUTH_PATH());
+            return;
+        }
+
+        if(loginUser.userType === 'TEACHER'){
+            alert('선생님은 선생신청을 할 수 없습니다.');
+            navigator(MAIN_PATH());
             return;
         }
     }, []);
