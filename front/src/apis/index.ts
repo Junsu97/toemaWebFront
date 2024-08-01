@@ -68,9 +68,10 @@ import GetApiListResponseDTO from "./response/main/get-api-list-reponse.dto";
 import DeleteUserResponseDTO from "./response/user/delete-user-response.dto";
 import {PostChatRoomRequestDTO} from "./reqeust/chat";
 import {PostChatRoomResponseDTO} from "./response/chat";
+import WeatherAPIResponseDTO from "./response/main/weather-api-response.dto";
 
-const DOMAIN = 'https://api.test-poly.shop';
-// const DOMAIN = 'http://localhost:11000';
+// const DOMAIN = 'https://api.test-poly.shop';
+const DOMAIN = 'http://localhost:11000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const authorization = (accessToken: string) => {
@@ -450,7 +451,7 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
 }
 const GET_SIGN_IN_USER = () => `${API_DOMAIN}/user`;
 const GET_TEACHER_SUBJECT_URL = () => `${API_DOMAIN}/user/subject`;
-const GET_APPLY_BEFORE_URL = () => `${API_DOMAIN}/teacher/apply`;
+const GET_APPLY_BEFORE_URL = (teacherId:string) => `${API_DOMAIN}/teacher/apply/${teacherId}`;
 const GET_APPLY_INFO_URL = (teacherId: string, studentId: string) => `${API_DOMAIN}/teacher/${teacherId}/${studentId}`;
 const POST_APPLY_LIST_URL = () => `${API_DOMAIN}/teacher/apply-list`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
@@ -528,8 +529,8 @@ export const getTeacherRequest = async (teacherUserId: string) => {
     return result;
 }
 
-export const getApplyBeforeRequest = async (accessToken: string) => {
-    const result = await axios.get(GET_APPLY_BEFORE_URL(), authorization(accessToken))
+export const getApplyBeforeRequest = async (teacherId:string,accessToken: string) => {
+    const result = await axios.get(GET_APPLY_BEFORE_URL(teacherId), authorization(accessToken))
         .then(response => {
             const responseBody: GetApplyBeforeResponseDTO = response.data;
             return responseBody;
@@ -927,7 +928,8 @@ export const deleteTutoringRequest = async (seq: number | string, accessToken : 
 
 }
 
-const GET_API_DATA_LIST_URL = (grade:string) => `${API_DOMAIN}/main/main/${grade}`;
+const GET_API_DATA_LIST_URL = (grade:string) => `${API_DOMAIN}/main/${grade}`;
+const GET_WEATHER_DATA_URL = (lat:string|number, lon:string|number) => `${API_DOMAIN}/main/${lat}/${lon}`;
 
 export const getApiDataListRequest = async (grade:string) => {
     const result = await axios.get(GET_API_DATA_LIST_URL(grade))
@@ -940,6 +942,19 @@ export const getApiDataListRequest = async (grade:string) => {
             return responseBody;
         });
 
+    return result;
+}
+
+export const getWeatherDataRequest = async (lat:string|number, lon:string|number) => {
+    const result = await axios.get(GET_WEATHER_DATA_URL(lat, lon))
+        .then(response => {
+            const responseBody: WeatherAPIResponseDTO = response.data;
+            return responseBody;
+        }).catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
     return result;
 }
 

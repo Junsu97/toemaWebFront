@@ -9,13 +9,15 @@ import axios from "axios";
 import { BoardListDTO } from "../../types/interface";
 import { GetTop3BoardListResponseDTO } from "../../apis/response/board";
 import { ResponseDto } from "../../apis/response";
-import { getApiDataListRequest, getTop3BoardListRequest } from "../../apis";
+import {getApiDataListRequest, getTop3BoardListRequest, getWeatherDataRequest} from "../../apis";
 import GetApiListResponseDTO from "../../apis/response/main/get-api-list-reponse.dto";
 import ApiListItemInterface from "../../types/interface/api-list-item.interface";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import {BOARD_DETAIL_PATH} from "../../constant";
 import {useNavigate} from "react-router-dom";
+import WeatherAPIResponseDTO from "../../apis/response/main/weather-api-response.dto";
+import WeatherAPIDTO from "../../types/interface/weather-api-interface";
 
 // Chart.js의 필요한 스케일을 등록합니다.
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -51,6 +53,7 @@ export default function Main() {
     const [apiDataList, setDataList] = useState<ApiListItemInterface[]>([]);
     const [selectedGrade, setSelectedGrade] = useState<string>('1학년');
     const [weather, setWeather] = useState<Weather | null>(null);
+    const [res, setRes] = useState<WeatherAPIDTO|null>(null);
     const navigate = useNavigate();
     const getTop3BoardListResponse = (responseBody: GetTop3BoardListResponseDTO | ResponseDto | null) => {
         if (!responseBody) {
@@ -80,6 +83,9 @@ export default function Main() {
             alert('데이터베이스 오류입니다.');
             return;
         }
+        if (code === 'VF'){
+            alert('사교육 참여율 데이터를 불러오는데 실패하였습니다.');
+        }
         if (code !== 'SU') {
 
             return;
@@ -92,18 +98,16 @@ export default function Main() {
         navigate(BOARD_DETAIL_PATH(boardNumber));
     }
 
-    const getWeather = async (lat: number, lon: number) => {
+    const getWeather =  () => {
         try {
-            const res = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
-            );
 
-            const weatherId = res.data.weather[0].id;
+            if(res == null) return;
+            const weatherId = res.id;
             const weatherKo = weatherDescKo[weatherId];
-            const weatherIcon = res.data.weather[0].icon;
+            const weatherIcon = res.weather[0].icon;
             const weatherIconAdrs = `http://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
-            const temp = Math.round(res.data.main.temp);
-            const cityName = res.data.name;
+            const temp = Math.round(res.main.temp);
+            const cityName = res.name;
             setWeather({
                 description: weatherKo,
                 name: cityName,
@@ -115,13 +119,34 @@ export default function Main() {
             console.error(err);
         }
     }
+    const getWeatherDataResponse = (responseBody: WeatherAPIResponseDTO | ResponseDto | null) => {
+        if (!responseBody) {
+            alert('날씨 데이터를 불러오는데 실패했습니다.');
+            return;
+        }
+        const { code } = responseBody;
+        if (code === 'DBE') {
+            alert('데이터베이스 오류입니다.');
+            return;
+        }
+        if (code === 'VF'){
+            alert('날씨 데이터를 불러오는데 실패하였습니다.');
+        }
+        if (code !== 'SU') {
+            return;
+        }
+
+        const {result} = responseBody as WeatherAPIResponseDTO;
+        setRes(result.data[0]);
+        getWeather();
+    }
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             console.log(lat, lon);
-            getWeather(lat, lon);
+            getWeatherDataRequest(lat, lon).then(getWeatherDataResponse);
         });
 
         getTop3BoardListRequest().then(getTop3BoardListResponse);

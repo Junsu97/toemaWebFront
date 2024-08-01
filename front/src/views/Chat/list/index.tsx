@@ -23,27 +23,28 @@ export default function ChatList() {
 
     const fetchRoomList = async () => {
         if (!cookies.accessToken) {
-            alert("로그인 후 이용해주세요.");
-            navigate(AUTH_PATH());
-            return;
+            alert("로그인 후 이용해주세요."); // accessToken이 없으면 경고 메시지 표시
+            navigate(AUTH_PATH()); // 로그인 페이지로 이동
+            return; // 함수 종료
         }
         try {
-            const token = cookies.accessToken;
+            const token = cookies.accessToken; // accessToken 가져오기
             const response = await axios.get<string[]>(
                 "https://api.test-poly.shop/roomList",
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`, // Authorization 헤더에 accessToken 추가
                     },
                 }
             );
-            const chatRooms = response.data.map((roomName) => ({roomName}));
-            console.log(chatRooms);
-            setRooms(chatRooms);
+            const chatRooms = response.data.map((roomName) => ({roomName})); // 응답 데이터를 roomName 객체 배열로 변환
+            console.log(chatRooms); // 변환된 데이터를 콘솔에 출력
+            setRooms(chatRooms); // 변환된 데이터를 rooms 상태로 설정
         } catch (error) {
-            console.error("Error fetching room list", error);
+            console.error("Error fetching room list", error); // 에러 발생 시 콘솔에 출력
         }
     };
+
 
     const createRoomClickHandler = async () => {
         const {value: roomName} = await Swal.fire({

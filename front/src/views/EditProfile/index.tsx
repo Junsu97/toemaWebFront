@@ -14,13 +14,19 @@ import {Address, useDaumPostcodePopup} from 'react-daum-postcode';
 import {PatchUserResponseDTO, PostMailResponseDTO} from 'apis/response/user';
 import {useNavigate, useParams} from 'react-router-dom';
 import {AUTH_PATH, MAIN_PATH, USER_PATH} from 'constant';
-import {getTeacherSubjectRequest, patchUserRequest, postMailReceiveRequest, postMailSendRequest} from 'apis';
+import {
+    getSignInUserRequest,
+    getTeacherSubjectRequest, getUserRequest,
+    patchUserRequest,
+    postMailReceiveRequest,
+    postMailSendRequest
+} from 'apis';
 import {PatchUserRequestDTO, PostMailReceiveRequestDTO, PostMailSendRequestDTO} from 'apis/reqeust/user';
 import {ResponseDto} from 'apis/response';
 import { Timer} from '@mui/icons-material';
 import {useCookies} from 'react-cookie';
 import TimerComponent from 'components/Timer';
-import {GetTeacherSubjectResponseDto} from "../../apis/response/user";
+import {GetSignInUserResponseDTO, GetTeacherSubjectResponseDto, GetUserResponseDTO} from "../../apis/response/user";
 
 const FormGrid = styled(Grid)(() => ({
     display: 'flex',
@@ -78,7 +84,8 @@ export default function UserInfoUpdatePage() {
         // state : 타이머 상태
         const [startTimer, setStartTimer] = useState(false);
         const [resetTimer, setResetTimer] = useState(false);
-
+        const [cookies] = useCookies();
+        const {loginUser, setLoginUser, resetLoginUser} = useLoginUserStore();
         const getTeacherSubjectResponse = (responseBody: GetTeacherSubjectResponseDto | ResponseDto | null) => {
             if (!responseBody) return;
             const {code} = responseBody;
@@ -94,13 +101,37 @@ export default function UserInfoUpdatePage() {
             setEnglish(english);
             setDesc(desc);
         }
+        const getUserResponse = (responseBody : GetUserResponseDTO | ResponseDto | null) => {
+            if(!responseBody) return;
+            const {code} = responseBody;
+            if (code === 'NU') {
+                // alert('존재하지 않는 유저입니다.');
+                return;
+            }
+            if (code === 'DBE') {
+                alert('데이터베이스 오류입니다.');
+                return;
+            }
+            if (code !== 'SU') {
+                navigate(MAIN_PATH());
+                return;
+            }
+            const {userId, nickname, profileImage, emailAuth, telNumber, addr,school, addrDetail} = responseBody as GetUserResponseDTO;
+            setAddr(addr);
+            setAddrDetail(addrDetail);
+            setSchoolAuth(emailAuth as boolean);
+
+
+            setSchool(school as string);
+
+
+        }
         // effect : user pathvaliable  변경시 실행될 함수
         useEffect(() => {
             if (!userId) {
                 navigate(MAIN_PATH());
                 return;
             }
-            ;
             if (!loginUser) {
                 navigate(AUTH_PATH());
                 return;
@@ -115,19 +146,12 @@ export default function UserInfoUpdatePage() {
                 navigate(AUTH_PATH());
                 return;
             }
-
+            if(cookies === null) return;
             if (loginUser.emailAuth === null) return;
-            setSchoolAuth(loginUser.emailAuth);
-            setAddr(loginUser.addr);
+            setTelNumber(loginUser.telNumber);
+            getUserRequest(loginUser.userId).then(getUserResponse);
 
-            if (loginUser.addrDetail)
-                setAddrDetail(loginUser.addrDetail);
 
-            if (loginUser.telNumber)
-                setTelNumber(loginUser.telNumber);
-
-            if (loginUser.school)
-                setSchool(loginUser.school);
             if (loginUser.userType === 'TEACHER') {
                 getTeacherSubjectRequest(cookie.accessToken).then(getTeacherSubjectResponse);
             }

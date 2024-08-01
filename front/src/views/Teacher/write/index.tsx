@@ -17,6 +17,7 @@ export default function TeacherApply() {
     const [cookies] = useCookies();
     const navigator = useNavigate();
 
+
     useEffect(() => {
         if (!loginUser || !cookies.accessToken) {
             alert('로그인 후 이용해주세요.');
@@ -109,7 +110,7 @@ export default function TeacherApply() {
         const requestBody: PostApplyTeacherRequestDTO = {
             teacherId, content
         }
-        getApplyBeforeRequest(accessToken).then(getApplyBeforeResponse);
+        getApplyBeforeRequest(teacherId,accessToken).then(getApplyBeforeResponse);
 
     }
 

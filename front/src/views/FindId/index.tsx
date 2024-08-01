@@ -85,83 +85,95 @@ export default function FindId() {
   }
   // render : 아이디 찾기 화면 렌더링
   return (
-    <div>
-      하이
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            height: '600px'
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'black' }}>
-          </Avatar>
-          <Typography component="h1" variant="h5" sx={{ fontFamily: 'GimhaeGaya' }}>
-            {'아이디 찾기'}
-          </Typography>
-          <Box component="div" >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="userName"
-                  label="회원 이름"
-                  type="text"
-                  id="userName"
-                  autoComplete="new-password"
-                  onChange={onUserIdChangeHandler}
-                  value={userName}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="이메일을 입력해주세요"
-                  name="email"
-                  autoComplete="email"
-                  onChange={onEmailChangeHandler}
-                  value={email}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, backgroundColor: 'black', '&:hover':{
-                backgroundColor: 'rgba(0,0,0,0.7)'
-              }}}
-              onClick={onFindIdButtonClickHandler}
+      <div>
+        <ThemeProvider theme={defaultTheme}>
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box
+                sx={{
+                  marginTop: 8,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  height: '600px'
+                }}
             >
-              아이디 찾기
-            </Button>
-            u
-            <Grid container justifyContent="flex-end">
-              <Grid item >
-                <Link variant="body2" sx={{ fontSize: '14px', fontFamily: 'GimhaeGaya', cursor: 'pointer' }}>
+              <Avatar sx={{ m: 1, bgcolor: 'black' }}>
+              </Avatar>
+              <Typography component="h1" variant="h5" sx={{ fontFamily: 'GimhaeGaya' }}>
+                {'아이디 찾기'}
+              </Typography>
+              <Box component="div">
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                        required
+                        fullWidth
+                        name="userName"
+                        label="회원 이름"
+                        type="text"
+                        id="userName"
+                        autoComplete="new-password"
+                        onChange={onUserIdChangeHandler}
+                        value={userName}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                        required
+                        fullWidth
+                        id="email"
+                        label="이메일을 입력해주세요"
+                        name="email"
+                        autoComplete="email"
+                        onChange={onEmailChangeHandler}
+                        value={email}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                    type="button"
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      mt: 3, mb: 2, backgroundColor: 'black', '&:hover': {
+                        backgroundColor: 'rgba(0,0,0,0.7)'
+                      }
+                    }}
+                    onClick={onFindIdButtonClickHandler}
+                >
+                  아이디 찾기
+                </Button>
+                <div className='auth-user-type'>
+                  <label>
+                    <input type="radio" value={'STUDENT'} checked={userType === 'STUDENT'}
+                           onChange={onUserTypeChange}/>
+                    <span>학생</span>
+                  </label>
+                  <label>
+                    <input type="radio" value={'TEACHER'} checked={userType === 'TEACHER'}
+                           onChange={onUserTypeChange}/>
+                    <span>선생님</span>
+                  </label>
+                </div>
+                <Grid container justifyContent="flex-end">
+                  <Grid item>
+                    <Link variant="body2" sx={{fontSize: '14px', fontFamily: 'GimhaeGaya', cursor: 'pointer'}}>
                   <span onClick={onLoginClickHandler}>
                     로그인하기
                   </span>
-                </Link>
-              </Grid>
-            </Grid>
-            <Grid
-              sx={{ fontFamily: 'GimhaeGaya', fontSize: '16px' }}>
-              {'회원님의 아이디 : ' + userId}
-              {/* <div>{userId}</div> */}
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
-    </div> 
+                    </Link>
+                  </Grid>
+                </Grid>
+                <Grid
+                    sx={{fontFamily: 'GimhaeGaya', fontSize: '16px'}}>
+                  {'회원님의 아이디 : ' + userId}
+                  {/* <div>{userId}</div> */}
+                </Grid>
+              </Box>
+            </Box>
+          </Container>
+        </ThemeProvider>
+      </div>
   );
 };

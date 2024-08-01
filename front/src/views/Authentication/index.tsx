@@ -105,20 +105,17 @@ export default function Authentication() {
         }
 
         useEffect(() => {
-            let timeoutId: NodeJS.Timeout;
-
-            if (accumulatedDetections.length > 0 && accumulatedDetections.length < 5) {
-                timeoutId = setTimeout(() => {
-                    alert("얼굴 인식 정확도가 낮습니다. 얼굴 인식을 다시 시작해주세요.");
-                    setAccumulatedDetections([]);
-                    detectFace();
-
+            let timeoutId: NodeJS.Timeout;  // 타임아웃 ID를 저장할 변수 선언
+            if (accumulatedDetections.length > 0 && accumulatedDetections.length < 5) {  // 누적된 감지 횟수가 1~4일 때
+                timeoutId = setTimeout(() => {  // 1초 후에 실행될 타임아웃 설정
+                    alert("얼굴 인식 정확도가 낮습니다. 얼굴 인식을 다시 시작해주세요.");  // 경고 메시지 표시
+                    setAccumulatedDetections([]);  // 누적된 감지 목록 초기화
+                    detectFace();  // 얼굴 감지 재시작
                 }, 1000);
-            } else if (accumulatedDetections.length >= 5) {
-                // 정확도, 표정, 랜드마크의 평균을 계산합니다.
+            } else if (accumulatedDetections.length >= 5) {  // 누적된 감지 횟수가 5 이상일 때
+                // 정확도의 평균을 계산
                 const averageAccuracy = accumulatedDetections.reduce((acc, detection) => acc + detection.detection.score, 0) / accumulatedDetections.length;
-
-                // 랜드마크 위치의 평균을 계산합니다.
+                // 랜드마크 위치의 평균을 계산
                 const numLandmarks = accumulatedDetections[0].landmarks.positions.length;
                 const averageLandmarks = {
                     positions: Array(numLandmarks).fill(0).map((_, index) => {
@@ -126,27 +123,24 @@ export default function Authentication() {
                             acc.x += detection.landmarks.positions[index].x / accumulatedDetections.length;
                             acc.y += detection.landmarks.positions[index].y / accumulatedDetections.length;
                             return acc;
-                        }, {x: 0, y: 0});
+                        }, { x: 0, y: 0 });
                     })
                 };
-
-                // 평균값을 사용하여 requestBody를 생성합니다.
+                // 평균값을 사용하여 requestBody를 생성
                 const requestBody: PostFaceIdSignInRequestDTO = {
                     accuracy: averageAccuracy,
                     landMarks: averageLandmarks,
                     userType: userType
                 };
-                alert('수집완료');
-
-                console.log(requestBody);
-                // 이제 requestBody를 API 요청에 사용할 수 있습니다.
+                alert('수집완료');  // 데이터 수집 완료 메시지 표시
+                console.log(requestBody);  // 생성된 requestBody를 콘솔에 출력
+                // requestBody를 API 요청에 사용
                 postFaceIdSignRequest(requestBody).then(postFaceIdResponse);
-
-                setAccumulatedDetections([]);
+                setAccumulatedDetections([]);  // 누적된 감지 목록 초기화
             }
 
-            return () => clearTimeout(timeoutId);
-        }, [accumulatedDetections]);
+            return () => clearTimeout(timeoutId);  // 컴포넌트 언마운트 시 타임아웃을 정리
+        }, [accumulatedDetections]);  // 누적된 감지 목록이 변경될 때마다 실행
 
 
         // function : sign in response 처리 함수
@@ -186,31 +180,33 @@ export default function Authentication() {
             const startVideo = async () => {
                 try {
                     let stream: MediaStream | null = null;
-
+                    // 모델들을 로드
                     await Promise.all([
-                        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-                        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-                        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-                        faceapi.nets.faceExpressionNet.loadFromUri('/models')
+                        // faceapi.nets.tinyFaceDetector.loadFromUri('/models'),  // 작은 얼굴 감지기 모델 로드
+                        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),  // 68개 얼굴 랜드마크 모델 로드
+                        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),  // 얼굴 인식 모델 로드
+                        faceapi.nets.faceExpressionNet.loadFromUri('/models')  // 얼굴 표정 모델 로드
                     ]);
-                    stream = await navigator.mediaDevices.getUserMedia({video: {}});
-                    streamRef.current = stream;
+                    stream = await navigator.mediaDevices.getUserMedia({ video: {} });// 사용자의 카메라에서 비디오 스트림을 얻음
+                    streamRef.current = stream;  // 스트림을 참조에 저장
+
                     if (videoRef.current) {
-                        videoRef.current.srcObject = stream;
+                        videoRef.current.srcObject = stream;  // 비디오 요소에 스트림을 설정
                     } else {
-                        alert('비디오 혹은 카메라에 이상이 있습니다.');
+                        alert('비디오 혹은 카메라에 이상이 있습니다.');  // 비디오 요소를 찾지 못한 경우 알림
                         return;
                     }
+                    // 비디오 메타데이터가 로드되었을 때 실행
                     videoRef.current.onloadedmetadata = () => {
                         if (canvasRef.current && videoRef.current) {
-                            canvasRef.current.width = videoRef.current.width;
-                            canvasRef.current.height = videoRef.current.height;
+                            canvasRef.current.width = videoRef.current.width;  // 캔버스 너비 설정
+                            canvasRef.current.height = videoRef.current.height;  // 캔버스 높이 설정
                         }
-                        // Assuming detectFace is defined somewhere
+                        // 얼굴 감지를 시작
                         detectFace();
                     };
                 } catch (e) {
-                    console.error(e);
+                    console.error(e);  // 에러가 발생한 경우 콘솔에 에러 출력
                 }
             };
             console.log(startDetect);
@@ -226,36 +222,34 @@ export default function Authentication() {
         }
 
         const detectFace = async () => {
-            if (!videoRef.current || !canvasRef.current) return;
-
-            const displaySize = {width: videoRef.current.width, height: videoRef.current.height};
-            faceapi.matchDimensions(canvasRef.current, displaySize);
+            if (!videoRef.current || !canvasRef.current) return;  // 비디오 또는 캔버스 요소가 없으면 리턴
+            const displaySize = { width: videoRef.current.width, height: videoRef.current.height };  // 비디오 크기 설정
+            faceapi.matchDimensions(canvasRef.current, displaySize);  // 캔버스 크기를 비디오 크기에 맞춤
             intervalIdRef.current = setInterval(async () => {
-                if (!videoRef.current || !canvasRef.current) return;
-
-                // 캔버스 초기화
+                if (!videoRef.current || !canvasRef.current) return;  // 비디오 또는 캔버스 요소가 없으면 리턴
                 // 캔버스 초기화
                 if (canvasRef) {
-                    canvasRef.current?.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-
-
+                    canvasRef.current?.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);  // 캔버스를 지움
+                    // 얼굴 감지, 랜드마크 및 표정 감지
                     const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
                         .withFaceLandmarks()
                         .withFaceExpressions();
-                    const resizedDetections = faceapi.resizeResults(detections, displaySize);
+                    const resizedDetections = faceapi.resizeResults(detections, displaySize);  // 감지 결과를 디스플레이 크기에 맞춤
+                    // 고정밀 중립 표정 필터링
                     const highAccuracyNeutralExpressions = resizedDetections.filter(detection =>
                         detection.detection.score >= 0.9 && detection.expressions.neutral > 0.8) as DetectionWithExpression[];
-
                     if (highAccuracyNeutralExpressions.length > 0) {
+                        // 감지된 결과를 누적된 감지 목록에 추가
                         setAccumulatedDetections(prevDetections => [...prevDetections, ...highAccuracyNeutralExpressions]);
                     }
-
+                    // 감지 결과를 캔버스에 그림
                     faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
                     faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
                     faceapi.draw.drawFaceExpressions(canvasRef.current, resizedDetections);
                 }
-            }, 100) as unknown as number;
+            }, 100) as unknown as number;  // 100ms마다 얼굴 감지를 실행
         };
+
 
         const stopVideoAndDetection = () => {
             setStartDetect(false);
@@ -546,22 +540,27 @@ export default function Authentication() {
                 setUserIdError(true);
                 setUserIdErrorMessage('이미 존재하는 이메일 주소입니다.');
                 setPage(1)
+                return;
             }
             if (code === 'DN') {
                 setNickNameError(true);
                 setNicknameErrorMessage('이미 존재하는 닉네임입니다.');
                 setPage(2);
+
             }
             if (code === 'DT') {
                 setTelNumberError(true);
                 setTelNumberErrorMessage('이미 존재하는 핸드폰 번호입니다.');
                 setPage(2);
+                return;
             }
             if (code === 'VF') {
                 alert('모든 값을 입력해주세요.');
+                return;
             }
             if (code === 'DBE') {
                 alert('데이터베이스 오류입니다.');
+                return;
             }
 
             if (code !== 'SU') {
@@ -695,6 +694,7 @@ export default function Authentication() {
                 setEmailError(true);
                 setEmailErrorMessage('이메일 주소 포멧이 맞지 않습니다.');
                 setPage(1);
+
             }
             const isPasswordPattern = password.length >= 8;
             if (!isPasswordPattern) {
@@ -708,6 +708,7 @@ export default function Authentication() {
                 setPasswordCheckError(true);
                 setPasswordCheckErrorMessage('비밀번호가 일치하지 않습니다.');
                 setPage(1);
+                return;
             }
 
             const nicknamePattern = /^[가-힣a-zA-Z0-9]{2,10}$/;
@@ -715,7 +716,7 @@ export default function Authentication() {
             if (!isNicknamePattern) {
                 setNickNameError(true);
                 setNicknameErrorMessage('닉네임을 입력해주세요.');
-                setPage(1);
+                setPage(2);
             }
             const telNumberPattern = /^01([0|1|6|7|8|9]?)?([0-9]{3,4})?([0-9]{4})$/;
             const isTelNumberPattern = telNumberPattern.test(telNumber);
@@ -730,9 +731,13 @@ export default function Authentication() {
                 setAddrError(true);
                 setAddrErrorMessage('주소를 입력해주세요.');
                 setPage(2);
+                return;
             }
             if (page === 1) {
-                if (!isUserIdPattern || !isUserIdLengthValid || !isEmailPattern || !isPasswordPattern || !isEqualPassword) return;
+                if (!isUserIdPattern || !isUserIdLengthValid || !isEmailPattern || !isPasswordPattern || !isEqualPassword) {
+                    alert('에러');
+                    return;
+                }
             }
             if (page === 2) {
                 if (!isNicknamePattern || !telNumberPattern || !hasAddress) return;
@@ -948,12 +953,12 @@ export default function Authentication() {
 
                                 <div className='auth-user-type'>
                                     <label>
-                                        <input type="radio" value={'Student'} checked={userType === 'Student'}
+                                        <input type="radio" value={'STUDENT'} checked={userType === 'STUDENT'}
                                                onChange={onUserTypeChange}/>
                                         <span>학생</span>
                                     </label>
                                     <label>
-                                        <input type="radio" value={'Teacher'} checked={userType === 'Teacher'}
+                                        <input type="radio" value={'TEACHER'} checked={userType === 'TEACHER'}
                                                onChange={onUserTypeChange}/>
                                         <span>선생님</span>
                                     </label>
