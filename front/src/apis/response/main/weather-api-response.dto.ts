@@ -1,7 +1,7 @@
 import ResponseDto from "../response.dto";
-import WeatherResponseDTO from "./weather-api-dto";
+import WeatherAPIDTO from "../../../types/interface/weather-api-interface";
 
 
 export default interface WeatherAPIResponseDTO extends ResponseDto{
-    result: WeatherResponseDTO
+    result: WeatherAPIDTO
 }

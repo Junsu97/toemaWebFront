@@ -100,14 +100,17 @@ export default function Main() {
 
     const getWeather =  () => {
         try {
-
-            if(res == null) return;
+            if(res == null) {
+                alert("null");
+                return;
+            }
             const weatherId = res.id;
             const weatherKo = weatherDescKo[weatherId];
             const weatherIcon = res.weather[0].icon;
             const weatherIconAdrs = `http://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
             const temp = Math.round(res.main.temp);
             const cityName = res.name;
+            console.log(weatherIcon);
             setWeather({
                 description: weatherKo,
                 name: cityName,
@@ -115,6 +118,8 @@ export default function Main() {
                 icon: weatherIconAdrs,
                 date: getFormattedDate(new Date()),
             });
+            console.log(weather?.icon);
+
         } catch (err) {
             console.error(err);
         }
@@ -137,9 +142,14 @@ export default function Main() {
         }
 
         const {result} = responseBody as WeatherAPIResponseDTO;
-        setRes(result.data[0]);
-        getWeather();
+        setRes(result);
+
+
     }
+    useEffect(() => {
+        if(res != null)
+            getWeather();
+    }, [res]);
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
