@@ -27,11 +27,7 @@ export default function IndexPage() {
                     <div className='start-button' onClick={onStartButtonClick}>시작하기</div>
 
                 </div>
-
-
-
             </main>
-
             <Footer />
         </div>
     );

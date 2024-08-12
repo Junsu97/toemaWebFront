@@ -1058,6 +1058,30 @@ export default function Authentication() {
         )
     };
 
+    const ReCaptchaComponent = () => {
+        useEffect(() => {
+            const script = document.createElement('script');
+            script.src = `https://www.google.com/recaptcha/api.js?render=6LdmqiQqAAAAAPMkYky1qk29YwXNt4_aghO1g9KB`;
+            script.async = true;
+            document.body.appendChild(script);
+        },[]);
+
+        const executeRecaptcha = async () => {
+            const grecaptcha = (window as any).grecaptcha; // 또는 정확한 타입을 사용하여 window.grecaptcha가 존재함을 알림
+            const token = await grecaptcha.execute('6LdmqiQqAAAAAPMkYky1qk29YwXNt4_aghO1g9KB', { action: 'submit' });
+            const response = await fetch('/api/v1/recaptcha/verify-recaptcha', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+            // 응답 처리
+            const result = await response.json();
+            console.log(result);
+        };
+    }
+
     // render : 인증 화면 컴포넌트 렌더링
     return (
         <div id='auth-wrapper'>
