@@ -22,20 +22,52 @@ interface DetectionWithExpression extends faceapi.WithFaceExpressions<faceapi.Wi
 //  component : 인증화면 컴포넌트
 export default function Authentication() {
     // state : 화면상태
-    // const [view, setView] = useState<'index' | 'sign-in' | 'sign-up'>('index');
     const [view, setView] = useState<'index' | 'sign-in' | 'sign-up'>('index');
 
     // state : 쿠키 상태
     const [cookies, setCookie] = useCookies();
+    // state : 유저 타입 상태
+    const [userType, setUserType] = useState('STUDENT');
+    let navigate = useNavigate();
+
+    const[recaptchaVerified, setRecaptchaVerified] = useState<boolean>(false);
+    const SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
     // effect : 로그인 되어있는 사용자 처리
     useEffect(() => {
         if (cookies.accessToken) {
             navigate(MAIN_PATH());
+            return;
         }
-    }, [cookies])
-    // state : 유저 타입 상태
-    const [userType, setUserType] = useState('STUDENT');
-    let navigate = useNavigate();
+    }, [cookies]);
+
+    // Recaptcha 정보 가져오기
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
+        script.async = true;
+        script.onload = () => executeRecaptcha();
+        document.body.appendChild(script);
+    }, []);
+    
+    const executeRecaptcha = async () => {
+        const gRecaptcha = (window as any).grecaptcha;
+        const token = await gRecaptcha.execute(SITE_KEY, {action: 'submit'});
+        const response = await fetch('/api/v1/recaptcha/verify-recaptcha',{
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json',
+            },
+            body: JSON.stringify({token}),
+        });
+        const result = await response.json();
+
+        if(result.success && result.score > 0.5){
+            setRecaptchaVerified(true);
+        }else{
+            navigate('/404');
+        }
+    }
+
     // component : sign in card 컴포넌트
     const SignInCard = () => {
         //state : 유저 아이디 요소 참조 상태
@@ -1058,29 +1090,6 @@ export default function Authentication() {
         )
     };
 
-    const ReCaptchaComponent = () => {
-        useEffect(() => {
-            const script = document.createElement('script');
-            script.src = `https://www.google.com/recaptcha/api.js?render=6LdmqiQqAAAAAPMkYky1qk29YwXNt4_aghO1g9KB`;
-            script.async = true;
-            document.body.appendChild(script);
-        },[]);
-
-        const executeRecaptcha = async () => {
-            const grecaptcha = (window as any).grecaptcha; // 또는 정확한 타입을 사용하여 window.grecaptcha가 존재함을 알림
-            const token = await grecaptcha.execute('6LdmqiQqAAAAAPMkYky1qk29YwXNt4_aghO1g9KB', { action: 'submit' });
-            const response = await fetch('/api/v1/recaptcha/verify-recaptcha', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ token })
-            });
-            // 응답 처리
-            const result = await response.json();
-            console.log(result);
-        };
-    }
 
     // render : 인증 화면 컴포넌트 렌더링
     return (
@@ -1096,8 +1105,8 @@ export default function Authentication() {
                     </div>
                 </div>
                 {view === "index" && <IndexCard/>}
-                {view === "sign-in" && <SignInCard/>}
-                {view === "sign-up" && <SignUpCard/>}
+                {recaptchaVerified && view === "sign-in" && <SignInCard/>}
+                {recaptchaVerified && view === "sign-up" && <SignUpCard/>}
             </div>
         </div>
     )
