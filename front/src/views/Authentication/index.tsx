@@ -2,17 +2,16 @@ import React, {useState, KeyboardEvent, useRef, ChangeEvent, useEffect} from 're
 import InputBox from 'components/inputBox';
 import './style.css';
 import {SignInRequestDto, SignUpRequestDTO} from 'apis/reqeust/auth';
-import {signUpRequest, signInRequest, postFaceIdRequest, postFaceIdSignRequest} from 'apis';
+import {signUpRequest, signInRequest, postFaceIdSignRequest} from 'apis';
 import {SignInResponseDto, SignUpResponseDTO} from 'apis/response/auth';
 import {ResponseDto} from 'apis/response';
 import {useNavigate} from 'react-router-dom';
 import {useCookies} from 'react-cookie';
-import {AUTH_PATH, CHANGE_PASSWORD, FIND_ID, FIND_PASSWROD, MAIN_PATH, NOT_FOUND_PATH, USER_PATH} from 'constant';
+import {AUTH_PATH, FIND_ID, FIND_PASSWROD, MAIN_PATH, NOT_FOUND_PATH, USER_PATH} from 'constant';
 import * as faceapi from 'face-api.js';
 import {Address, useDaumPostcodePopup} from 'react-daum-postcode';
 import {PostFaceIdSignInRequestDTO} from "../../apis/reqeust/FaceID";
-import {PostFaceIdResponseDTO, PostFaceIdSignInResponseDto} from "../../apis/response/faceId";
-import ReactModal from "react-modal";
+import { PostFaceIdSignInResponseDto} from "../../apis/response/faceId";
 import Modal from "../../components/Modal";
 
 
@@ -32,6 +31,7 @@ export default function Authentication() {
 
     const[recaptchaVerified, setRecaptchaVerified] = useState<boolean>(false);
     const SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+    const recaptchaUrl = 'http://localhost:11000/api/v1/recaptcha/verify-recaptcha';
     // effect : 로그인 되어있는 사용자 처리
     useEffect(() => {
         if (cookies.accessToken) {
@@ -45,28 +45,40 @@ export default function Authentication() {
         const script = document.createElement('script');
         script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
         script.async = true;
-        script.onload = () => executeRecaptcha();
+        script.onload = () => {
+            if (window.grecaptcha) {
+                window.grecaptcha.ready(() => {
+                    console.log('grecaptcha is ready');
+                });
+            }
+        };
         document.body.appendChild(script);
     }, []);
-    
-    const executeRecaptcha = async () => {
-        const gRecaptcha = (window as any).grecaptcha;
-        const token = await gRecaptcha.execute(SITE_KEY, {action: 'submit'});
-        const response = await fetch('/api/v1/recaptcha/verify-recaptcha',{
-            method: 'POST',
-            headers: {
-                'Content-Type' : 'application/json',
-            },
-            body: JSON.stringify({token}),
-        });
-        const result = await response.json();
 
-        if(result.success && result.score > 0.5){
-            setRecaptchaVerified(true);
-        }else{
-            navigate('/404');
+    const executeRecaptcha = async () => {
+        console.log('executeRecaptcha 실행');
+        if (window.grecaptcha) {
+            const token = await window.grecaptcha.execute(SITE_KEY as string, { action: 'submit' });
+            const response = await fetch(recaptchaUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+            const result = await response.text();
+            if(result === 'Verification successful'){
+                setRecaptchaVerified(true);
+                setView('sign-in');
+            }else{
+                alert('reCaptcha 정보를 불러올 수 없습니다.');
+                navigate('/404');
+            }
+        } else {
+            console.error('grecaptcha is not loaded');
         }
-    }
+    };
+
 
     // component : sign in card 컴포넌트
     const SignInCard = () => {
@@ -1065,7 +1077,7 @@ export default function Authentication() {
     const IndexCard = () => {
         // event handler :  시작하기 버튼 클릭 이벤트
         const onStartButtonClickHandler = () => {
-            setView('sign-in');
+            executeRecaptcha();
         }
 
         // render : Index 컴포넌트 렌더링
