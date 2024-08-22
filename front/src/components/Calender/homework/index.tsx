@@ -51,6 +51,8 @@ export default function CalendarItem() {
         setCurrentPage, setCurrentSection, setTotalList
     } = usePagination<HomeworkListItemInterface>(3);
 
+    const [selectedFiles, setSelectedFile] = useState<File[]>([]);
+
     const getHomeworkListResponse = (responseBody: GetHomeworkListResponseDto | ResponseDto | null) => {
         if (!responseBody) {
             alert('서버로부터 데이터를 불러올 수 없습니다.');
@@ -215,8 +217,16 @@ export default function CalendarItem() {
             endDate: endDateStr,
             content: homeworkContent
         }
-
+        /*TODO
+        1. 파일 업
+         */
         postHomeworkRequest(requestBody, cookies.accessToken).then(postHomeworkResponse);
+    }
+
+    const onFileChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        if(event.target.files && event.target.files.length > 0){
+            setSelectedFile(Array.from(event.target.files));
+        }
     }
 
 
@@ -253,6 +263,25 @@ export default function CalendarItem() {
                         />
                     </div>
                 </LocalizationProvider>
+
+                {/*<div className={'file-upload'}>*/}
+                {/*    <input type="file"*/}
+                {/*           accept=".pdf, .doc, docx,.txt, .ppt, .pptx, .zip"*/}
+                {/*           multiple*/}
+                {/*           onChange={onFileChangeHandler}*/}
+                {/*    />*/}
+                {/*    <div>*/}
+                {/*        {selectedFiles.length > 0 ? (*/}
+                {/*            <ul>*/}
+                {/*                {selectedFiles.map((file, index) => (*/}
+                {/*                    <li key={index}>{file.name}</li>*/}
+                {/*                ))}*/}
+                {/*            </ul>*/}
+                {/*        ) : (*/}
+                {/*            <p>숙제에 사용될 파일을 업로드 해주세요.</p>*/}
+                {/*        )}*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
                 <div className={'homework-text-area'}>
                     <TextareaAutosize

@@ -176,15 +176,20 @@ export default function Header() {
       const { code } = responseBody;
       if (code === 'DBE') {
         alert('데이터베이스 에러입니다.');
+        resetBoard();
         return;
       }
       if (code === 'AF' || code === 'NU') {
         alert('비정상적인 접근입니다.')
+        resetBoard();
         navigate(AUTH_PATH());
         return;
       }
       if (code === 'VF') alert('제목과 내용은 비어있을 수 없습니다.');
-      if (code !== 'SU') return;
+      if (code !== 'SU') {
+        resetBoard();
+        return;
+      }
 
       resetBoard();
       if (!loginUser) return;
