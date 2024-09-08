@@ -11,4 +11,5 @@ export default interface User{
     telNumber:string;
     faceId : boolean;
     profileImage : string | null;
+    lastLogin : string | null;
 };

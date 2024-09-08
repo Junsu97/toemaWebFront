@@ -86,7 +86,6 @@ export default function Authentication() {
         const userIdRef = useRef<HTMLInputElement | null>(null);
         //state : 패스워드 요소 참조 상태
         const passwordRef = useRef<HTMLInputElement | null>(null);
-
         // state : 아이디 상태
         const [userId, setUserId] = useState<string>('');
         // state : 패스워드 상태
@@ -148,6 +147,7 @@ export default function Authentication() {
             return;
         }
 
+
         useEffect(() => {
             let timeoutId: NodeJS.Timeout;  // 타임아웃 ID를 저장할 변수 선언
             if (accumulatedDetections.length > 0 && accumulatedDetections.length < 5) {  // 누적된 감지 횟수가 1~4일 때
@@ -171,6 +171,7 @@ export default function Authentication() {
                     })
                 };
                 // 평균값을 사용하여 requestBody를 생성
+
                 const requestBody: PostFaceIdSignInRequestDTO = {
                     accuracy: averageAccuracy,
                     landMarks: averageLandmarks,
@@ -338,6 +339,7 @@ export default function Authentication() {
             const {value} = event.target;
             setPassword(value);
         }
+
 
         // event handler : 로그인 버튼 클릭 이벤트 처리
         const onSignInButtonClickHandler = () => {

@@ -50,6 +50,8 @@ export default function UserPage() {
         const [profileImage, setProfileImage] = useState<string | null>(null);
         // state : 닉네임 변경 여부 상태
         const [isNicknameChane, setNicknameChange] = useState<boolean>(false);
+        // state : 마지막 로그인 날짜
+        const [lastLogin, setLastLogin] = useState<string | null>(null);
 
         // function : get user response 처리 함수
         const getUserResponse = (responseBody: GetUserResponseDTO | ResponseDto | null) => {
@@ -68,9 +70,13 @@ export default function UserPage() {
                 return;
             }
 
-            const {userId, nickname, profileImage} = responseBody as GetUserResponseDTO;
+            const {userId, nickname, profileImage,lastLogin} = responseBody as GetUserResponseDTO;
             setNickname(nickname);
             setProfileImage(profileImage);
+            if(!lastLogin){
+                setLastLogin('오늘 가입한 회원입니다.');
+            }
+            setLastLogin(lastLogin);
             const isMyPage = userId === loginUser?.userId;
             setMyPage(isMyPage);
         }
@@ -96,7 +102,7 @@ export default function UserPage() {
             }
             if (code === 'NU') {
                 alert('존재하지 않는 유저입니다.');
-                return;;
+                return;
             }
             if (code === 'DBE') {
                 alert('데이터베이스 오류입니다.');
@@ -231,6 +237,7 @@ export default function UserPage() {
                             }
                         </div>
                         <div className='user-top-info-userid'>{userId}</div>
+                        <div className={'user-top-info-userid'}>{lastLogin}</div>
                     </div>
                 </div>
             </div>
