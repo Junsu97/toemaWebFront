@@ -51,7 +51,7 @@ export default function UserPage() {
         // state : 닉네임 변경 여부 상태
         const [isNicknameChane, setNicknameChange] = useState<boolean>(false);
         // state : 마지막 로그인 날짜
-        const [lastLogin, setLastLogin] = useState<string | null>(null);
+        const [isLastLogin, setIsLastLogin] = useState<string | null>(null);
 
         // function : get user response 처리 함수
         const getUserResponse = (responseBody: GetUserResponseDTO | ResponseDto | null) => {
@@ -74,9 +74,10 @@ export default function UserPage() {
             setNickname(nickname);
             setProfileImage(profileImage);
             if(!lastLogin){
-                setLastLogin('오늘 가입한 회원입니다.');
+                setIsLastLogin('첫 로그인한 회원입니다.');
+            }else{
+                setIsLastLogin(lastLogin);
             }
-            setLastLogin(lastLogin);
             const isMyPage = userId === loginUser?.userId;
             setMyPage(isMyPage);
         }
@@ -237,7 +238,9 @@ export default function UserPage() {
                             }
                         </div>
                         <div className='user-top-info-userid'>{userId}</div>
-                        <div className={'user-top-info-userid'}>{lastLogin}</div>
+                        {isMyPage &&
+                            <div className={'user-top-info-userid'}>{isLastLogin}</div>
+                        }
                     </div>
                 </div>
             </div>
