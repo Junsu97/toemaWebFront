@@ -10,7 +10,7 @@ import {
     CHAT_LIST,
     HOMEWORK_LIST,
     LIKE_LIST,
-    MATCHED_STUDENT_LIST,
+    MATCHED_STUDENT_LIST, NEWS_LIST,
     TEACHER_APPLY_LIST,
     TEACHER_LIST
 } from "constant";
@@ -37,6 +37,11 @@ const defaultNavigation = [
         title: "채팅",
         href: CHAT_LIST(),
         icon: "bi bi-bell",
+    },
+    {
+        title: "학생 신문",
+        href: NEWS_LIST(),
+        icon: "bi bi-bell"
     }
 
 ];

@@ -31,7 +31,8 @@ export default function Authentication() {
 
     const[recaptchaVerified, setRecaptchaVerified] = useState<boolean>(false);
     const SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
-    const recaptchaUrl = 'http://localhost:11000/api/v1/recaptcha/verify-recaptcha';
+    // const recaptchaUrl = 'http://localhost:11000/api/v1/recaptcha/verify-recaptcha';
+    const recaptchaUrl = 'https://api.test-poly.shop/api/v1/recaptcha/verify-recaptcha';
     // effect : 로그인 되어있는 사용자 처리
     useEffect(() => {
         if (cookies.accessToken) {

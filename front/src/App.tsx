@@ -24,7 +24,7 @@ import {
     FIND_ID,
     FIND_PASSWROD, HOMEWORK, HOMEWORK_LIST, LIKE_LIST,
     MAIN_PATH,
-    MATCHED_STUDENT_LIST,
+    MATCHED_STUDENT_LIST, NEWS_LIST,
     SEARCH_PATH,
     STUDENT_INFO,
     TEACHER_APPLY,
@@ -64,6 +64,7 @@ import Chatting from "./views/Chat/list";
 import ChatList from "./views/Chat/list";
 import ChatRoom from "./views/Chat/room";
 import LikeList from "./views/Board/LikeList";
+import NewsList from "./views/News";
 // import IndexPage from 'views/INDEX';
 
 // component: Application  컴포넌트
@@ -108,14 +109,6 @@ function App() {
 
     }, [cookies.accessToken, loginUser]);
 
-
-    // render: Application 컴포넌트 렌더링
-    // description: 메인화면 : '/' -Main//
-    // description: 로그인 + 회원가입: /auth' - Authentication
-    // description: 검색 화면 : /search/:word' -Search//
-    // description: 게시물 상세보기 : 'board/detail/:boardNumber - BoardDetail'
-    // description: 게시물 작성하기: 'board/write' - BoardWrite
-    // description: 게시물 수정하기: '/board/update/:boardNumber' - BoardUpdate
     return (
         // <div>
         // </div>
@@ -157,6 +150,7 @@ function App() {
                     </Route>
                     <Route path={CHAT_LIST()} element={<ChatList />}/>
                     <Route path={CHAT_ROOM(':roomName')} element={<ChatRoom/>}/>
+                    <Route path={NEWS_LIST()} element={<NewsList/>}/>
                     <Route path='*' element={<NotFoundPage/>}></Route>
                 </Route>
             </Routes>

@@ -69,9 +69,10 @@ import DeleteUserResponseDTO from "./response/user/delete-user-response.dto";
 import {PostChatRoomRequestDTO} from "./reqeust/chat";
 import {PostChatRoomResponseDTO} from "./response/chat";
 import WeatherAPIResponseDTO from "./response/main/weather-api-response.dto";
+import GetNewsListResponseDTO from "./response/news/get-news-list.response.dto";
 
-// const DOMAIN = 'https://api.test-poly.shop';
-const DOMAIN = 'http://localhost:11000';
+const DOMAIN = 'https://api.test-poly.shop';
+// const DOMAIN = 'http://localhost:11000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const authorization = (accessToken: string) => {
@@ -931,6 +932,8 @@ export const deleteTutoringRequest = async (seq: number | string, accessToken : 
 const GET_API_DATA_LIST_URL = (grade:string) => `${API_DOMAIN}/main/${grade}`;
 const GET_WEATHER_DATA_URL = (lat:string|number, lon:string|number) => `${API_DOMAIN}/main/${lat}/${lon}`;
 
+const GET_NEWS_LIST_URL = () => `${API_DOMAIN}/news/list`;
+
 export const getApiDataListRequest = async (grade:string) => {
     const result = await axios.get(GET_API_DATA_LIST_URL(grade))
         .then(response => {
@@ -942,6 +945,19 @@ export const getApiDataListRequest = async (grade:string) => {
             return responseBody;
         });
 
+    return result;
+}
+
+export const getNewsListRequest = async () => {
+    const result = await axios.get(GET_NEWS_LIST_URL())
+        .then(response => {
+            const responseBody: GetNewsListResponseDTO = response.data;
+            return responseBody;
+        }).catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
     return result;
 }
 
